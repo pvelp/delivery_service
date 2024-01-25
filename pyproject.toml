@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "delivery-service"
+version = "0.1.0"
+description = ""
+authors = ["korchaginks <kkonstantinserg@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+django = "^5.0.1"
+psycopg2 = "^2.9.9"
+djangorestframework = "^3.14.0"
+pillow = "^10.2.0"
+python-dotenv = "^1.0.1"
+django-phonenumber-field = "^7.3.0"
+phonenumbers = "^8.13.28"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
