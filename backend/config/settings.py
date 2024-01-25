@@ -43,8 +43,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
     'rest_framework',
     'phonenumber_field',
+    'phonenumbers',
+    'drf_yasg',
+    'djoser',
 
     'users',
     'main',
@@ -80,6 +85,44 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
+# здесь мы настраиваем аутентификацию и пагинацию
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
+}
+
+SIMPLE_JWT = {
+    "AUTH_HEADER_TYPES": ("Bearer",),
+    "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=6),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+}
+
+# здесь мы настраиваем Djoser
+DJOSER = {
+    "LOGIN_FIELD": "email",
+    "USER_CREATE_PASSWORD_RETYPE": True,
+    "USERNAME_CHANGED_EMAIL_CONFIRMATION": True,
+    "PASSWORD_CHANGED_EMAIL_CONFIRMATION": True,
+    "SEND_CONFIRMATION_EMAIL": True,
+    'SET_USERNAME_RETYPE': True,
+    "SET_PASSWORD_RETYPE": True,
+    "USERNAME_RESET_CONFIRM_URL": "email/reset/confirm/{uid}/{token}",
+    "PASSWORD_RESET_CONFIRM_URL": "password/reset/confirm/{uid}/{token}",
+    "ACTIVATION_URL": "users/activate/{uid}/{token}",
+    "PASSWORD_RESET_SHOW_EMAIL_NOT_FOUND": True,
+    "PASSWORD_RESET_CONFIRM_RETYPE": True,
+    "SEND_ACTIVATION_EMAIL": True,
+    "TOKEN_MODEL": None,
+    "SERIALIZERS": {
+        "user_create": "users.serializers.UserRegistrationSerializer",  # custom serializer
+        "user": "users.serializers.CurrentUserSerializer",  # custom serializer
+        "current_user": "users.serializers.CurrentUserSerializer",  # custom serializer
+        "user_delete": "djoser.serializers.UserSerializer",
+        "activation": "djoser.serializers.ActivationSerializer",
+    },
+}
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases

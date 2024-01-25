@@ -17,15 +17,16 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True, verbose_name='Электронная почта')
 
     role = models.CharField(max_length=9, choices=UserRoles.choices,
-                            default=UserRoles.user, verbose_name='Роль',
-                            **NULLABLE)
+                            default=UserRoles.user, verbose_name='Роль')
 
     first_name = models.CharField(max_length=20, verbose_name='Имя', **NULLABLE)
     last_name = models.CharField(max_length=35, verbose_name='Фамилия', **NULLABLE)
     phone = PhoneNumberField(verbose_name='Номер телефона', unique=True, **NULLABLE)
     date_of_birth = models.DateField(verbose_name='Дата рождения', **NULLABLE)
     address = models.TextField(verbose_name='Последний адрес доставки', **NULLABLE)
-    total_amount = models.DecimalField(max_digits=9, decimal_places=2, verbose_name='Общая сумма заказов', default=0.00)
+    total_amount = models.DecimalField(max_digits=9, decimal_places=2,
+                                       verbose_name='Общая сумма заказов',
+                                       default=0.00)
 
     is_active = models.BooleanField(verbose_name='Статус', default=True)
 
