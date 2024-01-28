@@ -19,6 +19,7 @@ drf-yasg = "^1.21.7"
 djoser = "^2.2.2"
 pytest = "^8.0.0"
 coverage = "^7.4.1"
+django-filter = "^23.5"
 
 
 [build-system]

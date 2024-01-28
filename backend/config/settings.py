@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'phonenumbers',
     'drf_yasg',
     'djoser',
+    'django_filters',
 
     'users',
     'main',
