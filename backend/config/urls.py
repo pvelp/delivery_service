@@ -41,7 +41,7 @@ urlpatterns = [
 
     path('', include('djoser.urls')),
     path('', include('djoser.urls.jwt')),
-    path('', include("djoser.social.urls")),
+    path('', include('djoser.social.urls')),
 
     path('swagger<format>/', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
