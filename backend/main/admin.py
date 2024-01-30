@@ -24,32 +24,24 @@ class CategoryAdmin(admin.ModelAdmin):
 class OrderInline(admin.TabularInline):
     model = Order
     extra = 0
-    readonly_fields = ['order_datetime', 'delivery_address', 'order_amount', 'payment_method', 'view_order_link']
-
-    def view_order_link(self, obj):
-        return format_html('<a href="{}">View Order</a>', obj.get_admin_url())
-
-    view_order_link.short_description = 'Order'
+    readonly_fields = ['order_datetime', 'delivery_address', 'order_amount', 'payment_method']
 
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ('first_name', 'last_name', 'phone', 'date_of_birth', 'address', 'total_amount', 'last_order_info',)
+    list_display = ('first_name', 'last_name', 'phone', 'date_of_birth', 'address', 'total_amount',)
+    readonly_fields = ('last_order_info',)
     inlines = [OrderInline]
 
-    def get_last_order_info(self, obj):
-        last_order = obj.order_set.annotate(max_order_datetime=Max('order_datetime')).order_by(
-            '-max_order_datetime').first()
-        if last_order:
-            return f'{last_order.order_datetime} - {last_order.order_amount} руб.'
-        return '-'
-
-    get_last_order_info.short_description = 'Last Order'
-
-    def get_queryset(self, request):
-        return super().get_queryset(request).prefetch_related('order_set__products')
-
     def last_order_info(self, obj):
-        return self.get_last_order_info(obj)
+        last_order = obj.order_set.last()
+        if last_order:
+            products_info = "\n".join([product.title for product in last_order.products.all()])
+            return (f'Дата и время: {last_order.order_datetime},\n'
+                    f'Адрес: {last_order.delivery_address},\n'
+                    f'Сумма заказа: {last_order.order_amount} руб.\n'
+                    f'Способ оплаты: {last_order.payment_method}\n'
+                    f'Товары в заказе: {products_info}')
+        return 'Пользователь еще не сделал заказов'
 
-    last_order_info.admin_order_field = 'order_set__order_datetime'
+    last_order_info.short_description = 'Последний заказ'
