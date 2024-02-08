@@ -14,21 +14,21 @@ class UserRoles(models.TextChoices):
 
 class User(AbstractBaseUser, PermissionsMixin):
     username = None
-    email = models.EmailField(unique=True, verbose_name='Электронная почта')
+    email = models.EmailField(unique=True, verbose_name=_('Email'))
 
     role = models.CharField(max_length=9, choices=UserRoles.choices,
-                            default=UserRoles.user, verbose_name='Роль')
+                            default=UserRoles.user, verbose_name=_('Role'))
 
-    first_name = models.CharField(max_length=20, verbose_name='Имя', **NULLABLE)
-    last_name = models.CharField(max_length=35, verbose_name='Фамилия', **NULLABLE)
-    phone = PhoneNumberField(verbose_name='Номер телефона', unique=True, **NULLABLE)
-    date_of_birth = models.DateField(verbose_name='Дата рождения', **NULLABLE)
-    address = models.TextField(verbose_name='Последний адрес доставки', **NULLABLE)
+    first_name = models.CharField(max_length=20, verbose_name=_('Name'), **NULLABLE)
+    last_name = models.CharField(max_length=35, verbose_name=_('Surname'), **NULLABLE)
+    phone = PhoneNumberField(verbose_name=_('Phone number'), unique=True, **NULLABLE)
+    date_of_birth = models.DateField(verbose_name=_('Date of birth'), **NULLABLE)
+    address = models.TextField(verbose_name=_('Last delivery address'), **NULLABLE)
     total_amount = models.DecimalField(max_digits=9, decimal_places=2,
-                                       verbose_name='Общая сумма заказов',
+                                       verbose_name=_('Total amount'),
                                        default=0.00)
 
-    is_active = models.BooleanField(verbose_name='Статус', default=True)
+    is_active = models.BooleanField(verbose_name=_('Status'), default=True)
 
     objects = UserManager()
 
@@ -57,5 +57,5 @@ class User(AbstractBaseUser, PermissionsMixin):
         return f'{self.last_name} {self.first_name}'
 
     class Meta:
-        verbose_name = 'Пользователь'
-        verbose_name_plural = 'Пользователи'
+        verbose_name = _('User')
+        verbose_name_plural = _('Users')

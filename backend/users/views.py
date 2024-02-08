@@ -12,6 +12,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from djoser.views import UserViewSet, User
 
+from users.serializers import UserRegistrationSerializer
+
 
 class ActivateUserByGet(APIView):
     permission_classes = [AllowAny]
@@ -84,8 +86,8 @@ class CustomUserViewSet(UserViewSet):
     def get_serializer_class(self):
         if self.action == "create":
             if settings.USER_CREATE_PASSWORD_RETYPE:
-                return settings.SERIALIZERS.user_create_password_retype
-            return settings.SERIALIZERS.user_create
+                return UserRegistrationSerializer
+            return UserRegistrationSerializer
         elif self.action == "activation":
             return settings.SERIALIZERS.activation
 

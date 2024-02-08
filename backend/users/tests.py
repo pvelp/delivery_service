@@ -3,6 +3,7 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 from users.models import User
+from users.serializers import UserRegistrationSerializer
 
 
 class PostUserTestCase(APITestCase):
@@ -11,32 +12,62 @@ class PostUserTestCase(APITestCase):
         self.users_url = 'http://localhost:8000/users/'
         self.default_user = User.objects.create(
             email='test0@mail.com',
-            password='123qwe456rty'
+            password='123qwe456rty',
+            first_name='Name',
+            last_name='Last Name',
+            phone='+79778538693',
+            date_of_birth='2022-10-01'
         )
         self.new_user = {
             'email': 'test@mail.com',
             'password': '123qwe456rty',
-            're_password': '123qwe456rty'
+            'first_name': 'Name',
+            'last_name': 'Last Name',
+            'phone': '+79778538694',
+            'date_of_birth': '2022-10-01'
         }
         self.user_email_failed = {
             'email': 'test0@mail.com',
             'password': '123qwe456rty',
-            're_password': '123qwe456rty'
+            're_password': '123qwe456rty',
+            'first_name': 'Name',
+            'last_name': 'Last Name',
+            'phone': '+79778538695',
+            'date_of_birth': '2022-10-01'
         }
         self.user_simple_password = {
             'email': 'test1@mail.com',
-            'password': '12345678',
-            're_password': '12345678'
+            'password': '123',
+            'first_name': 'Name',
+            'last_name': 'Last Name',
+            'phone': '+79778538696',
+            'date_of_birth': '2022-10-01'
         }
         self.user_email_not_valid = {
             'email': 'zxc.zxc',
             'password': '123qwe456rty',
-            're_password': '123qwe456rty'
+            'first_name': 'Name',
+            'last_name': 'Last Name',
+            'phone': '+79778538692',
+            'date_of_birth': '2022-10-01'
         }
-        self.user_password_not_match = {
+        self.phone_not_valid = {
             'email': 'test@mail.com',
-            'password': '123qwe456rt',
-            're_password': '123qwe456rty'
+            'password': '123qwe456rty',
+            'first_name': 'Name',
+            'last_name': 'Last Name',
+            'phone': '342534',  # при вводе букв такой же ответ
+            'date_of_birth': '2022-10-01'
+        }
+        self.validate_required_fields = {
+        }
+        self.date_of_birth_not_valid = {
+            'email': 'test@mail.com',
+            'password': '123qwe456rty',
+            'first_name': 'Name',
+            'last_name': 'Last Name',
+            'phone': '+79778538691',
+            'date_of_birth': 'asjkdkj'
         }
 
     def test_create_201(self):
@@ -64,7 +95,7 @@ class PostUserTestCase(APITestCase):
         self.assertEqual(
             response.json(),
             {
-                'email': ['user with this Электронная почта already exists.']  # TODO: Добавить валидацию здесь и для доп полей и переименовать на англ яз
+                'email': ['User with this Email already exists.']
             }
         )
 
@@ -83,8 +114,9 @@ class PostUserTestCase(APITestCase):
             response.json(),
             {
                 'password': [
-                    'This password is too common.',
-                    'This password is entirely numeric.'
+                    'This password is entirely numeric.',
+                    'This password is too short. It must contain at least 8d '
+                    'characters.'
                 ]
             }
         )
@@ -109,10 +141,10 @@ class PostUserTestCase(APITestCase):
             }
         )
 
-    def test_not_matching_password(self):
+    def test_phone_not_valid(self):
         response = self.client.post(
             self.users_url,
-            self.user_password_not_match
+            self.phone_not_valid
         )
 
         self.assertEqual(
@@ -123,12 +155,54 @@ class PostUserTestCase(APITestCase):
         self.assertEqual(
             response.json(),
             {
-                'non_field_errors': [
-                    "The two password fields didn't match."
+                "non_field_errors": [
+                    "The phone number entered is not valid."
                 ]
             }
         )
 
+    def test_required_fields_not_entry(self):
+        response = self.client.post(
+            self.users_url,
+            self.validate_required_fields
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_400_BAD_REQUEST
+        )
+
+        self.assertEqual(
+            response.json(),
+            {
+                "email": ["This field is required."],
+                "password": ["This field is required."],
+                "first_name": ["This field is required."],
+                "last_name": ["This field is required."],
+                "phone": ["This field is required."],
+                "date_of_birth": ["This field is required."]
+            }
+        )
+
+    def test_date_of_birth_not_valid(self):
+        response = self.client.post(
+            self.users_url,
+            self.date_of_birth_not_valid
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_400_BAD_REQUEST
+        )
+
+        self.assertEqual(
+            response.json(),
+            {
+                "date_of_birth": [
+                    "Date has wrong format. Use one of these formats instead: YYYY-MM-DD."
+                ]
+            }
+        )
 
 class ActivateUserTestCase(APITestCase):
     def setUp(self):
@@ -138,7 +212,10 @@ class ActivateUserTestCase(APITestCase):
         self.user = {
             'email': 'test@mail.com',
             'password': '123qwe456rty',
-            're_password': '123qwe456rty'
+            'first_name': 'Name',
+            'last_name': 'Last Name',
+            'phone': '+79778538694',
+            'date_of_birth': '2022-10-01'
         }
         # self.user_login = {
         #     'email': 'test@mail.com',
