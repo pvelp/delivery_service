@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.db.models import Max
 from django.utils.html import format_html
 
-from main.models import Product, Category, Order
+from main.models import Product, Category, Order, RecommendedProducts, Promo
 from users.models import User
 
 from rest_framework_simplejwt.token_blacklist.models import OutstandingToken, BlacklistedToken
@@ -24,13 +24,22 @@ class CategoryAdmin(admin.ModelAdmin):
 class OrderInline(admin.TabularInline):
     model = Order
     extra = 0
-    readonly_fields = ['order_datetime', 'delivery_address', 'order_amount', 'payment_method']
+    readonly_fields = ['order_datetime', 'delivery_address', 'order_amount', 'payment_method', 'products', 'promo']
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
 
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
     list_display = ('first_name', 'last_name', 'phone', 'date_of_birth', 'address', 'total_amount',)
-    readonly_fields = ('last_order_info',)
+    readonly_fields = ('last_order_info', 'total_amount')
     inlines = [OrderInline]
 
     def last_order_info(self, obj):
@@ -45,3 +54,25 @@ class UserAdmin(admin.ModelAdmin):
         return 'Пользователь еще не сделал заказов'
 
     last_order_info.short_description = 'Последний заказ'
+
+
+@admin.register(Order)
+class OrderReadOnlyAdmin(admin.ModelAdmin):
+    list_display = ('buyer_name', 'buyer_phone_number', 'order_datetime', 'delivery_address', 'order_amount', 'payment_method', 'promo')
+    readonly_fields = ('buyer_name', 'buyer_phone_number', 'order_datetime', 'delivery_address', 'order_amount', 'payment_method', 'products', 'promo')
+
+    def has_add_permission(self, request):
+        return False  # отключаем возможность добавления заказов
+
+    def has_delete_permission(self, request, obj=None):
+        return False  # отключаем возможность удаления заказов
+
+
+@admin.register(RecommendedProducts)
+class RecommendedProductsAdmin(admin.ModelAdmin):
+    list_display = ('product_1', 'product_2', 'product_3')
+
+
+@admin.register(Promo)
+class PromoAdmin(admin.ModelAdmin):
+    list_display = ('title', 'discount_percentage', 'promo_product', 'max_usage_count', 'current_usage_count')
