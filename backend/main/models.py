@@ -38,13 +38,9 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=9, decimal_places=2, verbose_name='Текущая цена',
                                 default=0.00)
     temporary_price = models.DecimalField(max_digits=9, decimal_places=2, verbose_name='Временная цена',
-                                    **NULLABLE)
+                                          **NULLABLE)
     is_hidden = models.BooleanField(default=False, verbose_name='Скрыт из показа', **NULLABLE)
-    # promotional_price = models.DecimalField(max_digits=9, decimal_places=2,
-    #                                         verbose_name='Цена с введенным  промокодом', default=0.00)
-    # discount = models.IntegerField(verbose_name='Скидка в процентах', **NULLABLE)
-
-    category = models.ForeignKey(Category, on_delete=models.PROTECT, verbose_name='Категория',
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, verbose_name='Категория',
                                  **NULLABLE)
 
     def __str__(self):
@@ -72,22 +68,44 @@ class PromoUsage(models.Model):
     usage_count = models.IntegerField(verbose_name='Количество использований', default=0)
 
 
+class Cart(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    session_id = models.CharField(max_length=255, null=True, blank=True)
+    products = models.ManyToManyField(Product, through='CartItem')
+    promo = models.ForeignKey(Promo, on_delete=models.CASCADE, verbose_name='Промокод', **NULLABLE)
+    total_amount = models.DecimalField(max_digits=9, decimal_places=2, verbose_name='Стоимость покупок в корзине',
+                                       **NULLABLE)
+
+
+class CartItem(models.Model):
+    cart = models.ForeignKey(Cart, on_delete=models.SET_NULL, **NULLABLE)
+    product = models.ForeignKey(Product, on_delete=models.SET_NULL, **NULLABLE)
+    quantity = models.PositiveIntegerField(default=0)
+
+
 class Order(models.Model):
-    buyer = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name='Покупатель', **NULLABLE)
+    buyer = models.ForeignKey(User, on_delete=models.SET_NULL, verbose_name='Покупатель', **NULLABLE)
     buyer_name = models.CharField(max_length=20, verbose_name='Имя покупателя', **NULLABLE)
     buyer_phone_number = PhoneNumberField(verbose_name='Номер телефона', unique=True, **NULLABLE)
     order_datetime = models.DateTimeField(auto_now_add=True, verbose_name='Дата и время заказа', **NULLABLE)
     delivery_address = models.CharField(max_length=255, verbose_name='Адрес доставки', **NULLABLE)
     order_amount = models.DecimalField(max_digits=9, decimal_places=2, verbose_name='Сумма заказа',
                                        default=0.00)
-    products = models.ManyToManyField(Product, verbose_name='Товары в заказе')
+    products = models.ManyToManyField(CartItem, verbose_name='Товары в заказе')
 
     class PaymentChoices(models.TextChoices):
-        cash = 'Оплата курьеру'
-        online = 'Оплата онлайн'
+        cash = 'to_courier'
+        online = 'online'
 
     payment_method = models.CharField(max_length=14, choices=PaymentChoices.choices,
                                       default=PaymentChoices.online, verbose_name='Способ оплаты')
+
+    class DeliveryChoices(models.TextChoices):
+        courier = 'Курьером'
+        pickup = 'Самовывоз'
+
+    delivery_method = models.CharField(max_length=9, choices=DeliveryChoices.choices,
+                                       default=DeliveryChoices.courier, verbose_name='Способ доставки')
     promo = models.ForeignKey(Promo, on_delete=models.SET_NULL, verbose_name='Промокод', **NULLABLE)  # пользователь вводит промокод, после нажатия применить, промокод сравнивается с промокодами в модели промокодов и применятся или нет
 
     def __str__(self):
@@ -98,19 +116,6 @@ class Order(models.Model):
         verbose_name_plural = 'Заказы'
 
 
-class Cart(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
-    session_id = models.CharField(max_length=255, null=True, blank=True)
-    products = models.ManyToManyField(Product, through='CartItem')
-    promo = models.ForeignKey(Promo, on_delete=models.CASCADE, verbose_name='Промокод', **NULLABLE)
-
-
-class CartItem(models.Model):
-    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField(default=1)
-
-
 class RecommendedProducts(models.Model):
     product_1 = models.ForeignKey(Product, on_delete=models.SET_NULL, related_name='recommended_product_1',
                                   **NULLABLE, verbose_name='Рекомендуемый товар 1')
@@ -118,3 +123,13 @@ class RecommendedProducts(models.Model):
                                   **NULLABLE, verbose_name='Рекомендуемый товар 2')
     product_3 = models.ForeignKey(Product, on_delete=models.SET_NULL, related_name='recommended_product_3',
                                   **NULLABLE, verbose_name='Рекомендуемый товар 3')
+
+
+class Manager(models.Model):
+    name = models.CharField(max_length=30, verbose_name='Имя получателя рассылки о заказх', **NULLABLE)
+    tg_id = models.BigIntegerField(verbose_name='ID телеграма', **NULLABLE)
+    email = models.EmailField(verbose_name='Почта', **NULLABLE)
+
+    class Meta:
+        verbose_name = 'Менеджер'
+        verbose_name_plural = 'Менеджеры'

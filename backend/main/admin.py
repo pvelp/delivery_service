@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.db.models import Max
 from django.utils.html import format_html
 
-from main.models import Product, Category, Order, RecommendedProducts, Promo
+from main.models import Product, Category, Order, RecommendedProducts, Promo, Manager
 from users.models import User
 
 from rest_framework_simplejwt.token_blacklist.models import OutstandingToken, BlacklistedToken
@@ -76,3 +76,8 @@ class RecommendedProductsAdmin(admin.ModelAdmin):
 @admin.register(Promo)
 class PromoAdmin(admin.ModelAdmin):
     list_display = ('title', 'discount_percentage', 'promo_product', 'max_usage_count', 'current_usage_count')
+
+
+@admin.register(Manager)
+class ManagerAdmin(admin.ModelAdmin):
+    list_display = ('name', 'tg_id', 'email')

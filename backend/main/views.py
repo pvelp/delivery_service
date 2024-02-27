@@ -1,11 +1,14 @@
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status
 from rest_framework.generics import ListAPIView, RetrieveAPIView
+from config.settings import tg_token
 
 from main.serializers import ProductSerializer, CartItemSerializer
 from main.filters import ProductFilter
-from main.models import Product, RecommendedProducts, Cart, CartItem, Promo, PromoUsage
+from main.models import Product, RecommendedProducts, Cart, CartItem, Promo, PromoUsage, Order
+from main.tasks import send_telegram_message, send_email_message
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -131,6 +134,9 @@ class CartView(APIView):
             total_amount += item_data['total_price']
             cart_data.append(item_data)
 
+        cart.total_amount = total_amount
+        cart.save()
+
         # Применение скидки к общей сумме корзины, если есть промокод
         if cart.promo:
             promo = cart.promo
@@ -173,3 +179,54 @@ class ApplyPromoCode(APIView):
         cart.promo = promo
         cart.save()
         return Response({"success": "Promo code applied successfully"}, status=status.HTTP_200_OK)
+
+
+class PlaceOrder(APIView):
+    def post(self, request):
+        payment_method = request.data.get('payment_method')
+        delivery_method = request.data.get('delivery_method')
+        buyer_name = request.data.get('name')
+        buyer_phone = request.data.get('phone')
+        address = request.data.get('address')
+
+        if request.user.is_authenticated:
+            user = request.user
+        else:
+            user = None
+
+        try:
+            if user:
+                cart = Cart.objects.get(user=user)
+            else:
+                session_id = request.session.session_key
+                cart = Cart.objects.get(session_id=session_id)
+        except Cart.DoesNotExist:
+            return Response({"error": "Cart not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        order = Order.objects.create(
+            buyer=user,
+            buyer_name=buyer_name,
+            buyer_phone=buyer_phone,
+            delivery_address=address,
+            order_amount=cart.total_amount,
+            payment_method=payment_method,
+            delivery_method=delivery_method,
+            promo=cart.promo
+        )
+
+        for cart_item in cart.cartitem_set.all():
+            order.products.add(cart_item)
+
+        send_telegram_message(tg_token, order)
+        send_email_message(order)
+
+        #  if payment_method == 'online':
+        #      return redirect()
+
+        cart.total_amount = 0
+        if cart.promo:
+            cart.promo = None
+        cart.save()
+        cart.cartitem_set.all().delete()
+
+        return Response({'success': f'Order {order.id} placed successfully'})
