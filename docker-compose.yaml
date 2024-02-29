@@ -31,5 +31,20 @@ services:
       timeout: 5s
       retries: 5
 
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+
+  celery:
+    build: .
+    tty: true
+    command: celery -A backend.config worker -l INFO
+    environment:
+      - PYTHONPATH=./backend
+    depends_on:
+      - redis
+      - web
+
 volumes:
   pg_data:
