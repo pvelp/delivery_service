@@ -5,11 +5,11 @@ from rest_framework import status
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from config.settings import tg_token
 
-from main.serializers import ProductSerializer, CartItemSerializer
+from main.serializers import ProductSerializer, CartItemSerializer, ProductRetrieveSerializer
 from main.filters import ProductFilter
 from main.models import Product, RecommendedProducts, Cart, CartItem, Promo, PromoUsage, Order
 from main.tasks import send_telegram_message, send_email_message
-from rest_framework.pagination import PageNumberPagination
+from main.pagination import ProductPagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -19,36 +19,29 @@ class ProductListAPIView(ListAPIView):
     filter_backends = [DjangoFilterBackend]
     filterset_class = ProductFilter
     filterset_fields = ['category']
-    pagination_class = PageNumberPagination
-    pagination_class.page_size = 12
+    pagination_class = ProductPagination
 
     def get_queryset(self):
-        category_ids = self.request.query_params.getlist('categories', [])
+        category_ids_str = self.request.query_params.get('categories', '')
+        category_ids = category_ids_str.split(',')
+        category_ids = [int(category_id) for category_id in category_ids if category_id.isdigit()]
+
+        queryset = Product.objects.filter(is_hidden=False).order_by('id')
         if category_ids:
-            return Product.objects.filter(category_id__in=category_ids)
-        return Product.objects.all()
+            queryset = queryset.filter(category_id__in=category_ids)
+        return queryset
 
 
 class ProductRetrieveAPIView(RetrieveAPIView):
-    serializer_class = ProductSerializer
+    serializer_class = ProductRetrieveSerializer
     queryset = Product.objects.all()
 
-    def get_serializer_context(self):
-        context = super().get_serializer_context()
-        context['recommended_products'] = self.get_recommended_products()
-        return context
-
-    def get_recommended_products(self):
-        product_id = self.kwargs.get('pk')
-        try:
-            recommended_products = RecommendedProducts.objects.get(pk=product_id)
-            return {
-                'product_1': recommended_products.product_1,
-                'product_2': recommended_products.product_2,
-                'product_3': recommended_products.product_3
-            }
-        except RecommendedProducts.DoesNotExist:
-            return {}
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if instance.is_hidden:
+            return Response({'detail': 'Product is not available'}, status=status.HTTP_404_NOT_FOUND)
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
 
 
 class AddToCart(APIView):
