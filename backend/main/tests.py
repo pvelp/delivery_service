@@ -5,7 +5,7 @@ from rest_framework import status
 from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
 
-from main.models import Category, Product, RecommendedProducts, Promo, CartItem, Cart
+from main.models import Category, Product, RecommendedProducts, Promo, CartItem, Cart, PromoUsage
 from users.models import User
 
 
@@ -601,3 +601,183 @@ class CartTestCase(APITestCase):
                 'total_amount': self.cart_item_2_1.quantity * self.cart_item_2_1.product.price
             }
         )
+
+
+class PromoTestCase(APITestCase):
+
+    def setUp(self):
+        self.promo_url = 'http://localhost:8000/apply-promo-code/'
+        self.category1 = Category.objects.create(
+            title='Шашлыки'
+        )
+        self.product1 = Product.objects.create(
+            title='шашлык1',
+            price=500,
+            category=self.category1
+        )
+        self.product3 = Product.objects.create(
+            title='курица',
+            price=200,
+            category=self.category1
+        )
+        self.promo_1 = Promo.objects.create(
+            title='2020',
+            discount_percentage=10,
+            max_usage_count=2,
+        )
+        self.promo_2 = Promo.objects.create(
+            title='1010',
+            promo_product=self.product3,
+            max_usage_count=1,
+        )
+        self.user_1 = User.objects.create(
+            email='user@example.com',
+        )
+        self.user_2 = User.objects.create(
+            email='user2@example.com',
+        )
+        self.user_3 = User.objects.create(
+            email='user3@example.com',
+        )
+        self.cart_1 = Cart.objects.create(
+            user=self.user_1,
+        )
+        self.cart_2 = Cart.objects.create(
+            user=self.user_2,
+            promo=self.promo_2
+        )
+        self.cart_3 = Cart.objects.create(
+            user=self.user_3,
+        )
+        self.cart_item_1_1 = CartItem.objects.create(
+            cart=self.cart_1,
+            product=self.product1,
+            quantity=1
+        )
+        self.cart_item_2_1 = CartItem.objects.create(
+            cart=self.cart_2,
+            product=self.product1,
+            quantity=2
+        )
+        self.promo_1_response = {
+            'promo_code': self.promo_1.title
+        }
+        self.promo_2_response = {
+            'promo_code': self.promo_2.title
+        }
+        self.fake_promo_response = {
+            'promo_code': 'fake'
+        }
+        self.promo_usage = PromoUsage.objects.create(
+            user=self.user_3,
+            promo=self.promo_2,
+            usage_count=1
+        )
+
+    def test_non_authenticated_user(self):
+
+        response = self.client.post(
+            self.promo_url,
+            self.promo_1_response
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_401_UNAUTHORIZED
+        )
+
+    def test_apply_discount_promo(self):
+
+        self.client.force_authenticate(user=self.user_1)
+
+        response = self.client.post(
+            self.promo_url,
+            self.promo_1_response
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK
+        )
+
+        self.assertEqual(
+            response.json(),
+            {'message': 'Promo code applied successfully'}
+        )
+
+    def test_apply_product_promo(self):
+
+        self.client.force_authenticate(user=self.user_1)
+
+        response = self.client.post(
+            self.promo_url,
+            self.promo_2_response
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK
+        )
+
+        self.assertEqual(
+            response.json(),
+            {'message': 'Promo code applied successfully'}
+        )
+
+    def test_apply_another_promo(self):
+
+        self.client.force_authenticate(user=self.user_2)
+
+        response = self.client.post(
+            self.promo_url,
+            self.promo_1_response
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK
+        )
+
+        self.assertEqual(
+            response.json(),
+            {'message': 'Promo code applied successfully'}
+        )
+
+    def test_max_of_usage(self):
+
+        self.client.force_authenticate(user=self.user_3)
+
+        response = self.client.post(
+            self.promo_url,
+            self.promo_2_response
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_403_FORBIDDEN
+        )
+
+        self.assertEqual(
+            response.json(),
+            {'error': 'Maximum usage limit reached for this promo code'}
+        )
+
+    def test_promo_not_found(self):
+
+        self.client.force_authenticate(user=self.user_3)
+
+        response = self.client.post(
+            self.promo_url,
+            self.fake_promo_response
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_404_NOT_FOUND
+        )
+
+        self.assertEqual(
+            response.json(),
+            {'error': 'Promo code not found'}
+        )
+
