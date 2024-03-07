@@ -35,9 +35,3 @@ class ProductRetrieveSerializer(serializers.ModelSerializer):
             serializer = RecommendedProductsSerializer(recommended_products)
             return serializer.data
         return {}
-
-
-class CartItemSerializer(serializers.Serializer):
-    class Meta:
-        model = CartItem
-        fields = ['product', 'quantity']

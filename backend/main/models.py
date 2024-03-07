@@ -69,8 +69,8 @@ class PromoUsage(models.Model):
 
 
 class Cart(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
-    session_id = models.CharField(max_length=255, null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, **NULLABLE)
+    session_id = models.CharField(max_length=255, **NULLABLE)
     products = models.ManyToManyField(Product, through='CartItem')
     promo = models.ForeignKey(Promo, on_delete=models.CASCADE, verbose_name='Промокод', **NULLABLE)
     total_amount = models.DecimalField(max_digits=9, decimal_places=2, verbose_name='Стоимость покупок в корзине',

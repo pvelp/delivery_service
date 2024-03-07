@@ -1,15 +1,17 @@
-from django.contrib.auth.decorators import login_required
+from decimal import Decimal
+
 from django.shortcuts import redirect
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from config.settings import tg_token
 
-from main.serializers import ProductSerializer, CartItemSerializer, ProductRetrieveSerializer
+from main.serializers import ProductSerializer, ProductRetrieveSerializer
 from main.filters import ProductFilter
 from main.models import Product, RecommendedProducts, Cart, CartItem, Promo, PromoUsage, Order
 from main.tasks import send_telegram_message, send_email_message
 from main.pagination import ProductPagination
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -70,7 +72,7 @@ class AddToCart(APIView):
             cart_item.quantity += quantity
             cart_item.save()
             response_data = [
-                {"message": "Product added to cart successfully"},
+                {"message": 'Product added to cart successfully'},
                 {
                     'cart_id': cart.id,
                     'product_id': cart_item.product.id,
@@ -79,7 +81,7 @@ class AddToCart(APIView):
             ]
             return Response(response_data, status=status.HTTP_201_CREATED)
         except Product.DoesNotExist:
-            return Response({"error": "Product not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'error': 'Product not found'}, status=status.HTTP_404_NOT_FOUND)
 
 
 class RemoveFromCart(APIView):
@@ -98,28 +100,36 @@ class RemoveFromCart(APIView):
                 session_id = request.session.session_key
                 cart = Cart.objects.get(session_id=session_id)
         except Cart.DoesNotExist:
-            return Response({"error": "Cart not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'error': 'Cart not found'}, status=status.HTTP_404_NOT_FOUND)
 
         try:
             product = Product.objects.get(pk=product_id)
-            cart_item = CartItem.objects.get(cart=cart, product=product)
-            if cart_item.quantity >= 1:
-                cart_item.quantity -= 1
-                cart_item.save()
-                return Response([
-                    {"message": "Product removed from cart successfully"},
-                    {'details':
-                        {
-                            'cart_id': cart.id,
-                            'product_id': cart_item.product.id,
-                            'quantity': cart_item.quantity
-                        }}
-                    ],
-                    status=status.HTTP_200_OK)
-            else:
-                return Response({"error": "Product is not in the cart"}, status=status.HTTP_404_NOT_FOUND)
+
+            try:
+                cart_item = CartItem.objects.get(cart=cart, product=product)
+                if cart_item.quantity > 0:
+                    cart_item.quantity -= 1
+                    if cart_item.quantity == 0:
+                        cart_item.delete()
+                        return Response(
+                            {'message': 'Product deleted from cart'},
+                            status=status.HTTP_200_OK)
+                    else:
+                        cart_item.save()
+                        return Response([
+                            {'message': 'Product removed from cart successfully'},
+                            {'details':
+                                {
+                                    'cart_id': cart.id,
+                                    'product_id': cart_item.product.id,
+                                    'quantity': cart_item.quantity
+                                }}
+                            ],
+                            status=status.HTTP_200_OK)
+            except CartItem.DoesNotExist:
+                return Response({'error': 'Product is not in the cart'}, status=status.HTTP_404_NOT_FOUND)
         except Product.DoesNotExist:
-            return Response({"error": "Product not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'error': 'Product not found'}, status=status.HTTP_404_NOT_FOUND)
 
 
 class CartView(APIView):
@@ -136,45 +146,55 @@ class CartView(APIView):
                 session_id = request.session.session_key
                 cart = Cart.objects.get(session_id=session_id)
         except Cart.DoesNotExist:
-            return Response({"error": "Cart not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'error': 'Cart not found'}, status=status.HTTP_404_NOT_FOUND)
 
-        cart_items = cart.cartitem_set.all()
+        cart_items = CartItem.objects.filter(cart=cart.id)
         cart_data = []
         total_amount = 0
 
         for cart_item in cart_items:
-            item_data = CartItemSerializer(cart_item).data
-            item_data['total_price'] = cart_item.quantity * cart_item.product.price
-            total_amount += item_data['total_price']
+            item_data = {
+                'product_id': cart_item.product.id,
+                'title': cart_item.product.title,
+                'quantity': cart_item.quantity,
+                'price': cart_item.product.price,
+                'total_price': cart_item.quantity * cart_item.product.price
+            }
             cart_data.append(item_data)
-
-        cart.total_amount = total_amount
-        cart.save()
+            total_amount += item_data['total_price']
 
         # Применение скидки к общей сумме корзины, если есть промокод
         if cart.promo:
             promo = cart.promo
             if promo.discount_percentage:
-                discount_amount = total_amount * (promo.discount_percentage / 100)
-                total_amount -= discount_amount
+                discount_amount = total_amount * (Decimal(promo.discount_percentage) / 100)
+                total_amount_with_discount = total_amount - discount_amount
+                response_data = {
+                    'cart_items': cart_data,
+                    'total_amount': total_amount,
+                    'total_amount_with_discount': total_amount_with_discount
+                }
+                return Response(response_data, status=status.HTTP_200_OK)
             elif promo.promo_product:
-                # Добавление товара из промоакции со стоимостью 0
-                cart_item, created = CartItem.objects.get_or_create(cart=cart, product=promo.promo_product)
-                if created:
-                    cart_item.quantity = 1
-                    cart_item.save()
-                total_amount += 0  # Не учитываем стоимость товара из промоакции
+                promo_product_data = {
+                    'product_id': promo.promo_product.id,
+                    'title': promo.promo_product.title,
+                    'quantity': 1,
+                    'price': 0,
+                    'total_price': 0
+                }
+                cart_data.append(promo_product_data)
 
-        # Добавление общей суммы корзины с учетом скидки в ответ
         response_data = {
-            "cart_items": cart_data,
-            "total_amount": total_amount
+            'cart_items': cart_data,
+            'total_amount': total_amount
         }
         return Response(response_data, status=status.HTTP_200_OK)
 
 
 class ApplyPromoCode(APIView):
-    @login_required
+    permission_classes = [IsAuthenticated]
+
     def post(self, request):
         promo_code = request.data.get('promo_code')
 
@@ -182,18 +202,22 @@ class ApplyPromoCode(APIView):
         try:
             promo = Promo.objects.get(title=promo_code)
         except Promo.DoesNotExist:
-            return Response({"error": "Promo code not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'error': 'Promo code not found'}, status=status.HTTP_404_NOT_FOUND)
 
         # Проверка максимального количества использований промокода для текущего пользователя
         user = request.user
-        cart, created = Cart.objects.get_or_create(user=user)
+        try:
+            cart = Cart.objects.get(user=user)
+        except Cart.DoesNotExist:
+            return Response({'error': 'Cart not found'}, status=status.HTTP_404_NOT_FOUND)
+
         if PromoUsage.objects.filter(user=user, promo=promo).count() >= promo.max_usage_count:
-            return Response({"error": "Maximum usage limit reached for this promo code"},
+            return Response({'error': 'Maximum usage limit reached for this promo code'},
                             status=status.HTTP_403_FORBIDDEN)
 
         cart.promo = promo
         cart.save()
-        return Response({"success": "Promo code applied successfully"}, status=status.HTTP_200_OK)
+        return Response({'message': 'Promo code applied successfully'}, status=status.HTTP_200_OK)
 
 
 class PlaceOrder(APIView):
