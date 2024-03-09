@@ -19,20 +19,24 @@ def send_telegram_message(bot_token, order):
         logger.warning('No managers found in the database with tg_id specified')
         return
 
+    product_info = ""
+    for item in order.items.all():
+        product_info += f"{item.product.title}: {item.quantity} шт., Цена за 1 ед.: {item.product.price} руб.\n"
+
     for manager in managers:
         chat_id = manager.tg_id
         message_text = f'''Заказ {order.id}
         Покупатель (если зарегистрирован): {order.buyer}
-        Имя: {order.buyer_name}
+        Имя покупателя: {order.buyer_name}
         Номер телефона: {order.buyer_phone_number}
         Дата и время заказа: {order.order_datetime}
         Адрес доставки: {order.delivery_address}
-        Состав заказа (Товар/количество): {order.products}
-        Метод оплаты: {order.payment_method}
-        Доставка: {order.delivery_method}
+        Состав заказа (Товар/количество): \n{product_info}
+        Способ оплаты: {order.payment_method}
+        Способ доставки: {order.delivery_method}
         Промокод: {order.promo}
         
-        Общая сумма заказа: {order.order_amount}'''
+        Сумма заказа: {order.order_amount}'''
 
         url = f'{base_url}/sendMessage?chat_id={chat_id}&text={message_text}'
 
@@ -54,13 +58,17 @@ def send_email_message(order):
 
     users_email = [manager.email for manager in managers]
 
+    product_info = ""
+    for item in order.items.all():
+        product_info += f"{item.product.title}: {item.quantity} шт., Цена за 1 ед.: {item.product.price} руб.\n"
+
     message = f'''Заказ {order.id}
         Покупатель (если зарегистрирован): {order.buyer}
         Имя: {order.buyer_name}
         Номер телефона: {order.buyer_phone_number}
         Дата и время заказа: {order.order_datetime}
         Адрес доставки: {order.delivery_address}
-        Состав заказа (Товар/количество): {order.products}
+        Состав заказа (Товар/количество): \n{product_info}
         Метод оплаты: {order.payment_method}
         Доставка: {order.delivery_method}
         Промокод: {order.promo}

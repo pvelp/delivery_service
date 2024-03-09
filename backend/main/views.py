@@ -1,14 +1,16 @@
 from decimal import Decimal
 
+from django.db import IntegrityError, DataError
 from django.shortcuts import redirect
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status
-from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework.exceptions import ValidationError
+from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView
 from config.settings import tg_token
 
-from main.serializers import ProductSerializer, ProductRetrieveSerializer
+from main.serializers import ProductSerializer, ProductRetrieveSerializer, OrderSerializer
 from main.filters import ProductFilter
-from main.models import Product, RecommendedProducts, Cart, CartItem, Promo, PromoUsage, Order
+from main.models import Product, RecommendedProducts, Cart, CartItem, Promo, PromoUsage, Order, OrderItem
 from main.tasks import send_telegram_message, send_email_message
 from main.pagination import ProductPagination
 from rest_framework.permissions import IsAuthenticated
@@ -163,12 +165,17 @@ class CartView(APIView):
             cart_data.append(item_data)
             total_amount += item_data['total_price']
 
+        cart.total_amount = total_amount
+        cart.save()
+
         # Применение скидки к общей сумме корзины, если есть промокод
         if cart.promo:
             promo = cart.promo
             if promo.discount_percentage:
                 discount_amount = total_amount * (Decimal(promo.discount_percentage) / 100)
                 total_amount_with_discount = total_amount - discount_amount
+                cart.total_amount = total_amount_with_discount
+                cart.save()
                 response_data = {
                     'cart_items': cart_data,
                     'total_amount': total_amount,
@@ -198,7 +205,6 @@ class ApplyPromoCode(APIView):
     def post(self, request):
         promo_code = request.data.get('promo_code')
 
-        # Проверка наличия промокода в базе данных
         try:
             promo = Promo.objects.get(title=promo_code)
         except Promo.DoesNotExist:
@@ -220,14 +226,10 @@ class ApplyPromoCode(APIView):
         return Response({'message': 'Promo code applied successfully'}, status=status.HTTP_200_OK)
 
 
-class PlaceOrder(APIView):
-    def post(self, request):
-        payment_method = request.data.get('payment_method')
-        delivery_method = request.data.get('delivery_method')
-        buyer_name = request.data.get('name')
-        buyer_phone = request.data.get('phone')
-        address = request.data.get('address')
+class OrderCreateAPIView(CreateAPIView):
+    serializer_class = OrderSerializer
 
+    def create(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             user = request.user
         else:
@@ -240,21 +242,20 @@ class PlaceOrder(APIView):
                 session_id = request.session.session_key
                 cart = Cart.objects.get(session_id=session_id)
         except Cart.DoesNotExist:
-            return Response({"error": "Cart not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'error': 'Cart not found'}, status=status.HTTP_404_NOT_FOUND)
 
-        order = Order.objects.create(
-            buyer=user,
-            buyer_name=buyer_name,
-            buyer_phone=buyer_phone,
-            delivery_address=address,
-            order_amount=cart.total_amount,
-            payment_method=payment_method,
-            delivery_method=delivery_method,
-            promo=cart.promo
-        )
+        print(cart.cartitem_set.all())
+
+        serializer = self.get_serializer(data=request.data,
+                                         context={'user': user, 'session_key': request.session.session_key})
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+
+        order = serializer.instance
 
         for cart_item in cart.cartitem_set.all():
-            order.products.add(cart_item)
+            OrderItem.objects.create(order=order, product=cart_item.product,
+                                     quantity=cart_item.quantity, price=cart_item.product.price)
 
         send_telegram_message(tg_token, order)
         send_email_message(order)
@@ -262,10 +263,20 @@ class PlaceOrder(APIView):
         #  if payment_method == 'online':
         #      return redirect()
 
-        cart.total_amount = 0
+        #  TODO: добавить последний адрес заказа, увеличить сумму заказов пользователя в поля User (тоже самое после ответа платежки)
+        if user:
+            user.address = serializer.validated_data.get('delivery_address')
+            user.total_amount += order.order_amount
+
         if cart.promo:
-            cart.promo = None
-        cart.save()
-        cart.cartitem_set.all().delete()
+            #  TODO: добавить использование промо в PromoUsage (тоже самое после ответа платежки)
+            promo_usage, created = PromoUsage.objects.get_or_create(user=user, promo=cart.promo)
+            promo_usage.usage_count += 1
+            promo_usage.save()
+
+            cart.promo.current_usage_count += 1
+            cart.promo.save()
+
+        cart.delete()
 
         return Response({'success': f'Order {order.id} placed successfully'})

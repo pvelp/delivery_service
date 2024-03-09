@@ -3,7 +3,7 @@ from django.urls import path
 from main.apps import MainConfig
 from main.views import (
     ProductListAPIView, ProductRetrieveAPIView, AddToCart, RemoveFromCart,
-    CartView, ApplyPromoCode, PlaceOrder)
+    CartView, ApplyPromoCode, OrderCreateAPIView)
 
 app_name = MainConfig.name
 
@@ -14,5 +14,5 @@ urlpatterns = [
     path('remove-from-cart/', RemoveFromCart.as_view(), name='remove_from_cart'),
     path('cart/', CartView.as_view(), name='cart'),
     path('apply-promo-code/', ApplyPromoCode.as_view(), name='apply_promo_code'),
-    path('place-order/', PlaceOrder.as_view(), name='place_order')
+    path('place-order/', OrderCreateAPIView.as_view(), name='place_order')
 ]

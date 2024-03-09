@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.db.models import Max
 from django.utils.html import format_html
 
-from main.models import Product, Category, Order, RecommendedProducts, Promo, Manager
+from main.models import Product, Category, Order, RecommendedProducts, Promo, Manager, OrderItem
 from users.models import User
 
 from rest_framework_simplejwt.token_blacklist.models import OutstandingToken, BlacklistedToken
@@ -24,7 +24,7 @@ class CategoryAdmin(admin.ModelAdmin):
 class OrderInline(admin.TabularInline):
     model = Order
     extra = 0
-    readonly_fields = ['order_datetime', 'delivery_address', 'order_amount', 'payment_method', 'products', 'promo']
+    readonly_fields = ['order_datetime', 'delivery_address', 'order_amount', 'payment_method', 'promo']
 
     def has_add_permission(self, request, obj=None):
         return False
@@ -45,21 +45,37 @@ class UserAdmin(admin.ModelAdmin):
     def last_order_info(self, obj):
         last_order = obj.order_set.last()
         if last_order:
-            products_info = "\n".join([product.title for product in last_order.products.all()])
+            items_info = "\n".join([f'{item.product.title} (количество: {item.quantity})' for item in last_order.items.all()])
             return (f'Дата и время: {last_order.order_datetime},\n'
                     f'Адрес: {last_order.delivery_address},\n'
                     f'Сумма заказа: {last_order.order_amount} руб.\n'
                     f'Способ оплаты: {last_order.payment_method}\n'
-                    f'Товары в заказе: {products_info}')
+                    f'Товары в заказе: {items_info}')
         return 'Пользователь еще не сделал заказов'
 
     last_order_info.short_description = 'Последний заказ'
 
 
+class OrderItemInline(admin.TabularInline):
+    model = OrderItem
+    extra = 0
+    readonly_fields = ['product', 'quantity']
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
 @admin.register(Order)
 class OrderReadOnlyAdmin(admin.ModelAdmin):
     list_display = ('buyer_name', 'buyer_phone_number', 'order_datetime', 'delivery_address', 'order_amount', 'payment_method', 'promo')
-    readonly_fields = ('buyer_name', 'buyer_phone_number', 'order_datetime', 'delivery_address', 'order_amount', 'payment_method', 'products', 'promo')
+    readonly_fields = ('buyer_name', 'buyer_phone_number', 'order_datetime', 'delivery_address', 'order_amount', 'payment_method', 'promo')
+    inlines = [OrderItemInline]
 
     def has_add_permission(self, request):
         return False  # отключаем возможность добавления заказов

@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
-from main.models import Product, CartItem, RecommendedProducts
+from main.models import Product, CartItem, RecommendedProducts, Order, Cart
+from main.validators import PhoneNumberValidator, BuyerNameValidator, AddressValidator
 
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -35,3 +36,35 @@ class ProductRetrieveSerializer(serializers.ModelSerializer):
             serializer = RecommendedProductsSerializer(recommended_products)
             return serializer.data
         return {}
+
+
+class OrderSerializer(serializers.ModelSerializer):
+    buyer_phone_number = serializers.CharField(validators=[PhoneNumberValidator('buyer_phone_number')])
+    delivery_address = serializers.CharField(validators=[AddressValidator('delivery_address')])
+    buyer_name = serializers.CharField(validators=[BuyerNameValidator('buyer_name')])
+
+    class Meta:
+        model = Order
+        fields = '__all__'
+
+    def create(self, validated_data):
+        user = self.context.get('user')
+
+        if user:
+            cart = Cart.objects.get(user=user)
+        else:
+            session_id = self.context.get('session_key')
+            cart = Cart.objects.get(session_id=session_id)
+
+        order = Order.objects.create(
+            buyer=user,
+            buyer_name=validated_data['buyer_name'],
+            buyer_phone_number=validated_data['buyer_phone_number'],
+            delivery_address=validated_data['delivery_address'],
+            order_amount=cart.total_amount,
+            payment_method=validated_data['payment_method'],
+            delivery_method=validated_data['delivery_method'],
+            promo=cart.promo
+        )
+
+        return order
