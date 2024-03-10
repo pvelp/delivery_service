@@ -1,3 +1,5 @@
+import uuid
+
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
@@ -15,7 +17,8 @@ class MeasureChoices(models.TextChoices):
 
 
 class Category(models.Model):
-    title = models.CharField(max_length=30, verbose_name='Название категории', **NULLABLE)
+    category_id = models.UUIDField(verbose_name='ID категории из iikoWeb', default=uuid.uuid4, editable=False)
+    title = models.CharField(max_length=100, verbose_name='Название категории', **NULLABLE)
     image = models.ImageField(upload_to='category_images', verbose_name='Картинка', **NULLABLE)
     description = models.TextField(verbose_name='Описание', **NULLABLE)
     is_hidden = models.BooleanField(default=False, verbose_name='Скрыт из показа', **NULLABLE)
@@ -29,10 +32,11 @@ class Category(models.Model):
 
 
 class Product(models.Model):
+    product_id = models.UUIDField(verbose_name='ID категории из iikoWeb', default=uuid.uuid4, editable=False)
     title = models.CharField(max_length=30, verbose_name='Название блюда', **NULLABLE)
     image = models.ImageField(upload_to='product_images', verbose_name='Картинка', **NULLABLE)
     description = models.TextField(verbose_name='Состав', **NULLABLE)
-    weight = models.IntegerField(verbose_name='Вес', **NULLABLE)
+    weight = models.FloatField(verbose_name='Вес', **NULLABLE)
     measure = models.CharField(max_length=3, choices=MeasureChoices.choices,
                                default=MeasureChoices.gram, verbose_name='Единица измерения')
     price = models.DecimalField(max_digits=9, decimal_places=2, verbose_name='Текущая цена',

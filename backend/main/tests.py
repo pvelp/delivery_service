@@ -102,7 +102,8 @@ class ProductRetrieveTestCase(APITestCase):
         self.product1 = Product.objects.create(
             title='шашлык1',
             price=500,
-            category=self.category1
+            category=self.category1,
+            temporary_price=200
         )
         self.product2 = Product.objects.create(
             title='шашлык2',
@@ -158,6 +159,11 @@ class ProductRetrieveTestCase(APITestCase):
         self.assertEqual(
             response.json()['id'],
             self.product1.pk
+        )
+
+        self.assertEqual(
+            response.json()['price'],
+            self.product1.temporary_price
         )
 
         self.assertEqual(

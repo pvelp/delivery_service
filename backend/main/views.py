@@ -155,12 +155,14 @@ class CartView(APIView):
         total_amount = 0
 
         for cart_item in cart_items:
+            price = cart_item.product.temporary_price if cart_item.product.temporary_price else cart_item.product.price
+
             item_data = {
                 'product_id': cart_item.product.id,
                 'title': cart_item.product.title,
                 'quantity': cart_item.quantity,
-                'price': cart_item.product.price,
-                'total_price': cart_item.quantity * cart_item.product.price
+                'price': price,
+                'total_price': cart_item.quantity * price
             }
             cart_data.append(item_data)
             total_amount += item_data['total_price']
@@ -244,7 +246,11 @@ class OrderCreateAPIView(CreateAPIView):
         except Cart.DoesNotExist:
             return Response({'error': 'Cart not found'}, status=status.HTTP_404_NOT_FOUND)
 
-        print(cart.cartitem_set.all())
+        payment_method = request.data.get('payment_method')
+        if payment_method == 'online':
+            return Response(
+                {'error': 'Online payment method is temporarily unavailable. Please choose payment "to_courier".'},
+                status=status.HTTP_400_BAD_REQUEST)
 
         serializer = self.get_serializer(data=request.data,
                                          context={'user': user, 'session_key': request.session.session_key})
@@ -254,8 +260,9 @@ class OrderCreateAPIView(CreateAPIView):
         order = serializer.instance
 
         for cart_item in cart.cartitem_set.all():
+            price = cart_item.product.temporary_price if cart_item.product.temporary_price else cart_item.product.price
             OrderItem.objects.create(order=order, product=cart_item.product,
-                                     quantity=cart_item.quantity, price=cart_item.product.price)
+                                     quantity=cart_item.quantity, price=price)
 
         send_telegram_message(tg_token, order)
         send_email_message(order)
@@ -279,4 +286,4 @@ class OrderCreateAPIView(CreateAPIView):
 
         cart.delete()
 
-        return Response({'success': f'Order {order.id} placed successfully'})
+        return Response({'message': f'Order {order.id} placed successfully'})

@@ -5,11 +5,18 @@ from main.validators import PhoneNumberValidator, BuyerNameValidator, AddressVal
 
 
 class ProductSerializer(serializers.ModelSerializer):
+    price = serializers.SerializerMethodField()
 
     class Meta:
         model = Product
         fields = ['id', 'title', 'description', 'weight', 'measure',
-                  'category', 'image', 'price', 'temporary_price']
+                  'category', 'image', 'price']
+
+    def get_price(self, obj):
+        if obj.temporary_price:
+            return obj.temporary_price
+        else:
+            return obj.price
 
 
 class RecommendedProductsSerializer(serializers.ModelSerializer):
@@ -24,11 +31,12 @@ class RecommendedProductsSerializer(serializers.ModelSerializer):
 
 class ProductRetrieveSerializer(serializers.ModelSerializer):
     recommended_products = serializers.SerializerMethodField()
+    price = serializers.SerializerMethodField()
 
     class Meta:
         model = Product
         fields = ['id', 'title', 'description', 'weight', 'measure',
-                  'category', 'image', 'price', 'temporary_price', 'recommended_products']
+                  'category', 'image', 'price', 'recommended_products']
 
     def get_recommended_products(self, obj):
         recommended_products = RecommendedProducts.objects.first()
@@ -36,6 +44,12 @@ class ProductRetrieveSerializer(serializers.ModelSerializer):
             serializer = RecommendedProductsSerializer(recommended_products)
             return serializer.data
         return {}
+
+    def get_price(self, obj):
+        if obj.temporary_price:
+            return obj.temporary_price
+        else:
+            return obj.price
 
 
 class OrderSerializer(serializers.ModelSerializer):

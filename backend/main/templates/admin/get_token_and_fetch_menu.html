@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get Token and Fetch Menu</title>
+</head>
+<body>
+    <h1>Get Token and Fetch Menu</h1>
+    <form action="{% url 'admin:get_token_and_fetch_menu' %}" method="post">
+        {% csrf_token %}
+        <input type="submit" value="Get Token and Fetch Menu">
+    </form>
+</body>
+</html>
