@@ -1,5 +1,3 @@
-import uuid
-
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
@@ -17,9 +15,9 @@ class MeasureChoices(models.TextChoices):
 
 
 class Category(models.Model):
-    category_id = models.UUIDField(verbose_name='ID категории из iikoWeb', default=uuid.uuid4, editable=False)
-    title = models.CharField(max_length=100, verbose_name='Название категории', **NULLABLE)
-    image = models.ImageField(upload_to='category_images', verbose_name='Картинка', **NULLABLE)
+    category_id = models.CharField(verbose_name='ID категории из iikoWeb', editable=False, **NULLABLE)
+    title = models.CharField(max_length=150, verbose_name='Название категории', **NULLABLE)
+    image = models.ImageField(max_length=250, upload_to='category_images', verbose_name='Картинка', **NULLABLE)
     description = models.TextField(verbose_name='Описание', **NULLABLE)
     is_hidden = models.BooleanField(default=False, verbose_name='Скрыт из показа', **NULLABLE)
 
@@ -32,9 +30,9 @@ class Category(models.Model):
 
 
 class Product(models.Model):
-    product_id = models.UUIDField(verbose_name='ID категории из iikoWeb', default=uuid.uuid4, editable=False)
-    title = models.CharField(max_length=30, verbose_name='Название блюда', **NULLABLE)
-    image = models.ImageField(upload_to='product_images', verbose_name='Картинка', **NULLABLE)
+    product_id = models.CharField(verbose_name='ID категории из iikoWeb', editable=False, **NULLABLE)
+    title = models.CharField(max_length=150, verbose_name='Название блюда', **NULLABLE)
+    image = models.ImageField(max_length=250, upload_to='product_images', verbose_name='Картинка', **NULLABLE)
     description = models.TextField(verbose_name='Состав', **NULLABLE)
     weight = models.FloatField(verbose_name='Вес', **NULLABLE)
     measure = models.CharField(max_length=3, choices=MeasureChoices.choices,
@@ -46,9 +44,6 @@ class Product(models.Model):
     is_hidden = models.BooleanField(default=False, verbose_name='Скрыт из показа', **NULLABLE)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, verbose_name='Категория',
                                  **NULLABLE)
-
-    def __str__(self):
-        return self.title
 
     class Meta:
         verbose_name = 'Товар'

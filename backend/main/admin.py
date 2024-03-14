@@ -1,9 +1,12 @@
+import json
+import tempfile
+
 import requests
 from django.contrib import admin
-from django.http import HttpResponseRedirect, HttpResponse
-from django.shortcuts import render, redirect
-from django.urls import path, reverse
-from django.utils.html import format_html
+from django.core import files
+from django.http import HttpResponse
+from django.shortcuts import render
+from django.urls import path
 
 from main.models import Product, Category, Order, RecommendedProducts, Promo, Manager, OrderItem
 from users.models import User
@@ -118,10 +121,16 @@ class IikoAPIKeyAdmin(admin.ModelAdmin):
 
         # Если токен успешно получен, делаем запрос на получение меню
         if token_response.status_code == 200:
-            headers = {'Authorization': token_data['token']}
-            menu_response = requests.get('https://api-ru.iiko.services/api/2/menu',
-                                         headers=headers)
-            menu_data = menu_response.json()
+            headers = {'Authorization': f'Bearer {token_data["token"]}'}
+            menu_response = requests.post('https://api-ru.iiko.services/api/2/menu',
+                                          headers=headers)
+
+            try:
+                menu_data = menu_response.json()
+            except json.decoder.JSONDecodeError:
+                # Если JSON не удалось разобрать, можно вывести информацию о полученном тексте
+                print(menu_response.text)
+                return HttpResponse('Ошибка при получении данных: JSON не удалось разобрать', status=500)
 
             # Сохраняем полученное меню и категории в базе данных
             if menu_response.status_code == 200:
@@ -142,14 +151,14 @@ class IikoAPIKeyAdmin(admin.ModelAdmin):
         token_data = token_response.json()
 
         if token_response.status_code == 200:
-            headers = {'Authorization': token_data['token']}
-            organizations_response = requests.get('https://api-ru.iiko.services/api/1/organizations',
-                                                  headers=headers)
+            headers = {'Authorization': f'Bearer {token_data["token"]}'}
+            organizations_response = requests.post('https://api-ru.iiko.services/api/1/organizations',
+                                                   headers=headers, json={})
             organizations_data = organizations_response.json()
 
             if organizations_response.status_code == 200:
                 for org in organizations_data['organizations']:
-                    Organization.objects.get_or_create(id=org['id'], name=org['name'])
+                    Organization.objects.get_or_create(organization_id=org['id'], name=org['name'])
 
                 return HttpResponse('Организации успешно получены и сохранены в базе данных.')
             else:
@@ -160,7 +169,8 @@ class IikoAPIKeyAdmin(admin.ModelAdmin):
     def save_menu(self, request):
         if request.method == 'POST':
             menu_id = request.POST.get('menu_id')
-            organization_ids = request.POST.getlist('organization_ids')
+            organization_id = request.POST.get('organization_id')
+            organization_ids = [organization_id]
 
             api_key = IikoAPIKey.objects.last()
 
@@ -169,7 +179,7 @@ class IikoAPIKeyAdmin(admin.ModelAdmin):
             token_data = token_response.json()
 
             if token_response.status_code == 200:
-                headers = {'Authorization': token_data['token']}
+                headers = {'Authorization': f'Bearer {token_data["token"]}'}
                 menu_data = {
                     "externalMenuId": menu_id,
                     "organizationIds": organization_ids
@@ -191,8 +201,24 @@ class IikoAPIKeyAdmin(admin.ModelAdmin):
                         try:
                             category, created = Category.objects.update_or_create(category_id=category_id,
                                                                                   defaults={'title': category_name,
-                                                                                            'description': category_description,
-                                                                                            'image': category_image_url})
+                                                                                            'description': category_description})
+                            response = None
+                            if category_image_url:
+                                response = requests.get(category_image_url, stream=True)
+
+                            if response and response.status_code == requests.codes.ok:
+                                file_name = category_image_url.split('/')[-1]
+                                lf = tempfile.NamedTemporaryFile()
+                                for block in response.iter_content(1024 * 8):
+                                    # If no more file then stop
+                                    if not block:
+                                        break
+                                    # Write image block to temporary file
+                                    lf.write(block)
+                                category.image.save(file_name, files.File(lf))
+                            else:
+                                # Handle error or skip file
+                                continue
                         except Exception as e:
                             return HttpResponse(f'Ошибка при обновлении/создании категории: {str(e)}', status=500)
 
@@ -202,14 +228,13 @@ class IikoAPIKeyAdmin(admin.ModelAdmin):
                                 return HttpResponse('Не найдено ни одного продукта', status=404)
                             product_title = item_data.get('name', '')
                             product_description = item_data.get('description', '')
-                            product_image = item_data.get('buttonImageUrl', '')
-                            product_weight = item_data.get('portionWeightGrams', 0)
-                            product_price = item_data.get('prices', [{'price': 0}])[0].get('price', 0)
+                            product_image = item_data['itemSizes'][0].get('buttonImageUrl', '')
+                            product_weight = item_data['itemSizes'][0].get('portionWeightGrams', 0)
+                            product_price = item_data['itemSizes'][0]['prices'][0].get('price', 0)
 
                             product_defaults = {
                                 'title': product_title,
                                 'description': product_description,
-                                'image': product_image,
                                 'weight': product_weight,
                                 'price': product_price,
                                 'category': category
@@ -218,6 +243,21 @@ class IikoAPIKeyAdmin(admin.ModelAdmin):
                             try:
                                 product, created = Product.objects.update_or_create(product_id=product_id,
                                                                                     defaults=product_defaults)
+
+                                response = None
+                                if product_image:
+                                    response = requests.get(product_image, stream=True)
+
+                                if response and response.status_code == requests.codes.ok:
+                                    file_name = product_image.split('/')[-1]
+                                    lf = tempfile.NamedTemporaryFile()
+                                    for block in response.iter_content(1024 * 8):
+                                        if not block:
+                                            break
+                                        lf.write(block)
+                                    product.image.save(file_name, files.File(lf))
+                                else:
+                                    continue
                             except Exception as e:
                                 return HttpResponse(f'Ошибка при обновлении/создании продукта: {str(e)}', status=500)
 
