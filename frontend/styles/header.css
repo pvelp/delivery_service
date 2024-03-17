@@ -254,3 +254,20 @@
     border-color: #FADAAB;
 }
 
+@media (max-width: 376px) {
+    .nav__menu {
+        display: none;
+    }
+
+    .nav__telephone-container {
+        display: none;
+    }
+
+    .nav__enter {
+        display: none;
+    }
+
+    .header__icon {
+        display: none;
+    }
+  }

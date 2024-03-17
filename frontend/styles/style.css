@@ -12,7 +12,7 @@ body {
     /* сохраните в разметке и стилях класс page. На его основе работает скрипт. */
     display: flex;
     width: 100%;
-    max-width: 1920px;
+    max-width: 2550px;
     flex-direction: column;
     margin-top: 0px;
     margin-right: 0px;

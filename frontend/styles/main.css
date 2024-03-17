@@ -314,6 +314,9 @@
 .loyalty {
     margin: 0;
     position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .loyalty__title {
@@ -322,8 +325,7 @@
 
 .loyalty__cards-container {
     margin-top: 80px;
-    margin-right: clamp(0rem, -14.5rem + 22.6563vw, 12.6875rem);
-    margin-left:  clamp(1.5rem, -17.7143rem + 30.0223vw, 18.3125rem);
+
     width: clamp(62.5rem, 32.3571rem + 47.0982vw, 88.875rem);
     height: clamp(29.75rem, 15.3929rem + 22.433vw, 42.3125rem);
     position: relative;
@@ -787,3 +789,294 @@
     z-index: -1;
 }
 
+@media (max-width: 376px) {
+    .title {
+        font-size: 96px;
+        line-height: 70px;
+        letter-spacing: 0.02em;
+    }
+    .about__us-heading {
+        font-size: 40px;
+        line-height: 50px;
+        letter-spacing: 0.05em;
+        margin-left: 0px;
+        margin-right: 0px;
+    }
+
+    .about__us-text {
+        font-size: 14px;
+        line-height: 25px;
+        letter-spacing: 0em;
+        text-align: center;
+        margin-left: 0px;
+        margin-right: 0px;
+
+    }
+
+    .about__us-text .highlight {
+        font-size: 14px;
+        line-height: 25px;
+        letter-spacing: 0em;
+        text-align: center;
+
+    }
+
+    .stocks__list {
+        flex-direction: row;
+        overflow-x: scroll;
+    }
+
+    .stocks__item {
+        width: 325px;
+        height: 470px;
+    }
+    .loyalty__ellipse-left {
+        display: none;
+    }
+    .loyalty__ellipse-right {
+        display: none;
+    }
+    .loyalty__description {
+        font-size: 14px;
+        line-height: 25px;
+        letter-spacing: 0em;
+        margin-left: 24px;
+        margin-right: 24px;
+        margin-top: 0px;
+    }
+
+    .highlight__gold {
+        font-size: 14px;
+        line-height: 25px;
+        letter-spacing: 0em;
+    }
+    .loyalty__title {
+        font-size: 96px;
+        line-height: 70px;
+        letter-spacing: 0.02em;
+        margin-bottom: 64px;
+    }
+    .loyalty__cards-container {
+        margin-top: 0px;
+        margin-right: 0px;
+        margin-left: 0px;
+        width: 365px;
+        height: 253px;
+        margin-bottom: 40px;
+        margin-left: 20px;
+    }
+    .loyalty__card {
+        width: 290px;
+        height: 180px;
+    }
+    .loyalty__card-front {
+        margin-right: -20px;
+    }
+    .dark {
+        top: 70px;
+    }
+    .dark__ellipse {
+        width: 260px;
+        height: 100px;
+
+    }
+    .loyalty__card-logo {
+        margin-top: 0px;
+        width: 75px;
+        height: 80px;
+    }
+    .loyalty__card-back .loyalty__card-logo {
+        margin-top: 0px;
+        width: 75px;
+        height: 80px;
+        margin-bottom: 20px;
+    }
+    .loyalty__card-decoration {
+        width: 220px;
+    }
+    .loaylty__card-title {
+        margin-top: -20px;
+        font-size: 50px;
+        line-height: 40px;
+        margin-bottom: 0px;
+    }
+    .loyalty__program-item {
+        width: 280px;
+        height: 178px;
+    }
+    .loyalty__program-overlay {
+        width: 271px;
+        height: 175px;
+    }
+    .loyalty__discount {
+        position: absolute;
+        width: 275px;
+    }
+    .loyalty__program-overlay-lvl2 {
+        width: 275px;
+        height: 175px;
+    }
+    .numbers {
+        font-size: 48px;
+        line-height: 58px;
+        letter-spacing: 0.02em;
+    }
+    .loyalty__container-title {
+        font-size: 32px;
+        line-height: 23px;
+        letter-spacing: 0.02em;
+        margin-top: 24px;
+        margin-bottom: 24px;
+
+    }
+    .loyalty__container-description {   
+        font-size: 14px;
+        line-height: 24px;
+        letter-spacing: 0em;
+
+    }
+    .loyalty__container-description br {
+        display: none;
+    }
+    .loyalty__program {
+        margin-right: 0px;
+        padding: 0px;
+    }
+    .loyalty__program-item:nth-child(1) {
+        margin-left: 26px; /* Отступ для первого элемента */
+        margin-right: 69px;
+      }
+      
+      .loyalty__program-item:nth-child(2) {
+        margin-left: 70px; /* Отступ для второго элемента */
+        margin-right: 25px;
+      }
+      
+      .loyalty__program-item:nth-child(3) {
+        margin-left: 26px; /* Отступ для третьего элемента */
+        margin-right: 69px;
+      }
+      
+      .loyalty__program-item:nth-child(4) {
+        margin-left: 70px; /* Отступ для четвертого элемента */
+        margin-right: 25px;
+      }
+      .loyalty__register {
+        width: 325px;
+        padding-left: 0px;
+        padding-right: 0px;
+        font-family: Gilroy;
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 19px;
+        letter-spacing: 0em;
+        padding-top: 18px;
+        padding-bottom: 18px;
+        margin-top: 16px;
+      }
+      .loyalty__register-text {
+        margin-top: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        font-size: 14px;
+        line-height: 21px;
+
+
+      }
+      .loyalty__enter {
+        font-size: 14px;
+        line-height: 21px;
+      }
+      .delivery__step {
+        gap: 16px;
+        position: relative;
+      }
+      .delivery__container {
+        margin-bottom: 0px;
+      }
+      .delivery__decoration {
+        position: absolute;
+        top: 0px;
+      }
+      .delivery__step-1 .delivery__decoration {
+        transform: rotate(-90deg);
+        bottom: 75px;
+        left: -30px;
+      }
+      .delivery__step-2 .delivery__decoration {
+        transform: rotate(90deg);
+        bottom: 90px;
+        right: 90px;
+      }
+      .delivery__step-3 .delivery__decoration {
+        transform: rotate(-90deg);
+        bottom: 75px;
+        left: 10px;
+      }
+      .delivery__step-4 .delivery__decoration {
+        transform: rotate(90deg);
+        bottom: 50px;
+        right: 30px;
+      }
+      
+      .delivery__number {
+        font-size: 48px;
+        line-height: 47px;
+      }
+      .delivery__step-text {
+        font-size: 14px;
+        line-height: 20px;
+
+      }
+
+      .delivery__step-text br{
+        display: none;
+      }
+
+      .delivery__step-2 .delivery__step-text {
+        width: 263px;
+      }
+      .delivery__step-3 .delivery__step-text {
+        width: 202px;
+      }
+      .delivery__step-4 .delivery__step-text {
+        width: 263px;
+      }
+      .contacts__title {
+        margin-top: 100px;
+        margin-bottom: 0px;
+      }
+      .contacts__container {
+        margin-top: 32px;
+        margin-bottom: 100px;
+      }
+      .contacts__address-title {
+        margin-top: 0px;
+        margin-left: 24px;
+        font-size: 40px;
+        line-height: 60px;
+        letter-spacing: 0.02em;
+        margin-bottom: 10px;
+
+      }
+      .contacts__adress-white {
+        font-size: 14px;
+        line-height: 20px;
+        letter-spacing: 0em;
+        margin-left: 24px;
+        margin-bottom: 10px;
+      }
+      .contacts__time-title {
+        margin-top: 0px;
+        font-size: 40px;
+        line-height: 60px;
+        letter-spacing: 0.02em;
+        margin-left: 24px;
+        margin-bottom: 16px;
+      }
+      .address__time-container {
+        height: 267px;
+        margin-bottom: 32px;
+      }
+  }

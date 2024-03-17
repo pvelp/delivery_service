@@ -150,3 +150,82 @@
     bottom: 0;
     z-index: 1;
 }
+
+@media (max-width: 376px) {
+    .footer__logo {
+        width: 91px;
+        height: 91px;
+        margin-top: 40px;
+        margin-bottom: 32px;
+    }
+    .footer__nav {
+        flex-direction: column;
+        align-items: center;
+        font-size: 16px;
+        line-height: 19px;
+        letter-spacing: 0em;
+        gap: 16px;
+    }
+    .footer__nav p {
+        margin-top: 0px;
+        margin-bottom: 0px;
+    }
+    .footer__address {
+        margin-top: 40px;
+        font-size: 14px;
+        line-height: 20px;
+        letter-spacing: 0em; 
+        width: 260px;   
+    }
+    .footer__time {
+        margin-top: 16px;
+        font-size: 14px;
+        line-height: 20px;
+        letter-spacing: 0em;
+    }
+    .footer__nav__telephone-container {
+        margin-top: 40px;
+        width: 325px;
+        padding-top: 16px;
+        padding-bottom: 16px;
+        padding-top: 16px;
+        padding-left: 0px;
+        padding-right: 0px;
+        text-align: center;
+
+    }
+    .footer__telephone__number {
+        font-size: 16px;
+        line-height: 19px;
+        text-align: center;
+    }
+    .public__ofert {
+        margin-top: 40px;
+        font-size: 14px;
+        line-height: 20px;
+        letter-spacing: 0em;
+    }
+    .conf_polit {
+        margin-top: 8px;
+        font-size: 14px;
+        line-height: 20px;
+        letter-spacing: 0em;
+        text-align: center;
+    }
+    .footer__dev {
+        margin-top: 53px;
+        font-size: 12px;
+        line-height: 17px;
+        letter-spacing: 0em;
+    }
+
+    .footer__tomates {
+        width: 205px;
+        height: 255px;
+    }
+
+    .footer__luchock {
+        width: 161px;
+        height: 266px;
+    }
+}
