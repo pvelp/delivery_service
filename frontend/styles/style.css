@@ -1,0 +1,23 @@
+html {
+    display: flex;
+    justify-content: center;
+  }
+  
+body {
+  height: auto;
+  position: fixed;
+}
+
+  .page {
+    /* сохраните в разметке и стилях класс page. На его основе работает скрипт. */
+    display: flex;
+    width: 100%;
+    max-width: 1920px;
+    flex-direction: column;
+    margin-top: 0px;
+    margin-right: 0px;
+    margin-left: 0px;
+    background-color: var(--bg-color);
+    position: relative;
+}
+
