@@ -178,13 +178,13 @@
         width: 260px;   
     }
     .footer__time {
-        margin-top: 16px;
+        margin-top: 3px;
         font-size: 14px;
         line-height: 20px;
         letter-spacing: 0em;
     }
     .footer__nav__telephone-container {
-        margin-top: 40px;
+        margin-top: 30px;
         width: 325px;
         padding-top: 16px;
         padding-bottom: 16px;
@@ -213,19 +213,35 @@
         text-align: center;
     }
     .footer__dev {
-        margin-top: 53px;
+        margin-top: 40px;
         font-size: 12px;
         line-height: 17px;
         letter-spacing: 0em;
     }
 
     .footer__tomates {
-        width: 205px;
-        height: 255px;
+        transform: scale(0.5);
+        left: -106px;
+        top: -215px;
     }
 
     .footer__luchock {
-        width: 161px;
-        height: 266px;
+        transform: scale(-0.65, 0.65);
+        bottom: 90px;
+        left: -160px;
     }
-}
+    .footer__onion {
+        transform: scale(0.5);
+        top: 190px;
+        right: 0px;
+    }
+    .footer__perchick {
+        transform: scale(0.45);
+        bottom: -85px;
+        right: -80px;
+    }
+
+    .footer {
+        overflow: hidden;
+    }
+}   

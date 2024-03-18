@@ -4,9 +4,12 @@ const template = document.getElementById('menu__card-template');
 const menuOrder = document.querySelector('.menu__order')
 let menuAvaliableItems;
 let menuItems = [
-    { name: "Шашлык из курицы", photo: './images/testImages/test1.jpg',  weight: "200", price: "350", type: "шашлык", compose: "курица, соль" },
-    { name: "Шашлык из баранины",photo: './images/testImages/test1.jpg', weight: "200", price: "350", type: "шашлык", compose: "баранина, соль" },
-    { name: "Шашлык из свинины", photo: './images/testImages/test1.jpg',weight: "200", price: "350", type: "шашлык", compose: "свинина, соль" },
+    { name: "Шашлык", photo: './images/testImages/test1.jpg',  weight: "200", price: "350", type: "шашлык", compose: "курица, соль" },
+    { name: "Шашлык",photo: './images/testImages/test1.jpg', weight: "200", price: "350", type: "шашлык", compose: "баранина, соль" },
+    { name: "Шашлык", photo: './images/testImages/test1.jpg',weight: "200", price: "350", type: "шашлык", compose: "свинина, соль" },
+    { name: "Шашлык", photo: './images/testImages/test1.jpg',  weight: "200", price: "350", type: "шашлык", compose: "курица, соль" },
+    { name: "Шашлык",photo: './images/testImages/test1.jpg', weight: "200", price: "350", type: "шашлык", compose: "баранина, соль" },
+    { name: "Шашлык", photo: './images/testImages/test1.jpg',weight: "200", price: "350", type: "шашлык", compose: "свинина, соль" },
     { name: "Рыба", photo: './images/testImages/test1.jpg', weight: "300", price: "280", type: "овощи и рыба на мангале", compose: "рыба, овощи" },
     { name: "Шаурма", photo: './images/testImages/test1.jpg', weight: "150", price: "101", type: "шаурма", compose: "лаваш, мясо, соус, капуста, помидоры" },
     { name: "Гренки", photo: './images/testImages/test1.jpg', weight: "150", price: "102", type: "закуски", compose: "хлеб, чеснок, соль" },

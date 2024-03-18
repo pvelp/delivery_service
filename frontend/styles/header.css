@@ -6,6 +6,10 @@
     align-items: center;
 }
 
+.button__nav-mobile {
+    display: none;
+}
+
 .left__ellipse {
     position: absolute;
     left: 0;
@@ -94,7 +98,9 @@
     margin-bottom: 94px;
     z-index: 2;
 }
-
+.header__text br {
+    display: none;
+}
 .highlight {
     font-family: Gotham;
     font-size: 20px;
@@ -255,10 +261,61 @@
 }
 
 @media (max-width: 376px) {
+    .header {
+    }
+    .nav {
+        width: 300px;
+        margin-left: 40px;
+        margin-top: 25px;
+        justify-content: space-between;
+    }
     .nav__menu {
         display: none;
     }
-
+    .nav__basket {
+        width: 70px;
+        position: relative;
+        border-radius: 100px;
+        height: 48px;
+    }
+    
+    .basket__icon {
+        width: 28px;
+        height: 28px;
+        position: absolute;
+        bottom: 10px;
+        right: 17.5px
+    }
+    .mini__ellipse {
+        right: 14px;
+        bottom: 6px;
+    }
+    .button__nav-mobile {
+        display: block;
+        width: 82px;
+        height: 48px;
+        border-radius: 100px;
+        border: 2px solid #FADAAB;
+        background-color: transparent;
+        position: relative;
+    }
+    .line {
+        position: absolute; 
+        top: 50%;
+        left: 50%; 
+        width: 35px; 
+        height: 2px; 
+        background-color: #FADAAB; 
+        transform: translateX(-50%); 
+      }
+      
+      .line:first-child {
+        margin-top: -6px; 
+      }
+      
+      .line:last-child {
+        margin-top: 4px;    
+      }
     .nav__telephone-container {
         display: none;
     }
@@ -269,5 +326,52 @@
 
     .header__icon {
         display: none;
+    }
+
+    .left__ellipse {
+        display: none;
+    }
+    .right__ellipse {
+        display: none;
+    }
+    .header__menu {
+        width: 329px;
+        padding-left: 0px;
+        padding-right: 0px;
+        padding-top: 17px;
+        padding-bottom: 18px;
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 18px;
+        margin-bottom: 0px;
+
+    }
+    .header__text {
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 21px;
+        margin-bottom: 147px;
+
+    }
+    .header__text br {
+        display: block;
+    }
+    .highlight {
+        font-size: 14px;
+        font-weight: 700;
+        line-height: 21px;
+    }
+    .header__image-container {
+        height: 403px;
+        margin-top: 145px;
+    }
+    .image-container {
+        height: 403px;
+        background-position-x: 595px;
+    }
+    .overlay {
+        height: 413px;
+        z-index: 1;
+        bottom: -150px;
     }
   }

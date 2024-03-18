@@ -24,6 +24,10 @@
         <img class="right__ellipse" src="./images/right_ellipse.png">
         <nav class="nav">
           <img class="header__icon" src="./images/header_icon.png">
+          <button class="button__nav-mobile" onclick="window.nav__mobile.showModal();">
+            <span class="line"></span>
+            <span class="line"></span>
+          </button>
           <div class="nav__menu">
             <p><a href="#about__us-id" class="nav__menu-link">о нас</a></p>
             <p><a href="#menu-id" class="nav__menu-link">меню</a></p>
@@ -46,8 +50,8 @@
           </div>
         </nav>
         <h1 class="header__title title">шашлычное настроение</h1>
-        <p class="header__text">мы готовим для вас <span class="highlight">сочный шашлык на мангале, </span>который станет настоящим кулинарным открытием. Мы 
-            <span class="highlight">гарантируем свежесть<br> и качество</span> каждого блюда, которое Вы закажете у нас!
+        <p class="header__text">мы готовим для вас <span class="highlight">сочный шашлык<br> на мангале, </span>который станет<br> настоящим кулинарным открытием.<br> Мы 
+            <span class="highlight">гарантируем свежесть<br> и качество</span> каждого блюда, которое<br> Вы закажете у нас!
         </p>
         <button class="header__menu">меню</button>
         <div class="header__image-container">
@@ -64,8 +68,8 @@
           <img class="perchick" src="./images/svg/perchick.svg">;
           <img class="onion" src="./images/svg/onion.svg">;
           <img class="chesnochock" src="./images/svg/chesnochock.svg">;
-          <p class="about__us-heading">МЫ - Свежие продукты, профессиональные повара, качественные ингредиенты, быстрая доставка<br>
-            и   традиционные кавказские рецепты. 
+          <p class="about__us-heading">МЫ - Свежие продукты, профессиональные повара, качественные ингредиенты,<br> быстрая доставка
+            и<br>   традиционные кавказские<br> рецепты. 
           </p>
           <p class="about__us-text">В нашем кафе Вы найдете <span class="highlight">широкий выбор блюд,</span> удовлетворяющих любой вкус и предпочтения. Меню включает 
             разнообразные салаты, закуски, выпечку, горячие блюда и десерты. Кроме того, мы предлагаем большой выбор прохладительных напитков.
@@ -135,7 +139,7 @@
               <button class="menu__button button__salad">салаты</button>
               <button class="menu__button button__vipechka">выпечка</button>
               <button class="menu__button button__drinks">напитки</button>
-              <button class="menu__button button__mangal">соусы</button>
+              <button class="menu__button button__souses">соусы</button>
           </div>
           <ul class="menu__list">
             <li class="menu__item">
@@ -443,7 +447,25 @@
       </div>
     </dialog>
 
-
+    <dialog class="nav__mobile" id="nav__mobile">
+      <div class="nav__mobile-overlay"></div>
+      <div class="nav__mobile-container">
+        <button type="button" onclick="window.nav__mobile.close();" class="enter__window-close"></button>
+        <img class="header__icon" src="./images/header_icon.png">
+        <p class="haha"><a href="#about__us-id" class="nav__menu-link">о нас</a></p>
+        <p class="haha"><a href="#menu-id" class="nav__menu-link">меню</a></p>
+        <p class="haha"><a href="#stocks_id" class="nav__menu-link">акции</a></p>
+        <p class="haha"><a href="#delivery__and__payment-id" class="nav__menu-link">доставка и оплата</a></p>
+        <p class="haha haha_last"><a href="#contacts-id" class="nav__menu-link">контакты</a></p>
+        <button class="nav__enter" onclick="window.window__enter.showModal();" aria-controls="window__enter">
+          <img class="enter__icon" src="./images/svg/enter.svg">
+          <p class="enter__text">вход</p>
+        </button>
+        <div class="nav__telephone-container">
+          <a class="telephone__number" href="tel:+79776075555">+7 (977) 607-55-55</a>
+        </div>
+      </div>
+    </dialog>
     <script src="./scripts/index.js"></script>
   </body>
 </html>

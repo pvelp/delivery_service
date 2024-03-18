@@ -678,3 +678,76 @@ dialog::backdrop {
     height: 100%;
     object-fit: cover;
 }
+
+.nav__mobile {
+    position: fixed; /* Позиционируем диалоговое окно на экране */
+    top: 0px; /* Отступ от верхнего края экрана */
+    left: 50%; /* Выравниваем по горизонтали по центру экрана */
+    transform: translateX(-50%); /* Центрируем окно по горизонтали */
+    width: 100%;
+    border: 1px solid transparent;
+    border-radius: 20px;
+    background: linear-gradient(151.17deg, #F7D39E 0%, #FADAAB 50.83%, rgba(250, 218, 171, 0.2) 100%);
+    background-clip: padding-box;
+    overflow: hidden;
+    padding: 0px;
+    height: 710px;
+}
+
+.nav__mobile-overlay {
+    position: absolute;
+    background-color: #161616;
+    width: 99%;
+    height: 99%;
+    z-index: 2;
+    border: 1px solid #161616;
+    border-radius: 20px;
+    bottom: 0.9px;
+    left: 1px;
+    overflow: hidden;
+    object-fit: cover;
+}
+
+.nav__mobile-container {
+    margin-top: 24px;
+    position: relative;
+    z-index: 3;
+    flex-direction: column;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.nav__mobile-container .header__icon {
+    display: block;
+    width: 70px;
+    height: 70px;
+    margin-bottom: 16px;
+}
+
+.nav__mobile-container .nav__enter {
+    display: flex;
+    flex-direction: column;
+    width: 325px;
+    align-items: center;
+}
+
+.nav__mobile-container .nav__enter .enter__text{
+    display: block;
+    width: 61px;
+
+}
+
+
+.nav__mobile-container .nav__telephone-container {
+    display: block;
+}
+
+.haha {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+.haha_last {
+    margin-bottom: 150px;
+}
