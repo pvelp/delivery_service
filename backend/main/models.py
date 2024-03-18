@@ -150,3 +150,15 @@ class Manager(models.Model):
     class Meta:
         verbose_name = 'Менеджер'
         verbose_name_plural = 'Менеджеры'
+
+
+class HappyHours(models.Model):
+    time_to_start = models.TimeField(verbose_name='Время начала акции', **NULLABLE)
+    time_to_end = models.TimeField(verbose_name='Время конца акции', **NULLABLE)
+    discount_percentage = models.SmallIntegerField(validators=[MinValueValidator(0), MaxValueValidator(100)],
+                                                   verbose_name='Процент скидки', **NULLABLE)
+    is_active = models.BooleanField(verbose_name='Активна', **NULLABLE)
+
+    class Meta:
+        verbose_name = 'Счастливые часы'
+        verbose_name_plural = 'Акция Счастливые часы'

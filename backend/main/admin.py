@@ -8,7 +8,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.urls import path
 
-from main.models import Product, Category, Order, RecommendedProducts, Promo, Manager, OrderItem
+from main.models import Product, Category, Order, RecommendedProducts, Promo, Manager, OrderItem, HappyHours
 from users.models import User
 from admins.models import IikoAPIKey, ExternalMenu, Organization
 
@@ -104,6 +104,11 @@ class PromoAdmin(admin.ModelAdmin):
 @admin.register(Manager)
 class ManagerAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'tg_id', 'email')
+
+
+@admin.register(HappyHours)
+class HappyHoursAdmin(admin.ModelAdmin):
+    list_display = ('id', 'time_to_start', 'time_to_end', 'discount_percentage', 'is_active')
 
 
 #  Часть с админкой для iikoWeb
