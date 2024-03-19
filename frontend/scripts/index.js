@@ -263,3 +263,25 @@ orderButton.addEventListener('click', () => {
     // Передаем обновленный массив products в функцию makeOrder
     makeOrder(products);
 });
+
+// Функция для перемещения finalCostContainer после promoContainer
+function moveFinalCostContainer() {
+    var finalCostContainer = document.querySelector('.final__cost-container');
+    var promoContainer = document.querySelector('.promo__container');
+    promoContainer.parentNode.insertBefore(finalCostContainer, promoContainer.nextSibling);
+}
+
+// Функция для проверки разрешения экрана и выполнения перемещения
+function checkResolution() {
+    // Проверяем текущее разрешение экрана
+    var screenWidth = window.innerWidth;
+    
+    // Если разрешение экрана меньше или равно 768px, вызываем функцию для перемещения
+    if (screenWidth <= 768) {
+        moveFinalCostContainer();
+    }
+}
+
+// Вызываем функцию при загрузке страницы и при изменении размера окна
+window.onload = checkResolution;
+window.onresize = checkResolution;

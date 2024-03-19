@@ -57,6 +57,16 @@
     top: 703px;
 }
 
+.tomatoes_mobile {
+    display: none;
+}
+.perchick_mobile {
+    display: none;
+}
+.luchock_mobile {
+    display: none;
+}
+
 .about__us-heading {
     position: relative;
     font-family: Cinematografica;
@@ -147,10 +157,10 @@
 .stocks__overlay {
     position: absolute;
     background-color: #161616;
-    width: 98%;
-    height: 488px;
-    z-index: 2;
     border: 1px solid #161616;
+    width: 98%;
+    height: 465px;
+    z-index: 2;
     border-radius: 20px;
     bottom: 1px;
     left: 3px;
@@ -382,7 +392,18 @@
 .loyalty__leaf {
     position: absolute;
 }
-
+.leaf-l1-mob {
+    display: none;
+}
+.leaf-l2-mob {
+    display: none;
+}
+.leaf-r1-mob {
+    display: none;
+}
+.leaf-r2-mob {
+    display: none;
+}
 .leaf-l1 {
     left: 0px;
     top: 305px;
@@ -409,6 +430,9 @@
     top: 755px; 
 }
 
+.loyalty__ellipse-mobile {
+    display: none;
+}
 .loaylty__card-title {
     font-family: Cinematografica;
     font-size: clamp(3.125rem, 1.608rem + 6.4725vw, 9.375rem);
@@ -499,7 +523,6 @@
     width: 98%;
     height: 286px;
     z-index: 2;
-    border: 1px solid #161616;
     border-radius: 20px;
     bottom: 1px;
     left: 4px;
@@ -727,7 +750,6 @@
     width: 99%;
     height: 99%;
     z-index: 2;
-    border: 1px solid #161616;
     border-radius: 20px;
     bottom: 1px;
     left: 2px;
@@ -793,8 +815,10 @@
     left: 0;
     z-index: -1;
 }
-
-@media (max-width: 376px) {
+.ellipse_contacts-mobile {
+    display: none;
+}
+@media (min-width: 320px) {
     .main {
         overflow-x: hidden;
     }
@@ -835,7 +859,9 @@
         text-align: center;
 
     }
-
+    .vegetabl {
+        opacity: 0.3;
+    }
     .stocks__list {
         flex-direction: row;
         overflow-x: scroll;
@@ -869,7 +895,10 @@
         width: 325px;
     }
     .stocks__ellipse {
-        display: none;
+        top: 25%; /* Выравнивание по вертикали */
+        left: 50%; /* Выравнивание по горизонтали */
+        transform: translate(-50%, -25%);
+        opacity: 1;
     }
     .stocks__item {
         width: 325px;
@@ -939,6 +968,44 @@
         height: 40px;
         padding: 0;
         position: relative;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+    .button__shashlik {
+        width: auto;
+        order: 1;
+    }
+    .button__mangal {
+        width: auto;
+        order: 2;
+    }
+    .button__shaverma {
+        width: auto;;
+        order: 3;
+    }
+    .button__zakus {
+        width: auto;
+        order: 4;
+    }
+    .button__soups {
+        width: auto;
+        order: 5;
+    }
+    .button__salad {
+        width: auto;
+        order: 6;
+    }
+    .button__vipechka {
+        width: auto;
+        order: 7;
+    }
+    .button__drinks {
+        width: auto;
+        order: 8;
+    }
+    .button__souses {
+        width: auto;
+        order: 9;
     }
     .menu__item .product__info-container {
         margin-top: 28px;
@@ -1025,8 +1092,9 @@
         height: 100px;
 
     }
+
     .ellipse_contacts {
-        display: none
+        display: none;
     }
     .loyalty__card-logo {
         margin-top: 0px;
@@ -1171,13 +1239,13 @@
 
       .delivery__step-1 .delivery__decoration {
         transform: rotate(-90deg);
-        bottom: 75px;
+        bottom: 30px;
         left: -30px;
       }
       .delivery__step-2 .delivery__decoration {
         transform: rotate(90deg);
         bottom: 90px;
-        right: 90px;
+        right: 30px;
       }
       .delivery__step-3 .delivery__decoration {
         transform: rotate(-90deg);
@@ -1264,5 +1332,1300 @@
         line-height: 80px;
         margin-top: 45px;
         margin-bottom: 36px;
+    }
+    .redis {
+        width: 80px;
+        top: 50px;
+        left: 0px;
+    }
+    
+    .leaf {
+        position: absolute;
+        z-index: 4;
+        top: 290px;
+        left: -30px;
+        width: 105px;
+    }
+    
+    .tomatoes {
+        position: absolute;
+        z-index: 4;
+        top: 509px;
+        left: 0;
+        display: none;
+    }
+    
+    .luchock {
+        position: absolute;
+        z-index: 4;
+        right: 100px;
+        top: -70px;
+        display: none;
+    }
+    
+    .perchick {
+        position: absolute;
+        z-index: 4;
+        right: 0;
+        top: 420px;
+        display: none;
+    }
+    
+    .onion {
+        position: absolute;
+        z-index: 4;
+        right: 0;
+        top: 729px;
+        display: none;
+    }
+    
+    .chesnochock {
+        position: absolute;
+        z-index: 4;
+        right: -40px;
+        top: 475px;
+        width: 103px;
+    }
+    .tomatoes_mobile {
+        display: block;
+        z-index: 4;
+        position: absolute;
+        right: 0;
+        top: 105px;
+    }
+    .perchick_mobile {
+        display: block;
+        position: absolute;
+        z-index: 4;
+        right: 40px;
+        top: 350px
+    }
+    .luchock_mobile {
+        display: block; 
+        position: absolute;
+        z-index: 4;
+        top: 165px
+    }
+    .loyalty__ellipse-mobile {
+        display: block;
+        position: absolute;
+        width: 100%;
+        top: -200px;
+    }
+    .contacts {
+        overflow-y: hidden;
+    }
+    .ellipse_contacts-mobile {
+        display: block;
+        position: absolute;
+        width: 100%;
+        bottom: -350px;
+    }
+    .leaf-l1 {
+        display: none;
+    }
+    
+    .leaf-l2 {
+        display: none;
+    }
+    
+    .leaf-r1 {
+        display: none;
+    }
+    
+    .leaf-r2 {
+        display: none;
+    }
+    .leaf-l1-mob {
+        display: block;
+        transform: rotate(201deg);
+        width: 97px;
+        left: -34px;
+        top: 140px;
+    }
+
+    .leaf-l2-mob {
+        display: block;
+        transform: rotate(126deg);
+        left: -60px;
+        top: 425px;
+        width: 170px;
+    }
+    .leaf-r1-mob {
+        display: block;
+        transform: rotate(352deg);
+        right: -50px;
+        width: 170px;
+        top: 125px;
+    }
+    .leaf-r2-mob {
+        display: block;
+        transform: rotate(39deg);
+        width: 380px;
+        right: -120px;
+        top: 400px;
+    }
+  }
+
+  @media (min-width: 767px) {
+    .main {
+        overflow-x: hidden;
+    }
+
+    .title {
+        font-size: clamp(6rem, 4.301rem + 7.2492vw, 13rem);
+        line-height: clamp(5rem, 3.8774rem + 4.7896vw, 9.625rem);
+        letter-spacing: 0.02em;
+    }
+    .about__us-heading {
+        margin-top: 85px;
+        margin-bottom: 30px;
+        font-size: 40px;
+        line-height: 50px;
+        letter-spacing: 0.05em;
+        margin-left: 0px;
+        margin-right: 0px;
+    }
+    .about__us-heading br {
+        display: block;
+    }
+    .about__us-text {
+        font-size: 14px;
+        line-height: 25px;
+        letter-spacing: 0em;
+        margin-left: 0px;
+        margin-right: 0px;
+        word-wrap: break-word;
+        text-align: center;
+        margin-left: 25px;
+        margin-right: 25px;
+    }
+
+    .about__us-text .highlight {
+        font-size: 14px;
+        line-height: 25px;
+        letter-spacing: 0em;
+        text-align: center;
+
+    }
+    .vegetabl {
+        opacity: 0.3;
+    }
+    .stocks__list {
+        flex-direction: row;
+        overflow-x: scroll;
+        width: 100%;
+        flex-wrap: nowrap;
+    }
+
+    .stocks__title {
+        margin-top: 90px;
+        margin-bottom: 50px;
+    }
+    .stocks__explanation {
+        margin-top: 50px;
+        font-size: 14px;
+        line-height: 21px;
+        letter-spacing: 0em;
+    }
+    .stocks__description {
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 29px;
+
+    }
+    .stocks__card-time {
+        margin-left: 730px;
+    }
+    .stocks__card-gift {
+        margin-right: 25px;
+    }
+    .stocks__time {
+        width: 325px;
+    }
+    .stocks__ellipse {
+        top: 25%; /* Выравнивание по вертикали */
+        left: 50%; /* Выравнивание по горизонтали */
+        transform: translate(-50%, -25%);
+        opacity: 1;
+    }
+    .stocks__item {
+        width: 325px;
+        height: 470px;
+        flex-shrink: 0;
+    }
+    .stocks__overlay-lvl2 {
+        width: 325px;
+    }
+
+    .menu__list {
+        align-self: center;
+        margin-top: 30px;
+        margin-bottom: 0px;
+        width: 100%;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+    .menu__categories {
+        margin-top: 10px;
+        position: relative;
+        width:  clamp(18.75rem, -7.4905rem + 111.9593vw, 46.25rem);
+        justify-content: center;
+    }
+
+    .menu__item {
+        width: 325px;
+    }
+    .menu__button {
+        border-width: 1px;
+        height: 40px;
+        padding: 0;
+        position: relative;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+    .menu__item .product__info-container {
+        margin-top: 28px;
+        width: 100%;
+    }
+
+    .menu__item-card {
+        width: 325px;
+        height: 250px;
+    }
+    .menu__item .product__name {
+        font-size: 24px;
+        line-height: 43px;
+        letter-spacing: 0em;
+    }
+    .menu__item .product__weight {
+        font-size: 16px;
+        line-height: 29px;
+        letter-spacing: 0em;
+    }
+    .menu__item .product__name-and-weight {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0px;
+    }
+    .menu__item .product__price {
+        margin-top: -5px;
+        font-size: 24px;
+        line-height: 43px;
+        letter-spacing: 0em;
+        margin-bottom: 22px;
+    }
+    .loyalty {
+        margin-top: 85px;
+    }
+    .loyalty__ellipse-left {
+        display: none;
+    }
+    .loyalty__ellipse-right {
+        display: none;
+    }
+    .loyalty__description {
+        font-size: 14px;
+        line-height: 25px;
+        letter-spacing: 0em;
+        margin-left: 24px;
+        margin-right: 24px;
+        margin-top: 0px;
+    }
+
+    .highlight__gold {
+        font-size: 14px;
+        line-height: 25px;
+        letter-spacing: 0em;
+    }
+    .loyalty__title {
+        font-size: clamp(6rem, 4.301rem + 7.2492vw, 13rem);
+        line-height: clamp(5rem, 3.8774rem + 4.7896vw, 9.625rem);
+        letter-spacing: 0.02em;
+        margin-bottom: 70px;
+    }
+    .loyalty__cards-container {
+        margin-top: 0px;
+        margin-right: 0px;
+        margin-left: 0px;
+        width: 365px;
+        height: 253px;
+        margin-bottom: 40px;
+        margin-left: 20px;
+        overflow-x: hidden;
+        transform: scale(1.2);
+    }
+    .loyalty__program-item:nth-child(1) {
+        margin-left: 0px; 
+        margin-right: 0px;
+      }
+      
+      .loyalty__program-item:nth-child(2) {
+        margin-left: 0px; 
+        margin-right: 0px;
+      }
+      
+      .loyalty__program-item:nth-child(3) {
+        margin-left: 0px;
+        margin-right: 0px;
+      }
+      
+      .loyalty__program-item:nth-child(4) {
+        margin-left: 0px;
+        margin-right: 0px;
+      }
+    .loyalty__card {
+        width: 290px;
+        height: 180px;
+    }
+    .loyalty__card-front {
+        margin-right: 0px;
+    }
+    .dark {
+        top: 70px;
+    }
+    .dark__ellipse {
+        width: 260px;
+        height: 100px;
+
+    }
+
+    .ellipse_contacts {
+        display: none;
+    }
+    .loyalty__card-logo {
+        margin-top: 0px;
+        width: 75px;
+        height: 80px;
+    }
+    .loyalty__card-back .loyalty__card-logo {
+        margin-top: 0px;
+        width: 75px;
+        height: 80px;
+        margin-bottom: 20px;
+    }
+    .loyalty__card-decoration {
+        width: 220px;
+    }
+    .loaylty__card-title {
+        margin-top: -25px;
+        font-size: 50px;
+        line-height: 40px;
+        margin-bottom: 0px;
+    }
+    .loyalty__program-item {
+        width: 280px;
+        height: 178px;
+        margin-left: 0px;
+        margin-right: 0px;
+    }
+    .loyalty__program-overlay {
+        width: 271px;
+        height: 175px;
+    }
+    .loyalty__discount {
+        position: absolute;
+        width: 275px;
+    }
+    .loyalty__program-overlay-lvl2 {
+        width: 275px;
+        height: 175px;
+    }
+    .numbers {
+        font-size: 48px;
+        line-height: 58px;
+        letter-spacing: 0.02em;
+    }
+    .loyalty__container-title {
+        font-size: 32px;
+        line-height: 23px;
+        letter-spacing: 0.02em;
+        margin-top: 15px;
+        margin-bottom: 30px;
+
+    }
+    .loyalty__container-description {   
+        font-size: 14px;
+        line-height: 24px;
+        letter-spacing: 0em;
+
+    }
+    .loyalty__container-description br {
+        display: none;
+    }
+    .loyalty__program {
+        margin-right: 0px;
+        padding: 0px;
+        gap: 10px;
+        margin-top: 10px;
+    }
+
+      .loyalty__register {
+        width: 325px;
+        padding-left: 0px;
+        padding-right: 0px;
+        font-family: Gilroy;
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 19px;
+        letter-spacing: 0em;
+        padding-top: 18px;
+        padding-bottom: 18px;
+        margin-top: 16px;
+      }
+      .loyalty__register-text {
+        margin-top: 5px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        font-size: 14px;
+        line-height: 21px;
+      }
+      .loyalty__enter {
+        font-size: 14px;
+        line-height: 21px;
+      }
+      
+      .delivery__step {
+        gap: 16px;
+        position: relative;
+      }
+      .delivery__container {
+        margin-bottom: 0px;
+        gap: 10px;
+        width: 375px;
+      }
+      .delivery__decoration {
+        position: absolute;
+        top: 0px;
+      }
+      .delivery__step-2 {
+        gap: 10px;
+      }
+      .delivery__step-4 {
+        gap: 0px;
+      }
+      .delivery__step-4 .delivery__number{
+        margin-top: 10px;
+        margin-bottom: 10px;
+      }
+      .delivery__step-3 .delivery__number{
+        margin-top: 20px;
+        margin-bottom: 10px;
+      }
+      .delivery__step-1 .delivery__number{
+        margin-top: 20px;
+        margin-bottom: -5px;
+      }
+
+      .delivery__step-1 .delivery__decoration {
+        transform: rotate(-90deg);
+        bottom: 30px;
+        left: -30px;
+      }
+      .delivery__step-2 .delivery__decoration {
+        transform: rotate(90deg);
+        bottom: 90px;
+        right: 30px;
+      }
+      .delivery__step-3 .delivery__decoration {
+        transform: rotate(-90deg);
+        bottom: 75px;
+        left: 10px;
+      }
+      .delivery__step-4 .delivery__decoration {
+        transform: rotate(90deg);
+        bottom: 50px;
+        right: 30px;
+      }
+      
+      .delivery__number {
+        font-size: 48px;
+        line-height: 47px;
+      }
+      .delivery__step-text {
+        font-size: 14px;
+        line-height: 20px;
+
+      }
+
+      .delivery__step-text br{
+        display: none;
+      }
+
+      .delivery__step-2 .delivery__step-text {
+        width: 263px;
+      }
+      .delivery__step-3 .delivery__step-text {
+        width: 202px;
+      }
+      .delivery__step-4 .delivery__step-text {
+        width: 263px;
+      }
+      .delivery__title {
+        margin-top: 0px;
+        font-size: clamp(6rem, 4.301rem + 7.2492vw, 13rem);
+        line-height: clamp(5rem, 3.8774rem + 4.7896vw, 9.625rem);
+        letter-spacing: 0.02em;
+        margin-bottom: 15px;
+        width: auto;
+      }
+      .contacts__title {
+        margin-top: 100px;
+        margin-bottom: 0px;
+      }
+
+      .contacts__container {
+        margin-top: 32px;
+        margin-bottom: 55px;
+        gap: 30px;
+      }
+      .contacts__address-title {
+        margin-top: 0px;
+        margin-left: 24px;
+        font-size: 40px;
+        line-height: 60px;
+        letter-spacing: 0.02em;
+        margin-bottom: 10px;
+
+      }
+      .contacts__adress-white {
+        font-size: 14px;
+        line-height: 20px;
+        letter-spacing: 0em;
+        margin-left: 24px;
+        margin-bottom: 10px;
+        margin-top: -10px;
+      }
+      .contacts__time-title {
+        margin-top: 0px;
+        font-size: 40px;
+        line-height: 60px;
+        letter-spacing: 0.02em;
+        margin-left: 24px;
+        margin-bottom: 16px;
+      }
+      .address__time-container {
+        height: 267px;
+        margin-bottom: 20px;
+        width: clamp(20.3125rem, 12.4242rem + 33.657vw, 52.8125rem)
+
+      }
+      .header__title {
+        font-size: 96px;
+        line-height: 80px;
+        margin-top: 45px;
+        margin-bottom: 36px;
+    }
+    .redis {
+        width: 80px;
+        top: 50px;
+        left: 0px;
+    }
+    
+    .leaf {
+        position: absolute;
+        z-index: 4;
+        top: 290px;
+        left: -30px;
+        width: 105px;
+    }
+    
+    .tomatoes {
+        position: absolute;
+        z-index: 4;
+        top: 509px;
+        left: 0;
+        display: none;
+    }
+    
+    .luchock {
+        position: absolute;
+        z-index: 4;
+        right: 100px;
+        top: -70px;
+        display: none;
+    }
+    
+    .perchick {
+        position: absolute;
+        z-index: 4;
+        right: 0;
+        top: 420px;
+        display: none;
+    }
+    
+    .onion {
+        position: absolute;
+        z-index: 4;
+        right: 0;
+        top: 729px;
+        display: none;
+    }
+    
+    .chesnochock {
+        position: absolute;
+        z-index: 4;
+        right: -40px;
+        top: 475px;
+        width: 103px;
+    }
+    .tomatoes_mobile {
+        display: block;
+        z-index: 4;
+        position: absolute;
+        right: 0;
+        top: 105px;
+    }
+    .perchick_mobile {
+        display: block;
+        position: absolute;
+        z-index: 4;
+        right: 40px;
+        top: 350px
+    }
+    .luchock_mobile {
+        display: block; 
+        position: absolute;
+        z-index: 4;
+        top: 165px
+    }
+    .loyalty__ellipse-mobile {
+        display: block;
+        position: absolute;
+        width: 100%;
+        top: -600px;
+        transform: scaleY(0.8);
+    }
+    .contacts {
+        overflow-y: hidden;
+    }
+    .ellipse_contacts-mobile {
+        display: block;
+        position: absolute;
+        width: 100%;
+        top: -900px;
+        transform: scaleY(0.5);
+    }
+    .leaf-l1-mob {
+        display: block;
+        transform: rotate(201deg);
+        width: 97px;
+        left: -34px;
+        top: 140px;
+    }
+
+    .leaf-l2-mob {
+        display: block;
+        transform: rotate(126deg);
+        left: -60px;
+        top: 425px;
+        width: 170px;
+    }
+    .leaf-r1-mob {
+        display: block;
+        transform: rotate(352deg);
+        right: -50px;
+        width: 170px;
+        top: 125px;
+    }
+    .leaf-r2-mob {
+        display: block;
+        transform: rotate(39deg);
+        width: 380px;
+        right: -120px;
+        top: 400px;
+    }
+    .leaf-l1 {
+        display: none;
+    }
+    
+    .leaf-l2 {
+        display: none;
+    }
+    
+    .leaf-r1 {
+        display: none;
+    }
+    
+    .leaf-r2 {
+        display: none;
+    }
+    .contact__button {
+        width: clamp(20.3125rem, 12.4242rem + 33.657vw, 52.8125rem)
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .main {
+        overflow-x: hidden;
+    }
+
+    .title {
+        font-size: clamp(6rem, 4.301rem + 7.2492vw, 13rem);
+        line-height: clamp(5rem, 3.8774rem + 4.7896vw, 9.625rem);
+        letter-spacing: 0.02em;
+    }
+    .about__us-heading {
+        margin-top: 85px;
+        margin-bottom: 30px;
+        font-size: clamp(2.5rem, 1.6505rem + 3.6246vw, 6rem);
+        line-height: clamp(3.125rem, 2.3665rem + 3.2362vw, 6.25rem);
+        letter-spacing: 0.05em;
+        margin-left: 0px;
+        margin-right: 0px;
+
+    }
+    .about__us-heading br {
+        display: block;
+    }
+    .about__us-text {
+        font-size: clamp(0.875rem, 0.7233rem + 0.6472vw, 1.5rem);
+        line-height: 25px;
+        letter-spacing: 0em;
+        margin-left: 0px;
+        margin-right: 0px;
+        word-wrap: break-word;
+        text-align: center;
+        margin-left: 25px;
+        margin-right: 25px;
+    }
+
+    .about__us-text .highlight {
+        font-size: clamp(0.875rem, 0.7233rem + 0.6472vw, 1.5rem);
+        line-height: 25px;
+        letter-spacing: 0em;
+        text-align: center;
+
+    }
+    .vegetabl {
+        opacity: 0.3;
+    }
+    .stocks__list {
+        flex-direction: row;
+        overflow-x: scroll;
+        width: 100%;
+        flex-wrap: nowrap;
+    }
+
+    .stocks__title {
+        margin-top: 90px;
+        margin-bottom: 50px;
+    }
+    .stocks__explanation {
+        margin-top: 50px;
+        font-size: 14px;
+        line-height: 21px;
+        letter-spacing: 0em;
+    }
+    .stocks__description {
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 29px;
+
+    }
+    .stocks__card-time {
+        margin-left: 400px;
+    }
+    .stocks__card-gift {
+        margin-right: 25px;
+    }
+    .stocks__time {
+        width: 325px;
+    }
+    .stocks__ellipse {
+        top: 25%; /* Выравнивание по вертикали */
+        left: 50%; /* Выравнивание по горизонтали */
+        transform: translate(-50%, -25%);
+        opacity: 1;
+    }
+    .stocks__item {
+        width: 325px;
+        height: 470px;
+        flex-shrink: 0;
+    }
+    .stocks__overlay-lvl2 {
+        width: 325px;
+    }
+
+    .menu__list {
+        align-self: center;
+        margin-top: 30px;
+        margin-bottom: 0px;
+        width: 100%;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+    .menu__categories {
+        margin-top: 10px;
+        position: relative;
+        width: clamp(48rem, 13.875rem + 71.0938vw, 59.375rem);
+        justify-content: center;
+    }
+
+    .menu__item {
+        width: 325px;
+    }
+    .menu__button {
+        border-width: 1px;
+        height: 40px;
+        padding: 0;
+        position: relative;
+        padding-left: 30px;
+        padding-right: 30px;
+    }
+    .menu__item .product__info-container {
+        margin-top: 28px;
+        width: 100%;
+    }
+
+    .menu__item-card {
+        width: 325px;
+        height: 250px;
+    }
+    .menu__item .product__name {
+        font-size: 24px;
+        line-height: 43px;
+        letter-spacing: 0em;
+    }
+    .menu__item .product__weight {
+        font-size: 16px;
+        line-height: 29px;
+        letter-spacing: 0em;
+    }
+    .menu__item .product__name-and-weight {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0px;
+    }
+    .menu__item .product__price {
+        margin-top: -5px;
+        font-size: 24px;
+        line-height: 43px;
+        letter-spacing: 0em;
+        margin-bottom: 22px;
+    }
+    .loyalty {
+        margin-top: 85px;
+    }
+    .loyalty__ellipse-left {
+        display: none;
+    }
+    .loyalty__ellipse-right {
+        display: none;
+    }
+    .loyalty__description {
+        font-size: 14px;
+        line-height: 25px;
+        letter-spacing: 0em;
+        margin-left: 24px;
+        margin-right: 24px;
+        margin-top: 0px;
+    }
+
+    .highlight__gold {
+        font-size: 14px;
+        line-height: 25px;
+        letter-spacing: 0em;
+    }
+    .loyalty__title {
+        font-size: clamp(6rem, 4.301rem + 7.2492vw, 13rem);
+         line-height: clamp(5rem, 3.8774rem + 4.7896vw, 9.625rem);
+        letter-spacing: 0.02em;
+        margin-bottom: 70px;
+    }
+    .loyalty__cards-container {
+        margin-top: 0px;
+        margin-right: 0px;
+        margin-left: 0px;
+        width: 365px;
+        height: 253px;
+        margin-bottom: 40px;
+        margin-left: 20px;
+        overflow-x: hidden;
+        transform: scale(1.3);
+    }
+    .loyalty__card {
+        width: 290px;
+        height: 180px;
+    }
+    .loyalty__card-front {
+    }
+    .dark {
+        top: 70px;
+    }
+    .dark__ellipse {
+        width: 260px;
+        height: 100px;
+
+    }
+
+    .ellipse_contacts {
+        display: none;
+    }
+    .loyalty__card-logo {
+        margin-top: 0px;
+        width: 75px;
+        height: 80px;
+    }
+    .loyalty__card-back .loyalty__card-logo {
+        margin-top: 0px;
+        width: 75px;
+        height: 80px;
+        margin-bottom: 20px;
+    }
+    .loyalty__card-decoration {
+        width: 220px;
+    }
+    .loaylty__card-title {
+        margin-top: -25px;
+        font-size: 50px;
+        line-height: 40px;
+        margin-bottom: 0px;
+    }
+    .loyalty__program-item {
+        width: 280px;
+        height: 178px;
+    }
+    .loyalty__program-overlay {
+        width: 271px;
+        height: 175px;
+    }
+    .loyalty__discount {
+        position: absolute;
+        width: 275px;
+    }
+    .loyalty__program-overlay-lvl2 {
+        width: 275px;
+        height: 175px;
+    }
+    .numbers {
+        font-size: 48px;
+        line-height: 58px;
+        letter-spacing: 0.02em;
+    }
+    .loyalty__container-title {
+        font-size: 32px;
+        line-height: 23px;
+        letter-spacing: 0.02em;
+        margin-top: 15px;
+        margin-bottom: 30px;
+
+    }
+    .loyalty__container-description {   
+        font-size: 14px;
+        line-height: 24px;
+        letter-spacing: 0em;
+
+    }
+    .loyalty__container-description br {
+        display: none;
+    }
+    .loyalty__program {
+        margin-right: 0px;
+        padding: 0px;
+        gap: 10px;
+        margin-top: 10px;
+    }
+
+      .loyalty__register {
+        width: 325px;
+        padding-left: 0px;
+        padding-right: 0px;
+        font-family: Gilroy;
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 19px;
+        letter-spacing: 0em;
+        padding-top: 18px;
+        padding-bottom: 18px;
+        margin-top: 16px;
+      }
+      .loyalty__register-text {
+        margin-top: 5px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        font-size: 14px;
+        line-height: 21px;
+      }
+      .loyalty__enter {
+        font-size: 14px;
+        line-height: 21px;
+      }
+      
+      .delivery__step {
+        gap: 16px;
+        position: relative;
+      }
+      .delivery__container {
+        margin-bottom: 0px;
+        gap: 10px;
+        width: 375px;
+      }
+      .delivery__decoration {
+        position: absolute;
+        top: 0px;
+      }
+      .delivery__step-2 {
+        gap: 10px;
+      }
+      .delivery__step-4 {
+        gap: 0px;
+      }
+      .delivery__step-4 .delivery__number{
+        margin-top: 10px;
+        margin-bottom: 10px;
+      }
+      .delivery__step-3 .delivery__number{
+        margin-top: 20px;
+        margin-bottom: 10px;
+      }
+      .delivery__step-1 .delivery__number{
+        margin-top: 20px;
+        margin-bottom: -5px;
+      }
+
+      .delivery__step-1 .delivery__decoration {
+        transform: rotate(-90deg);
+        bottom: 30px;
+        left: -30px;
+      }
+      .delivery__step-2 .delivery__decoration {
+        transform: rotate(90deg);
+        bottom: 90px;
+        right: 30px;
+      }
+      .delivery__step-3 .delivery__decoration {
+        transform: rotate(-90deg);
+        bottom: 75px;
+        left: 10px;
+      }
+      .delivery__step-4 .delivery__decoration {
+        transform: rotate(90deg);
+        bottom: 50px;
+        right: 30px;
+      }
+      
+      .delivery__number {
+        font-size: 48px;
+        line-height: 47px;
+      }
+      .delivery__step-text {
+        font-size: 14px;
+        line-height: 20px;
+
+      }
+
+      .delivery__step-text br{
+        display: none;
+      }
+
+      .delivery__step-2 .delivery__step-text {
+        width: 263px;
+      }
+      .delivery__step-3 .delivery__step-text {
+        width: 202px;
+      }
+      .delivery__step-4 .delivery__step-text {
+        width: 263px;
+      }
+      .delivery__title {
+        width: auto;
+        font-size: clamp(6rem, 4.301rem + 7.2492vw, 13rem);
+        line-height: clamp(5rem, 3.8774rem + 4.7896vw, 9.625rem);
+        letter-spacing: 0.02em;
+        margin-bottom: 15px;
+      }
+      .contacts__title {
+        margin-top: 100px;
+        margin-bottom: 0px;
+      }
+
+      .contacts__container {
+        margin-top: 32px;
+        margin-bottom: 55px;
+        gap: 30px;
+      }
+      .contacts__address-title {
+        margin-top: 0px;
+        margin-left: 24px;
+        font-size: 40px;
+        line-height: 60px;
+        letter-spacing: 0.02em;
+        margin-bottom: 10px;
+
+      }
+      .contacts__adress-white {
+        font-size: 14px;
+        line-height: 20px;
+        letter-spacing: 0em;
+        margin-left: 24px;
+        margin-bottom: 10px;
+        margin-top: -10px;
+      }
+      .contacts__time-title {
+        margin-top: 0px;
+        font-size: 40px;
+        line-height: 60px;
+        letter-spacing: 0.02em;
+        margin-left: 24px;
+        margin-bottom: 16px;
+      }
+      .address__time-container {
+        height: 267px;
+        margin-bottom: 20px;
+        width: clamp(20.3125rem, 12.4242rem + 33.657vw, 52.8125rem)
+
+      }
+      .header__title {
+        font-size: clamp(6rem, 4.301rem + 7.2492vw, 13rem);
+        line-height: clamp(5rem, 3.8774rem + 4.7896vw, 9.625rem);
+        margin-top: 45px;
+        margin-bottom: 36px;
+    }
+    .redis {
+        width: 80px;
+        top: 50px;
+        left: 0px;
+    }
+    
+    .leaf {
+        position: absolute;
+        z-index: 4;
+        top: 290px;
+        left: -30px;
+        width: 105px;
+    }
+    
+    .tomatoes {
+        position: absolute;
+        z-index: 4;
+        top: 509px;
+        left: 0;
+        display: none;
+    }
+    
+    .luchock {
+        position: absolute;
+        z-index: 4;
+        right: 100px;
+        top: -70px;
+        display: none;
+    }
+    
+    .perchick {
+        position: absolute;
+        z-index: 4;
+        right: 0;
+        top: 420px;
+        display: none;
+    }
+    
+    .onion {
+        position: absolute;
+        z-index: 4;
+        right: 0;
+        top: 729px;
+        display: none;
+    }
+    
+    .chesnochock {
+        position: absolute;
+        z-index: 4;
+        right: -40px;
+        top: 475px;
+        width: 103px;
+    }
+    .tomatoes_mobile {
+        display: block;
+        z-index: 4;
+        position: absolute;
+        right: 0;
+        top: 105px;
+    }
+    .perchick_mobile {
+        display: block;
+        position: absolute;
+        z-index: 4;
+        right: 40px;
+        top: 350px
+    }
+    .luchock_mobile {
+        display: block; 
+        position: absolute;
+        z-index: 4;
+        top: 165px
+    }
+    .loyalty__ellipse-mobile {
+        display: block;
+        position: absolute;
+        width: 100%;
+        top: -900px;
+        transform: scaleY(0.5);
+    }
+    .contacts {
+        overflow-y: hidden;
+    }
+    .ellipse_contacts-mobile {
+        display: block;
+        position: absolute;
+        width: 100%;
+        top: -1300px;
+        transform: scaleY(0.5);
+        opacity: 0.4;
+    }
+    .leaf-l1-mob {
+        display: block;
+        transform: rotate(201deg);
+        width: 97px;
+        left: -34px;
+        top: 140px;
+    }
+
+    .leaf-l2-mob {
+        display: block;
+        transform: rotate(126deg);
+        left: -60px;
+        top: 425px;
+        width: 170px;
+    }
+    .leaf-r1-mob {
+        display: block;
+        transform: rotate(352deg);
+        right: -50px;
+        width: 170px;
+        top: 125px;
+    }
+    .leaf-r2-mob {
+        display: block;
+        transform: rotate(39deg);
+        width: 380px;
+        right: -120px;
+        top: 400px;
+    }
+    .leaf-l1 {
+        display: none;
+    }
+    
+    .leaf-l2 {
+        display: none;
+    }
+    
+    .leaf-r1 {
+        display: none;
+    }
+    
+    .leaf-r2 {
+        display: none;
+    }
+    .contact__button {
+        width: clamp(20.3125rem, 12.4242rem + 33.657vw, 52.8125rem)
     }
   }

@@ -20,11 +20,13 @@
   </head>
   <body class="page">
     <header class="header">
-        <img class="left__ellipse" src="./images/big_bright_ellipse.png">
-        <img class="right__ellipse" src="./images/right_ellipse.png">
+        <div class="ellipse-container">
+          <img class="left__ellipse" src="./images/big_bright_ellipse.png">
+          <img class="right__ellipse" src="./images/right_ellipse.png">
+        </div>
         <nav class="nav">
           <img class="header__icon" src="./images/header_icon.png">
-          <button class="button__nav-mobile" onclick="window.nav__mobile.showModal();">
+          <button class="button__nav-mobile" onclick="window.nav__mobile.showModal();document.querySelector('.page').style.position='fixed';">
             <span class="line"></span>
             <span class="line"></span>
           </button>
@@ -39,7 +41,7 @@
             <img class="enter__icon" src="./images/svg/enter.svg">
             <p class="enter__text">вход</p>
           </button>
-          <button onclick="window.window__order.showModal();" class="nav__basket">
+          <button onclick="window.window__order.showModal();document.querySelector('.page').style.position='fixed';" class="nav__basket">
             <img class="basket__icon" src="./images/svg/busket.svg">
             <div class="mini__ellipse">
               <p class="quantity">0</p>
@@ -61,13 +63,16 @@
     </header>
     <main class="main">
         <section class="about__us" id="about__us-id">
-          <img class="redis" src="./images/svg/redis.svg">;
-          <img class="leaf" src="./images/svg/leaf.svg">;
-          <img class="tomatoes" src="./images/svg/tomatoes.svg">;
-          <img class="luchock" src="./images/svg/luchock.svg">;
-          <img class="perchick" src="./images/svg/perchick.svg">;
-          <img class="onion" src="./images/svg/onion.svg">;
-          <img class="chesnochock" src="./images/svg/chesnochock.svg">;
+          <img class="redis vegetabl" src="./images/svg/redis.svg">;
+          <img class="leaf vegetabl" src="./images/svg/leaf.svg">;
+          <img class="tomatoes vegetabl" src="./images/svg/tomatoes.svg">;
+          <img class="luchock vegetabl" src="./images/svg/luchock.svg">;
+          <img class="perchick vegetabl" src="./images/svg/perchick.svg">;
+          <img class="onion vegetabl" src="./images/svg/onion.svg">;
+          <img class="chesnochock vegetabl" src="./images/svg/chesnochock.svg">;
+          <img class="tomatoes_mobile" src="./images/svg/tomatoes__mobile.svg">;
+          <img class="perchick_mobile" src="./images/svg/perchik__mobile.svg">;
+          <img class="luchock_mobile" src="./images/svg/luchock__mobile.svg">;
           <p class="about__us-heading">МЫ - Свежие продукты, профессиональные повара, качественные ингредиенты,<br> быстрая доставка
             и<br>   традиционные кавказские<br> рецепты. 
           </p>
@@ -166,10 +171,15 @@
           <h2 class="loyalty__title title">программа лояльности</h2>
           <img class="loyalty__ellipse-right" src="./images/loyalty_ellipse_right.png">
           <img class="loyalty__ellipse-left" src="./images/loyalty__ellipse_left.png">
+          <img class="loyalty__ellipse-mobile" src="./images/loyalty__ellipse-mobile.png">
           <img class="loyalty__leaf leaf-l1" src="./images/svg/loyalty_left_leaf.svg">
           <img class="loyalty__leaf leaf-l2" src="./images/svg/leaf.svg">
           <img class="loyalty__leaf leaf-r1" src="./images/svg/loyalty_right_leaf.svg">
           <img class="loyalty__leaf leaf-r2" src="./images/svg/leaf.svg">
+          <img class="loyalty__leaf leaf-l1-mob" src="./images/svg/leaf.svg">
+          <img class="loyalty__leaf leaf-l2-mob" src="./images/svg/leaf.svg">
+          <img class="loyalty__leaf leaf-r1-mob" src="./images/svg/leaf.svg">
+          <img class="loyalty__leaf leaf-r2-mob" src="./images/svg/leaf.svg">
           <div class="loyalty__cards-container">
             <div class="loyalty__card loyalty__card-back">
               <img class="loyalty__card-logo" src="./images/svg/loyalty_logo.svg">
@@ -279,6 +289,7 @@
         <section class="contacts" id="contacts-id">
           <h2 class="contacts__title title">контакты</h2>
           <img class="ellipse_contacts" src="./images/contacts_ellipse.png">
+          <img class="ellipse_contacts-mobile" src="./images/contacts__ellipse-mobile.png">
           <div class="contacts__container">
             <div class="map-container">
               <iframe class="map" src="https://yandex.ru/map-widget/v1/?um=constructor%3Ad456207ce6144a4f6f956d2ef05dca766f07d91b93639b2080a29ce608ec5ace&amp;source=constructor" width="500" height="400" frameborder="0"></iframe>
@@ -323,7 +334,7 @@
     <template id="menu__card-template">
       <li class="menu__item">
         <div class="menu__item-card">
-          <button onclick="window.menu__order.showModal()" class="menu__card-overlay">
+          <button onclick="window.menu__order.showModal();document.querySelector('.page').style.position='fixed';" class="menu__card-overlay">
             <img class="menu__card-image">
             <div class="menu__button-click">
               <div class="menu__ellipse">
@@ -345,7 +356,7 @@
       <div class="enter__window-overlay"></div>
       <div class="enter__window-container">
         <h2 class="enter__window-tilte">программа лояльности</h2>
-        <button type="button" onclick="window.window__enter.close()" class="enter__window-close"></button>
+        <button type="button" onclick="window.window__enter.close();document.querySelector('.page').style.position='relative';" class="enter__window-close"></button>
         <input type="text" class="phone input_field" pattern="^\+7\(d{3}\)d{3}-d{2}-d{2}$"> 
         <input type="text" class="password input_field" placeholder="Пароль">
         <button type="button" onclick="window.window__enter.close()" class="enter__window-button">войти</button>
@@ -358,7 +369,7 @@
       <div class="enter__window-overlay"></div>
       <div class="enter__window-container">
         <h2 class="enter__window-tilte">Регистрация</h2>
-        <button type="button" onclick="window.window__registration.close();" class="enter__window-close"></button>
+        <button type="button" onclick="window.window__registration.close();document.querySelector('.page').style.position='relative';" class="enter__window-close"></button>
         <input type="text" class="name_surname input_field" placeholder="Имя и фамилия">
         <input type="text" class="phone input_field" pattern="^\+7\(d{3}\)d{3}-d{2}-d{2}$">
         <input type="text" class="email input_field" placeholder="Email">
@@ -370,11 +381,13 @@
       </div>
     </dialog>
 
-    <dialog class="enter__window enter__window-order" id="window__order">
-      <div class="enter__window-overlay"></div>
+    <dialog class="enter__window-order" id="window__order">
+      <div class="enter__window-overlay-container">
+        <div class="enter__window-overlay"></div>
+      </div>
       <div class="enter__window-container">
         <h2 class="enter__window-tilte enter__window-tilte-order">Ваш заказ:</h2>
-        <button type="button" onclick="window.window__order.close();" class="enter__window-close"></button>
+        <button type="button" onclick="window.window__order.close();document.querySelector('.page').style.position='relative';" class="enter__window-close"></button>
         <div class="window__order-container">
           <img class="order__line" src="./images/order_line.png">
           <div class="window__order-pay-container">
@@ -389,21 +402,21 @@
           <div class="window__order-container-options">
             <h3 class="order-option pay-option">способ оплаты:</h3>
             <div class="radio__container-pay">
-              <div>
+              <div class="radios">
                 <input type="radio" id="paycard" name="payopt" value="paycard" checked />
                 <label for="paycard">Картой <span class="paycard_stylize"> (Visa, Mastercard, МИР)</span></label>
               </div>
-              <div>
+              <div class="radios">
                 <input type="radio" id="paycash" name="payopt" value="paycash"/>
                 <label for="paycash">Наличными</label>
               </div>
               <h3 class="order-option delivery-option">доставка:</h3>
               <div class="radio__container-delivery">
-                <div>
+                <div class="radios">
                   <input type="radio" id="self" name="delopt" value="self"/>
                   <label for="self">Самовывоз</label>
                 </div>
-                <div>
+                <div class="radios">
                   <input type="radio" id="courier" name="delopt" value="courier" checked  />
                   <label for="courier">Курьер</label>
                 </div>
@@ -427,7 +440,7 @@
     <dialog class="menu__order" id="menu__order">
       <div class="menu__order-overlay"></div>
       <div class="menu__order-container">
-        <button type="button" onclick="window.menu__order.close();" class="enter__window-close"></button>
+        <button type="button" onclick="window.menu__order.close();document.querySelector('.page').style.position='relative';" class="enter__window-close"></button>
         <div class="menu__order-top">
           <div class="menu__order-photo-container">
             <img class="menu__order-photo">
@@ -437,7 +450,7 @@
             <p class="menu__order-weight">100 грамм</p>
             <p class="menu__order-compose"><span class="menu__order-lighter">Состав: </span><span class="menu__order-compose-list">мясо свинины, лук, специи</span></p>
             <p class="menu__order-price">300 ₽</p>
-            <button type="button" onclick="window.menu__order.close();" class="menu__order-button">в корзину</button>
+            <button type="button" onclick="window.menu__order.close();document.querySelector('.page').style.position='relative';" class="menu__order-button">в корзину</button>
           </div>
         </div>
         <p class="menu__order-recommend">также рекомендуем:</p>
@@ -450,14 +463,14 @@
     <dialog class="nav__mobile" id="nav__mobile">
       <div class="nav__mobile-overlay"></div>
       <div class="nav__mobile-container">
-        <button type="button" onclick="window.nav__mobile.close();" class="enter__window-close"></button>
+        <button type="button" onclick="window.nav__mobile.close();document.querySelector('.page').style.position='relative';" class="enter__window-close nav__mobile-close"></button>
         <img class="header__icon" src="./images/header_icon.png">
-        <p class="haha"><a href="#about__us-id" class="nav__menu-link">о нас</a></p>
-        <p class="haha"><a href="#menu-id" class="nav__menu-link">меню</a></p>
-        <p class="haha"><a href="#stocks_id" class="nav__menu-link">акции</a></p>
-        <p class="haha"><a href="#delivery__and__payment-id" class="nav__menu-link">доставка и оплата</a></p>
-        <p class="haha haha_last"><a href="#contacts-id" class="nav__menu-link">контакты</a></p>
-        <button class="nav__enter" onclick="window.window__enter.showModal();" aria-controls="window__enter">
+        <p class="haha"><a onclick="window.nav__mobile.close();document.querySelector('.page').style.position='relative';"  href="#about__us-id" class="nav__menu-link">о нас</a></p>
+        <p class="haha"><a onclick="window.nav__mobile.close();document.querySelector('.page').style.position='relative';"  href="#menu-id" class="nav__menu-link">меню</a></p>
+        <p class="haha"><a onclick="window.nav__mobile.close();document.querySelector('.page').style.position='relative';"  href="#stocks_id" class="nav__menu-link">акции</a></p>
+        <p class="haha"><a onclick="window.nav__mobile.close();document.querySelector('.page').style.position='relative';"  href="#delivery__and__payment-id" class="nav__menu-link">доставка и оплата</a></p>
+        <p class="haha haha_last"><a onclick="window.nav__mobile.close();document.querySelector('.page').style.position='relative';" href="#contacts-id" class="nav__menu-link">контакты</a></p>
+        <button class="nav__enter" onclick="window.window__enter.showModal();window.nav__mobile.close();" aria-controls="window__enter">
           <img class="enter__icon" src="./images/svg/enter.svg">
           <p class="enter__text">вход</p>
         </button>
@@ -466,7 +479,7 @@
         </div>
       </div>
     </dialog>
-    <script src="./scripts/index.js"></script>
+    <script src="./scripts/index.js"></script> 
   </body>
 </html>
  
