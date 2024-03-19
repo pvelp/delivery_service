@@ -214,6 +214,10 @@ dialog::backdrop {
 
 .enter__window-order {
     width: 1520px;
+    background-color: #161616;
+    border: 2px solid #FADAAB;
+    border-radius: 20px;
+
 }
 
 /* -- Окно заказа -- */

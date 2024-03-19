@@ -58,7 +58,8 @@
 }
 
 .menu__list {
-    width: 1519px;
+    width: 90%;
+    justify-content: center;
 }
 
 .menu__item .product__info-container {

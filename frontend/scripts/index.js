@@ -264,11 +264,10 @@ orderButton.addEventListener('click', () => {
     makeOrder(products);
 });
 
-// Функция для перемещения finalCostContainer после promoContainer
 function moveFinalCostContainer() {
     var finalCostContainer = document.querySelector('.final__cost-container');
-    var promoContainer = document.querySelector('.promo__container');
-    promoContainer.parentNode.insertBefore(finalCostContainer, promoContainer.nextSibling);
+    var orderContainer = document.querySelector('.window__order-container-order');
+    orderContainer.insertAdjacentElement('afterend', finalCostContainer);
 }
 
 // Функция для проверки разрешения экрана и выполнения перемещения
@@ -276,9 +275,12 @@ function checkResolution() {
     // Проверяем текущее разрешение экрана
     var screenWidth = window.innerWidth;
     
-    // Если разрешение экрана меньше или равно 768px, вызываем функцию для перемещения
     if (screenWidth <= 768) {
+        // Если разрешение экрана меньше или равно 768px, перемещаем finalCostContainer после window__order-container-order
         moveFinalCostContainer();
+    } else {
+        // Если разрешение экрана больше 768px, перемещаем finalCostContainer обратно в начало window__order-container
+        document.querySelector('.window__order-pay-container').prepend(finalCostContainer);
     }
 }
 

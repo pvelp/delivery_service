@@ -10,6 +10,13 @@
     display: none;
 }
 
+.header__menu a {
+    text-decoration: none;
+    color: #FADAAB;
+}
+.header__menu:hover a{
+    color: #161616;
+}
 .left__ellipse {
     position: absolute;
     left: 0;
