@@ -1,9 +1,10 @@
 from decimal import Decimal
-from datetime import datetime, time, timedelta
+from datetime import datetime
+
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 from pytz import timezone
 
-from django.db import IntegrityError, DataError
-from django.shortcuts import redirect
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status
 from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView
@@ -50,10 +51,52 @@ class ProductRetrieveAPIView(RetrieveAPIView):
 
 
 class AddToCart(APIView):
+    """
+    Контроллер отвечает за добавление товара в корзину
+    """
+
+    @swagger_auto_schema(
+        operation_description="Добавляет товар в корзину",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'product_id': openapi.Schema(type=openapi.TYPE_INTEGER, description='ID продукта'),
+                'quantity': openapi.Schema(type=openapi.TYPE_INTEGER, description='Количество товара (по умолчанию 1)'),
+            }
+        ),
+        responses={
+            status.HTTP_201_CREATED: openapi.Schema(
+                type=openapi.TYPE_ARRAY,
+                items=openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'message': openapi.Schema(type=openapi.TYPE_STRING, description='Сообщение об успешном добавлении'),
+                        'cart_id': openapi.Schema(type=openapi.TYPE_INTEGER, description='ID корзины'),
+                        'product_id': openapi.Schema(type=openapi.TYPE_INTEGER, description='ID продукта в корзине'),
+                        'quantity': openapi.Schema(type=openapi.TYPE_INTEGER, description='Количество товара в корзине'),
+                    }
+                )
+            ),
+            status.HTTP_400_BAD_REQUEST: openapi.Schema(
+                type=openapi.TYPE_OBJECT,
+                properties={
+                    'error': openapi.Schema(type=openapi.TYPE_STRING, description='Ошибка при добавлении товара'),
+                }
+            ),
+            status.HTTP_404_NOT_FOUND: openapi.Schema(
+                type=openapi.TYPE_OBJECT,
+                properties={
+                    'error': openapi.Schema(type=openapi.TYPE_STRING, description='Продукт не найден'),
+                }
+            ),
+        }
+    )
     def post(self, request):
+        """
+        Добавляет товар в корзину
+        """
         product_id = request.data.get('product_id')
-        quantity = request.data.get('quantity',
-                                    1)  # Если количество не указано, то по умолчанию 1, предполагается нажатие на "+"
+        quantity = request.data.get('quantity', 1)
 
         if request.user.is_authenticated:
             user = request.user
@@ -88,7 +131,53 @@ class AddToCart(APIView):
 
 
 class RemoveFromCart(APIView):
+    """
+        Контроллер отвечает за удаление товара из корзины.
+        """
+
+    @swagger_auto_schema(
+        operation_description="Удаляет товар из корзины",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'product_id': openapi.Schema(type=openapi.TYPE_INTEGER,
+                                             description='ID продукта, который нужно удалить из корзины.')
+            }
+        ),
+        responses={
+            status.HTTP_200_OK: openapi.Schema(
+                type=openapi.TYPE_ARRAY,
+                items=openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'message': openapi.Schema(type=openapi.TYPE_STRING,
+                                                  description='Сообщение об успешном удалении товара из корзины'),
+                        'details': openapi.Schema(
+                            type=openapi.TYPE_OBJECT,
+                            properties={
+                                'cart_id': openapi.Schema(type=openapi.TYPE_INTEGER, description='ID корзины'),
+                                'product_id': openapi.Schema(type=openapi.TYPE_INTEGER,
+                                                             description='ID удаленного продукта из корзины'),
+                                'quantity': openapi.Schema(type=openapi.TYPE_INTEGER,
+                                                           description='Количество товара в корзине после удаления')
+                            }
+                        )
+                    }
+                )
+            ),
+            status.HTTP_404_NOT_FOUND: openapi.Schema(
+                type=openapi.TYPE_OBJECT,
+                properties={
+                    'error': openapi.Schema(type=openapi.TYPE_STRING, description='Продукт не найден в корзине'),
+                }
+            )
+        }
+    )
     def post(self, request):
+        """
+        Удаляет одну единицу товара из корзины.
+
+        """
         product_id = request.data.get('product_id')
 
         if request.user.is_authenticated:
@@ -136,6 +225,46 @@ class RemoveFromCart(APIView):
 
 
 class CartView(APIView):
+    """
+        Контроллер для просмотра содержимого корзины.
+        Считается корзина - обязательный контроллерр
+        """
+
+    @swagger_auto_schema(
+        operation_description="Получение содержимого корзины",
+        responses={
+            status.HTTP_200_OK: openapi.Schema(
+                type=openapi.TYPE_OBJECT,
+                properties={
+                    'cart_items': openapi.Schema(
+                        type=openapi.TYPE_ARRAY,
+                        items=openapi.Schema(
+                            type=openapi.TYPE_OBJECT,
+                            properties={
+                                'product_id': openapi.Schema(type=openapi.TYPE_INTEGER, description='ID продукта'),
+                                'title': openapi.Schema(type=openapi.TYPE_STRING, description='Название продукта'),
+                                'quantity': openapi.Schema(type=openapi.TYPE_INTEGER, description='Количество товара'),
+                                'price': openapi.Schema(type=openapi.TYPE_NUMBER, description='Цена товара'),
+                                'total_price': openapi.Schema(type=openapi.TYPE_NUMBER,
+                                                              description='Общая стоимость товара'),
+                            }
+                        )
+                    ),
+                    'total_amount': openapi.Schema(type=openapi.TYPE_NUMBER, description='Общая стоимость корзины'),
+                    'total_amount_with_discount': openapi.Schema(
+                        type=openapi.TYPE_NUMBER,
+                        description='Общая стоимость корзины с учетом скидки (если применяется)'
+                    ),
+                }
+            ),
+            status.HTTP_404_NOT_FOUND: openapi.Schema(
+                type=openapi.TYPE_OBJECT,
+                properties={
+                    'error': openapi.Schema(type=openapi.TYPE_STRING, description='Корзина не найдена'),
+                }
+            )
+        }
+    )
     def get(self, request):
         if request.user.is_authenticated:
             user = request.user
@@ -221,8 +350,43 @@ class CartView(APIView):
 
 
 class ApplyPromoCode(APIView):
+    """
+       Контроллер для применения промокодов к корзине.
+       """
+
     permission_classes = [IsAuthenticated]
 
+    @swagger_auto_schema(
+        operation_description="Применение промокода к корзине",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'promo_code': openapi.Schema(type=openapi.TYPE_STRING, description='Промокод'),
+            }
+        ),
+        responses={
+            status.HTTP_200_OK: openapi.Schema(
+                type=openapi.TYPE_OBJECT,
+                properties={
+                    'message': openapi.Schema(type=openapi.TYPE_STRING,
+                                              description='Сообщение об успешном применении промокода'),
+                }
+            ),
+            status.HTTP_404_NOT_FOUND: openapi.Schema(
+                type=openapi.TYPE_OBJECT,
+                properties={
+                    'error': openapi.Schema(type=openapi.TYPE_STRING, description='Промокод не найден'),
+                }
+            ),
+            status.HTTP_403_FORBIDDEN: openapi.Schema(
+                type=openapi.TYPE_OBJECT,
+                properties={
+                    'error': openapi.Schema(type=openapi.TYPE_STRING,
+                                            description='Достигнут предел использования этого промокода'),
+                }
+            ),
+        }
+    )
     def post(self, request):
         promo_code = request.data.get('promo_code')
 
