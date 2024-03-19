@@ -818,7 +818,7 @@
 .ellipse_contacts-mobile {
     display: none;
 }
-@media (min-width: 320px) {
+@media (max-width: 376px) {
     .main {
         overflow-x: hidden;
     }
@@ -1467,7 +1467,7 @@
     }
   }
 
-  @media (min-width: 767px) {
+  @media (376px < width < 769px) {
     .main {
         overflow-x: hidden;
     }
@@ -2059,7 +2059,7 @@
     }
   }
 
-  @media (min-width: 1024px) {
+  @media (769px < width < 1025px) {
     .main {
         overflow-x: hidden;
     }

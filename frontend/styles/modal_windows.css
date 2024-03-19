@@ -771,7 +771,7 @@ dialog::backdrop {
     right: 20px;
 }
 
-@media (min-width: 320px) {
+@media (max-width: 376px) {
     #window__enter {
         width: 325px;
     }
@@ -1030,7 +1030,7 @@ dialog::backdrop {
     }
 }
 
-@media (min-width: 767px) {
+@media (376px < width < 769px) {
     #window__enter {
         width: 325px;
     }
@@ -1289,7 +1289,7 @@ dialog::backdrop {
     }
 }
 
-@media (min-width: 1024px) {
+@media (769px < width < 1025px) {
     #window__enter {
         width: 325px;
     }

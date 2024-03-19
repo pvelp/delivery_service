@@ -260,7 +260,7 @@
     border-color: #FADAAB;
 }
 
-@media (min-width: 320px) {
+@media (max-width: 376px) {
     .header {
     }
     .nav {
@@ -386,7 +386,7 @@
     }
   }
 
-  @media (min-width: 767px) {
+  @media (376px < width < 769px) {
     .header {
     }
     .nav {
@@ -511,7 +511,7 @@
     }
   }
 
-  @media (min-width: 1024px) {
+  @media (769px < width < 1025px) {
     .header {
     }
     .nav {

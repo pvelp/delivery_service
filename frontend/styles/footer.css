@@ -151,7 +151,7 @@
     z-index: 1;
 }
 
-@media (min-width: 320px) {
+@media (max-width: 376px) {
     .footer__logo {
         width: 91px;
         height: 91px;
@@ -246,7 +246,7 @@
     }
 }   
 
-@media (min-width: 767px) {
+@media (376 < width < 769px) {
     .footer__logo {
         width: 91px;
         height: 91px;
@@ -341,7 +341,7 @@
     }
 }   
 
-@media (min-width: 1024px) {
+@media (769px < width < 1025px) {
     .footer__logo {
         width: 91px;
         height: 91px;
