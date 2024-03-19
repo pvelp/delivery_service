@@ -14,5 +14,5 @@ urlpatterns = [
     path('remove-from-cart/', RemoveFromCart.as_view(), name='remove_from_cart'),
     path('cart/', CartView.as_view(), name='cart'),
     path('apply-promo-code/', ApplyPromoCode.as_view(), name='apply_promo_code'),
-    path('place-order/', OrderCreateAPIView.as_view(), name='place_order')
+    path('order/', OrderCreateAPIView.as_view(), name='order')
 ]

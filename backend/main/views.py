@@ -199,7 +199,7 @@ class CartView(APIView):
                 cart.save()
                 response_data = {
                     'cart_items': cart_data,
-                    'total_amount': cart.total_amount,
+                    'total_amount': total_amount,
                     'total_amount_with_discount': total_amount_with_discount
                 }
                 return Response(response_data, status=status.HTTP_200_OK)
@@ -291,8 +291,8 @@ class OrderCreateAPIView(CreateAPIView):
 
         #  TODO: добавить последний адрес заказа, увеличить сумму заказов пользователя в поля User (тоже самое после ответа платежки)
         if user:
-            user.address = serializer.validated_data.get('delivery_address')
-            user.total_amount += order.order_amount
+            user.address = order.delivery_address
+            user.total_amount += float(order.order_amount)
 
         if cart.promo:
             #  TODO: добавить использование промо в PromoUsage (тоже самое после ответа платежки)

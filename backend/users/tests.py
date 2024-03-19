@@ -203,6 +203,7 @@ class PostUserTestCase(APITestCase):
             }
         )
 
+
 class ActivateUserTestCase(APITestCase):
     def setUp(self):
         self.users_url = 'http://localhost:8000/users/'

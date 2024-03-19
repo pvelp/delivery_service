@@ -1,11 +1,11 @@
-#  TODO: Добавить тесты на все реальзованные эндпоинты
+#  TODO: Добавить тесты на все реальзованные эндпоинты (остался 1 - создание заказа)
 
 from decimal import Decimal
 from rest_framework import status
 from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
 
-from main.models import Category, Product, RecommendedProducts, Promo, CartItem, Cart, PromoUsage
+from main.models import Category, Product, RecommendedProducts, Promo, CartItem, Cart, PromoUsage, HappyHours
 from users.models import User
 
 
@@ -440,7 +440,7 @@ class CartTestCase(APITestCase):
         self.product3 = Product.objects.create(
             title='курица',
             price=200,
-            category=self.category1
+            category=self.category2
         )
         self.promo_1 = Promo.objects.create(
             title='2020',
@@ -495,6 +495,14 @@ class CartTestCase(APITestCase):
             product=self.product3,
             quantity=5
         )
+        self.happy_hours = HappyHours.objects.create(
+            time_to_start='00:00:00',
+            time_to_end='23:59:59',
+            discount_percentage=10,
+            is_active=False
+        )
+        #  - поставил статус False, можно вынести в отдельный тест, видно, что скидка работает - реагирует именно на московское время
+        #  категорию "Напитки" игнорирует, всё как и ожидалось для этой акции
 
     def test_cart_not_found(self):
         self.client.force_authenticate(user=self.user_4)
@@ -570,7 +578,7 @@ class CartTestCase(APITestCase):
                                  self.cart_item_1_2.quantity * self.cart_item_1_2.product.price),
                 'total_amount_with_discount': (self.cart_item_1_1.quantity * self.cart_item_1_1.product.price +
                                                self.cart_item_1_2.quantity * self.cart_item_1_2.product.price) *
-                                              (100 - self.cart_1.promo.discount_percentage)/100
+                                              (100 - self.cart_1.promo.discount_percentage) / 100
             }
         )
 
@@ -681,7 +689,6 @@ class PromoTestCase(APITestCase):
         )
 
     def test_non_authenticated_user(self):
-
         response = self.client.post(
             self.promo_url,
             self.promo_1_response
@@ -693,7 +700,6 @@ class PromoTestCase(APITestCase):
         )
 
     def test_apply_discount_promo(self):
-
         self.client.force_authenticate(user=self.user_1)
 
         response = self.client.post(
@@ -712,7 +718,6 @@ class PromoTestCase(APITestCase):
         )
 
     def test_apply_product_promo(self):
-
         self.client.force_authenticate(user=self.user_1)
 
         response = self.client.post(
@@ -731,7 +736,6 @@ class PromoTestCase(APITestCase):
         )
 
     def test_apply_another_promo(self):
-
         self.client.force_authenticate(user=self.user_2)
 
         response = self.client.post(
@@ -750,7 +754,6 @@ class PromoTestCase(APITestCase):
         )
 
     def test_max_of_usage(self):
-
         self.client.force_authenticate(user=self.user_3)
 
         response = self.client.post(
@@ -769,7 +772,6 @@ class PromoTestCase(APITestCase):
         )
 
     def test_promo_not_found(self):
-
         self.client.force_authenticate(user=self.user_3)
 
         response = self.client.post(
@@ -787,3 +789,195 @@ class PromoTestCase(APITestCase):
             {'error': 'Promo code not found'}
         )
 
+
+class OrderCreateTestCase(APITestCase):
+
+    def setUp(self):
+        self.order_url = 'http://localhost:8000/order/'
+        self.category1 = Category.objects.create(
+            title='Шашлыки'
+        )
+        self.category2 = Category.objects.create(
+            title='Напитки'
+        )
+        self.product1 = Product.objects.create(
+            title='шашлык1',
+            price=500,
+            category=self.category1
+        )
+        self.product2 = Product.objects.create(
+            title='шашлык3',
+            price=400,
+            category=self.category1,
+            is_hidden=True
+        )
+        self.product3 = Product.objects.create(
+            title='курица',
+            price=200,
+            category=self.category1
+        )
+        self.promo_1 = Promo.objects.create(
+            title='2020',
+            discount_percentage=10,
+            max_usage_count=2,
+        )
+        self.promo_2 = Promo.objects.create(
+            title='1010',
+            promo_product=self.product3,
+            max_usage_count=1,
+        )
+        self.user_1 = User.objects.create(
+            email='user@example.com',
+        )
+        self.user_2 = User.objects.create(
+            email='user2@example.com',
+        )
+        self.user_3 = User.objects.create(
+            email='user3@example.com'
+        )
+        self.user_4 = User.objects.create(
+            email='user4@example.com'
+        )
+        self.cart_1 = Cart.objects.create(
+            user=self.user_1,
+            promo=self.promo_1,
+        )
+        self.cart_2 = Cart.objects.create(
+            user=self.user_2,
+            promo=self.promo_2,
+        )
+        self.cart_3 = Cart.objects.create(
+            user=self.user_3,
+            total_amount=1000
+        )
+        self.cart_item_1_1 = CartItem.objects.create(
+            cart=self.cart_1,
+            product=self.product1,
+            quantity=1
+        )
+        self.cart_item_1_2 = CartItem.objects.create(
+            cart=self.cart_1,
+            product=self.product3,
+            quantity=1
+        )
+        self.cart_item_2_1 = CartItem.objects.create(
+            cart=self.cart_2,
+            product=self.product1,
+            quantity=2
+        )
+        self.cart_item_3 = CartItem.objects.create(
+            cart=self.cart_3,
+            product=self.product3,
+            quantity=5
+        )
+        self.parameters_0 = {}
+        self.parameters_1 = {
+            'buyer_name': 'Test',
+            'buyer_phone_number': '+79771111111',
+            'delivery_address': 'Test_address',
+            'payment_method': 'to_courier',
+            'delivery_method': 'pickup'
+        }
+        self.parameters_2 = {
+            'buyer_name': 'Test',
+            'buyer_phone_number': '+79771111111',
+            'delivery_address': 'Test_address',
+            'payment_method': 'bla',
+            'delivery_method': 'vla'
+        }
+        self.parameters_3 = {
+            'buyer_name': 'Test',
+            'buyer_phone_number': '+79771111111',
+            'delivery_address': 'Test_address',
+            'payment_method': 'online',
+            'delivery_method': 'pickup'
+        }
+
+    def test_order_200(self):
+        self.client.force_authenticate(user=self.user_3)
+
+        response = self.client.post(
+            self.order_url,
+            self.parameters_1
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK
+        )
+
+    def test_order_400(self):
+        self.client.force_authenticate(user=self.user_3)
+
+        response = self.client.post(
+            self.order_url,
+            self.parameters_0
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_400_BAD_REQUEST
+        )
+
+        self.maxDiff = None
+        self.assertEqual(
+            response.json(),
+            {'buyer_name': ['This field is required.'],
+             'buyer_phone_number': ['This field is required.'],
+             'delivery_address': ['This field is required.'],
+             'delivery_method': ['This field is required.'],
+             'payment_method': ['This field is required.']}
+        )
+
+    def test_order_400_wrong_choice(self):
+        self.client.force_authenticate(user=self.user_3)
+
+        response = self.client.post(
+            self.order_url,
+            self.parameters_2
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_400_BAD_REQUEST
+        )
+
+        self.assertEqual(
+            response.json(),
+            {'delivery_method':
+                {'detail': 'Field "delivery_method" must be chosen from "courier" or "pickup"'},
+             'payment_method':
+                 {'detail': 'Field "payment_method" must be chosen from "to_courier" or "online"'}}
+
+        )
+
+    def test_cart_not_found(self):
+        self.client.force_authenticate(user=self.user_4)
+
+        response = self.client.post(
+            self.order_url,
+            self.parameters_1
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_404_NOT_FOUND
+        )
+
+    def test_online_not_available(self):
+        self.client.force_authenticate(user=self.user_3)
+
+        response = self.client.post(
+            self.order_url,
+            self.parameters_3
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_400_BAD_REQUEST
+        )
+
+        self.assertEqual(
+            response.json(),
+            {'error': 'Online payment method is temporarily unavailable. Please choose payment "to_courier".'}
+        )

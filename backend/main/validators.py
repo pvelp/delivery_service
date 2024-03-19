@@ -59,3 +59,47 @@ class BuyerNameValidator:
                         'Field "buyer_name" is required'
                 }
             )
+
+
+class PaymentMethodValidator:
+
+    def __init__(self, field):
+        self.field = field
+
+    def __call__(self, value):
+        if not value:
+            raise serializers.ValidationError(
+                {
+                    'detail':
+                        'Field "payment_method" is required'
+                }
+            )
+        elif value != 'to_courier' and value != 'online':
+            raise serializers.ValidationError(
+                {
+                    'detail':
+                        'Field "payment_method" must be chosen from "to_courier" or "online"'
+                }
+            )
+
+
+class DeliveryMethodValidator:
+
+    def __init__(self, field):
+        self.field = field
+
+    def __call__(self, value):
+        if not value:
+            raise serializers.ValidationError(
+                {
+                    'detail':
+                        'Field "delivery_method" is required'
+                }
+            )
+        elif value != 'courier' and value != 'pickup':
+            raise serializers.ValidationError(
+                {
+                    'detail':
+                        'Field "delivery_method" must be chosen from "courier" or "pickup"'
+                }
+            )
