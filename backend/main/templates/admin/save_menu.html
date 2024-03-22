@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Save categories and products from iikoWeb menu</title>
+</head>
+<body>
+    <h1>Сохранить/обновить товары из iikoWeb Menu</h1>
+        <form method="post" action="{% url 'admin:save-menu' %}">
+            {% csrf_token %}
+            <input type="text" name="menu_id" placeholder="Введите ID меню">
+            <input type="text" name="organization_id" placeholder="Введите ID организации">
+            <button type="submit">Submit</button>
+        </form>
+</body>
+</html>
