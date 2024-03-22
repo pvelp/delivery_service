@@ -76,6 +76,7 @@ class Cart(models.Model):
     session_id = models.CharField(max_length=255, **NULLABLE)
     products = models.ManyToManyField(Product, through='CartItem')
     promo = models.ForeignKey(Promo, on_delete=models.CASCADE, verbose_name='Промокод', **NULLABLE)
+    is_happy_hours = models.BooleanField(default=False, verbose_name='Акция Счастливые часы', **NULLABLE)
     total_amount = models.DecimalField(max_digits=9, decimal_places=2, verbose_name='Стоимость покупок в корзине',
                                        **NULLABLE)
 
@@ -109,6 +110,7 @@ class Order(models.Model):
     delivery_method = models.CharField(max_length=7, choices=DeliveryChoices.choices,
                                        default=DeliveryChoices.courier, verbose_name='Способ доставки')
     promo = models.ForeignKey(Promo, on_delete=models.SET_NULL, verbose_name='Промокод', **NULLABLE)  # пользователь вводит промокод, после нажатия применить, промокод сравнивается с промокодами в модели промокодов и применятся или нет
+    is_happy_hours = models.BooleanField(default=False, verbose_name='Акция Счастливые часы', **NULLABLE)
 
     def __str__(self):
         return f'Заказ №{self.id} от {self.order_datetime} для {self.buyer_name}'

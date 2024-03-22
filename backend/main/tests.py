@@ -440,7 +440,7 @@ class CartTestCase(APITestCase):
         self.product3 = Product.objects.create(
             title='курица',
             price=200,
-            category=self.category2
+            category=self.category2,
         )
         self.promo_1 = Promo.objects.create(
             title='2020',
@@ -536,11 +536,15 @@ class CartTestCase(APITestCase):
                 'cart_items': [{
                     'price': self.cart_item_3.product.price,
                     'product_id': self.cart_item_3.product.id,
+                    'image': self.cart_item_3.product.image,
+                    'weight': self.cart_item_3.product.weight,
                     'quantity': self.cart_item_3.quantity,
                     'title': self.cart_item_3.product.title,
                     'total_price': self.cart_item_3.quantity * self.cart_item_3.product.price
                 }],
-                'total_amount': self.cart_item_3.quantity * self.cart_item_3.product.price
+                'total_amount': self.cart_item_3.quantity * self.cart_item_3.product.price,
+                'total_amount_with_discount': None,
+                'happy_hours': False
             }
         )
 
@@ -563,6 +567,8 @@ class CartTestCase(APITestCase):
                         'price': self.cart_item_1_1.product.price,
                         'product_id': self.cart_item_1_1.product.id,
                         'quantity': self.cart_item_1_1.quantity,
+                        'image': self.cart_item_1_1.product.image,
+                        'weight': self.cart_item_1_1.product.weight,
                         'title': self.cart_item_1_1.product.title,
                         'total_price': self.cart_item_1_1.quantity * self.cart_item_1_1.product.price
                     },
@@ -570,6 +576,8 @@ class CartTestCase(APITestCase):
                         'price': self.cart_item_1_2.product.price,
                         'product_id': self.cart_item_1_2.product.id,
                         'quantity': self.cart_item_1_2.quantity,
+                        'image': self.cart_item_1_2.product.image,
+                        'weight': self.cart_item_1_2.product.weight,
                         'title': self.cart_item_1_2.product.title,
                         'total_price': self.cart_item_1_2.quantity * self.cart_item_1_2.product.price
                     }
@@ -578,7 +586,8 @@ class CartTestCase(APITestCase):
                                  self.cart_item_1_2.quantity * self.cart_item_1_2.product.price),
                 'total_amount_with_discount': (self.cart_item_1_1.quantity * self.cart_item_1_1.product.price +
                                                self.cart_item_1_2.quantity * self.cart_item_1_2.product.price) *
-                                              (100 - self.cart_1.promo.discount_percentage) / 100
+                                              (100 - self.cart_1.promo.discount_percentage) / 100,
+                'happy_hours': False
             }
         )
 
@@ -600,6 +609,8 @@ class CartTestCase(APITestCase):
                     {
                         'price': self.cart_item_2_1.product.price,
                         'product_id': self.cart_item_2_1.product.id,
+                        'image': self.cart_item_2_1.product.image,
+                        'weight': self.cart_item_2_1.product.weight,
                         'quantity': self.cart_item_2_1.quantity,
                         'title': self.cart_item_2_1.product.title,
                         'total_price': self.cart_item_2_1.quantity * self.cart_item_2_1.product.price
@@ -607,12 +618,16 @@ class CartTestCase(APITestCase):
                     {
                         'product_id': self.promo_2.promo_product.id,
                         'title': self.promo_2.promo_product.title,
+                        'image': self.promo_2.promo_product.image,
+                        'weight': self.promo_2.promo_product.weight,
                         'quantity': 1,
                         'price': 0,
                         'total_price': 0
                     }
                 ],
-                'total_amount': self.cart_item_2_1.quantity * self.cart_item_2_1.product.price
+                'total_amount': self.cart_item_2_1.quantity * self.cart_item_2_1.product.price,
+                'total_amount_with_discount': None,
+                'happy_hours': False
             }
         )
 
@@ -709,12 +724,7 @@ class PromoTestCase(APITestCase):
 
         self.assertEqual(
             response.status_code,
-            status.HTTP_200_OK
-        )
-
-        self.assertEqual(
-            response.json(),
-            {'message': 'Promo code applied successfully'}
+            status.HTTP_302_FOUND
         )
 
     def test_apply_product_promo(self):
@@ -727,12 +737,7 @@ class PromoTestCase(APITestCase):
 
         self.assertEqual(
             response.status_code,
-            status.HTTP_200_OK
-        )
-
-        self.assertEqual(
-            response.json(),
-            {'message': 'Promo code applied successfully'}
+            status.HTTP_302_FOUND
         )
 
     def test_apply_another_promo(self):
@@ -745,12 +750,7 @@ class PromoTestCase(APITestCase):
 
         self.assertEqual(
             response.status_code,
-            status.HTTP_200_OK
-        )
-
-        self.assertEqual(
-            response.json(),
-            {'message': 'Promo code applied successfully'}
+            status.HTTP_302_FOUND
         )
 
     def test_max_of_usage(self):
@@ -903,7 +903,7 @@ class OrderCreateTestCase(APITestCase):
 
         self.assertEqual(
             response.status_code,
-            status.HTTP_200_OK
+            status.HTTP_201_CREATED
         )
 
     def test_order_400(self):

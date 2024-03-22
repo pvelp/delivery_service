@@ -35,6 +35,7 @@ def send_telegram_message(bot_token, order):
         Способ оплаты: {order.payment_method}
         Способ доставки: {order.delivery_method}
         Промокод: {order.promo}
+        Скидка по акции "Счасливые часы": {order.is_happy_hours}
         
         Сумма заказа: {order.order_amount}'''
 

@@ -1,26 +1,26 @@
-from decimal import Decimal
-from datetime import datetime
-
+from django.http import HttpResponseRedirect
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
-from pytz import timezone
 
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status
 from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView
 from config.settings import tg_token
 
-from main.serializers import ProductSerializer, ProductRetrieveSerializer, OrderSerializer
+from main.services import calculate_cart
+from main.serializers import ProductSerializer, ProductRetrieveSerializer, OrderSerializer, CategorySerializer
 from main.filters import ProductFilter
-from main.models import Product, RecommendedProducts, Cart, CartItem, Promo, PromoUsage, Order, OrderItem, HappyHours
+from main.models import Product, RecommendedProducts, Cart, CartItem, Promo, PromoUsage, Order, OrderItem, HappyHours, Category
 from main.tasks import send_telegram_message, send_email_message
 from main.pagination import ProductPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.reverse import reverse
 from rest_framework.views import APIView
 
 
 class ProductListAPIView(ListAPIView):
+    #  TODO: список категорий
     serializer_class = ProductSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = ProductFilter
@@ -36,6 +36,13 @@ class ProductListAPIView(ListAPIView):
         if category_ids:
             queryset = queryset.filter(category_id__in=category_ids)
         return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        categories = Category.objects.all()
+        serializer = CategorySerializer(categories, many=True)
+        context['categories'] = serializer.data
+        return context
 
 
 class ProductRetrieveAPIView(RetrieveAPIView):
@@ -243,6 +250,8 @@ class CartView(APIView):
                             properties={
                                 'product_id': openapi.Schema(type=openapi.TYPE_INTEGER, description='ID продукта'),
                                 'title': openapi.Schema(type=openapi.TYPE_STRING, description='Название продукта'),
+                                'image': openapi.Schema(type=openapi.TYPE_STRING, description='URL картинки'),
+                                'weight': openapi.Schema(type=openapi.TYPE_INTEGER, description='Вес продукта'),
                                 'quantity': openapi.Schema(type=openapi.TYPE_INTEGER, description='Количество товара'),
                                 'price': openapi.Schema(type=openapi.TYPE_NUMBER, description='Цена товара'),
                                 'total_price': openapi.Schema(type=openapi.TYPE_NUMBER,
@@ -253,8 +262,9 @@ class CartView(APIView):
                     'total_amount': openapi.Schema(type=openapi.TYPE_NUMBER, description='Общая стоимость корзины'),
                     'total_amount_with_discount': openapi.Schema(
                         type=openapi.TYPE_NUMBER,
-                        description='Общая стоимость корзины с учетом скидки (если применяется)'
+                        description='Общая стоимость корзины с учетом скидки (если применяется, если нет None)'
                     ),
+                    'happy_hours': openapi.Schema(type=openapi.TYPE_BOOLEAN, description='Акция счастливые часы')
                 }
             ),
             status.HTTP_404_NOT_FOUND: openapi.Schema(
@@ -280,72 +290,8 @@ class CartView(APIView):
         except Cart.DoesNotExist:
             return Response({'error': 'Cart not found'}, status=status.HTTP_404_NOT_FOUND)
 
-        cart_items = CartItem.objects.filter(cart=cart.id)
-        cart_data = []
-        total_amount = 0
+        response_data = calculate_cart(cart)
 
-        moscow_timezone = timezone('Europe/Moscow')
-        current_time = datetime.now(moscow_timezone).time()
-
-        try:
-            happy_hours = HappyHours.objects.get(is_active=True)
-        except HappyHours.DoesNotExist:
-            happy_hours = None
-
-        is_weekday = datetime.now().weekday() < 5
-
-        for cart_item in cart_items:
-            price = cart_item.product.temporary_price if cart_item.product.temporary_price else cart_item.product.price
-
-            if cart_item.product.category.title.lower() == 'напитки':
-                total_price = cart_item.quantity * price
-            elif happy_hours and is_weekday and happy_hours.time_to_start <= current_time <= happy_hours.time_to_end:
-                discount_percentage = happy_hours.discount_percentage
-                total_price = (cart_item.quantity * price) * (100 - discount_percentage) / 100
-            else:
-                total_price = cart_item.quantity * price
-
-            item_data = {
-                'product_id': cart_item.product.id,
-                'title': cart_item.product.title,
-                'quantity': cart_item.quantity,
-                'price': price,
-                'total_price': total_price
-            }
-            cart_data.append(item_data)
-            total_amount += total_price
-
-        cart.total_amount = total_amount
-        cart.save()
-
-        # Применение скидки к общей сумме корзины, если есть промокод
-        if cart.promo:
-            promo = cart.promo
-            if promo.discount_percentage:
-                discount_amount = total_amount * (Decimal(promo.discount_percentage) / 100)
-                total_amount_with_discount = total_amount - discount_amount
-                cart.total_amount = total_amount_with_discount
-                cart.save()
-                response_data = {
-                    'cart_items': cart_data,
-                    'total_amount': total_amount,
-                    'total_amount_with_discount': total_amount_with_discount
-                }
-                return Response(response_data, status=status.HTTP_200_OK)
-            elif promo.promo_product:
-                promo_product_data = {
-                    'product_id': promo.promo_product.id,
-                    'title': promo.promo_product.title,
-                    'quantity': 1,
-                    'price': 0,
-                    'total_price': 0
-                }
-                cart_data.append(promo_product_data)
-
-        response_data = {
-            'cart_items': cart_data,
-            'total_amount': cart.total_amount
-        }
         return Response(response_data, status=status.HTTP_200_OK)
 
 
@@ -365,12 +311,8 @@ class ApplyPromoCode(APIView):
             }
         ),
         responses={
-            status.HTTP_200_OK: openapi.Schema(
+            status.HTTP_302_FOUND: openapi.Schema(
                 type=openapi.TYPE_OBJECT,
-                properties={
-                    'message': openapi.Schema(type=openapi.TYPE_STRING,
-                                              description='Сообщение об успешном применении промокода'),
-                }
             ),
             status.HTTP_404_NOT_FOUND: openapi.Schema(
                 type=openapi.TYPE_OBJECT,
@@ -408,11 +350,13 @@ class ApplyPromoCode(APIView):
 
         cart.promo = promo
         cart.save()
-        return Response({'message': 'Promo code applied successfully'}, status=status.HTTP_200_OK)
+        # return Response({'message': 'Promo code applied successfully'}, status=status.HTTP_200_OK)  # TODO: или редирект
+        return HttpResponseRedirect(reverse('main:cart'))
 
 
 class OrderCreateAPIView(CreateAPIView):
     serializer_class = OrderSerializer
+    #  TODO: Добавить пересчет страницы как на гет к корзине
 
     def create(self, request, *args, **kwargs):
         if request.user.is_authenticated:
@@ -428,6 +372,8 @@ class OrderCreateAPIView(CreateAPIView):
                 cart = Cart.objects.get(session_id=session_id)
         except Cart.DoesNotExist:
             return Response({'error': 'Cart not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        calculate_cart(cart)  # пересчитываем корзину, если пользователь вносил изменению на странице с корзиной без обновления
 
         payment_method = request.data.get('payment_method')
         if payment_method == 'online':
@@ -469,4 +415,4 @@ class OrderCreateAPIView(CreateAPIView):
 
         cart.delete()
 
-        return Response({'message': f'Order {order.id} placed successfully'})
+        return Response({'message': f'Order {order.id} placed successfully'}, status=status.HTTP_201_CREATED)
