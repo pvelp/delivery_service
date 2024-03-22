@@ -39,11 +39,7 @@ function activeButton(buttons) {
             document.querySelector('.active').classList.remove('active');
             button.classList.add('active');
             addOnlyMenuTypeExamples(button.textContent);
-
-            // Удаляем предыдущие обработчики событий
             removeAllEventListeners();
-
-            // Добавляем обработчики для новых элементов
             const overlayElements = document.querySelectorAll('.menu__card-overlay');
             overlayElements.forEach(element => {
                 element.addEventListener('click', handleClick);
@@ -156,7 +152,7 @@ function makeOrder(products) {
         weight.textContent = product.weight + ' гр';
         weight.className = 'product__weight';
 
-        let price = document.createElement('p'); // Цена
+        let price = document.createElement('p'); //
         price.textContent = product.price + ' ₽';
         price.className = 'product__price';
 
@@ -211,8 +207,6 @@ function makeOrder(products) {
         plusMinusButtonContainer.appendChild(buttonMinus);
         plusMinusButtonContainer.appendChild(counter);
         plusMinusButtonContainer.appendChild(buttonPlus);   
-
-        // Добавляем элементы в карточку товара
         orderImageContainer.appendChild(image);
         nameAndWeight.appendChild(name);
         nameAndWeight.appendChild(weight);
@@ -221,16 +215,10 @@ function makeOrder(products) {
         orderInfoContaier.appendChild(price);
         card.appendChild(orderImageContainer);
         card.appendChild(orderInfoContaier);
-
-        // Добавляем карточку товара в контейнер
         orderContainer.appendChild(card);
-
-        // Обновляем общую сумму заказа и количество товаров
         totalOrderPrice += parseInt(product.price);
         totalOrderQuantity++;
     }); 
-
-    // Обновляем общую сумму заказа и количество товаров на странице
     totalPrice.textContent = totalOrderPrice;
     totalCount.textContent = totalOrderQuantity;
 }
@@ -259,8 +247,6 @@ orderButton.addEventListener('click', () => {
         selectedProduct.quantity = 1;
         products.push(selectedProduct);
     }
-
-    // Передаем обновленный массив products в функцию makeOrder
     makeOrder(products);
 });
 
@@ -270,20 +256,15 @@ function moveFinalCostContainer() {
     orderContainer.insertAdjacentElement('afterend', finalCostContainer);
 }
 
-// Функция для проверки разрешения экрана и выполнения перемещения
 function checkResolution() {
-    // Проверяем текущее разрешение экрана
     var screenWidth = window.innerWidth;
     
     if (screenWidth <= 768) {
-        // Если разрешение экрана меньше или равно 768px, перемещаем finalCostContainer после window__order-container-order
         moveFinalCostContainer();
     } else {
-        // Если разрешение экрана больше 768px, перемещаем finalCostContainer обратно в начало window__order-container
         document.querySelector('.window__order-pay-container').prepend(finalCostContainer);
     }
 }
 
-// Вызываем функцию при загрузке страницы и при изменении размера окна
 window.onload = checkResolution;
 window.onresize = checkResolution;
