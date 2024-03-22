@@ -210,20 +210,19 @@ class IikoAPIKeyAdmin(admin.ModelAdmin):
                             response = None
                             if category_image_url:
                                 response = requests.get(category_image_url, stream=True)
-
-                            if response and response.status_code == requests.codes.ok:
-                                file_name = category_image_url.split('/')[-1]
-                                lf = tempfile.NamedTemporaryFile()
-                                for block in response.iter_content(1024 * 8):
-                                    # If no more file then stop
-                                    if not block:
-                                        break
-                                    # Write image block to temporary file
-                                    lf.write(block)
-                                category.image.save(file_name, files.File(lf))
-                            else:
-                                # Handle error or skip file
-                                continue
+                                if response.status_code == requests.codes.ok:
+                                    file_name = category_image_url.split('/')[-1]
+                                    lf = tempfile.NamedTemporaryFile()
+                                    for block in response.iter_content(1024 * 8):
+                                        # If no more file then stop
+                                        if not block:
+                                            break
+                                        # Write image block to temporary file
+                                        lf.write(block)
+                                    category.image.save(file_name, files.File(lf))
+                                else:
+                                    # Handle error or skip file
+                                    continue
                         except Exception as e:
                             return HttpResponse(f'Ошибка при обновлении/создании категории: {str(e)}', status=500)
 
@@ -252,17 +251,16 @@ class IikoAPIKeyAdmin(admin.ModelAdmin):
                                 response = None
                                 if product_image:
                                     response = requests.get(product_image, stream=True)
-
-                                if response and response.status_code == requests.codes.ok:
-                                    file_name = product_image.split('/')[-1]
-                                    lf = tempfile.NamedTemporaryFile()
-                                    for block in response.iter_content(1024 * 8):
-                                        if not block:
-                                            break
-                                        lf.write(block)
-                                    product.image.save(file_name, files.File(lf))
-                                else:
-                                    continue
+                                    if response.status_code == requests.codes.ok:
+                                        file_name = product_image.split('/')[-1]
+                                        lf = tempfile.NamedTemporaryFile()
+                                        for block in response.iter_content(1024 * 8):
+                                            if not block:
+                                                break
+                                            lf.write(block)
+                                        product.image.save(file_name, files.File(lf))
+                                    else:
+                                        continue
                             except Exception as e:
                                 return HttpResponse(f'Ошибка при обновлении/создании продукта: {str(e)}', status=500)
 
