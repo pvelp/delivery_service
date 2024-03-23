@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from main.models import Product, CartItem, RecommendedProducts, Order, Cart
+from main.models import Product, CartItem, RecommendedProducts, Order, Cart, Category
 from main.validators import PhoneNumberValidator, BuyerNameValidator, AddressValidator, PaymentMethodValidator, DeliveryMethodValidator
 
 
@@ -52,6 +52,12 @@ class ProductRetrieveSerializer(serializers.ModelSerializer):
             return obj.price
 
 
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ['id', 'title']
+
+
 class OrderSerializer(serializers.ModelSerializer):
     buyer_phone_number = serializers.CharField(validators=[PhoneNumberValidator('buyer_phone_number')])
     delivery_address = serializers.CharField(validators=[AddressValidator('delivery_address')])
@@ -80,7 +86,8 @@ class OrderSerializer(serializers.ModelSerializer):
             order_amount=cart.total_amount,
             payment_method=validated_data['payment_method'],
             delivery_method=validated_data['delivery_method'],
-            promo=cart.promo
+            promo=cart.promo,
+            is_happy_hours=cart.is_happy_hours
         )
 
         return order
