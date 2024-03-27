@@ -113,63 +113,70 @@ class HappyHoursAdmin(admin.ModelAdmin):
 
 #  Часть с админкой для iikoWeb
 
+@admin.action(description="Сохранить Внешние меню из Iikoweb в модель")
+def get_token_and_fetch_menu(modeladmin, request, queryset):
+    obj = queryset.first()
+    api_key = obj.key
+
+    token_response = requests.post('https://api-ru.iiko.services/api/1/access_token',
+                                   json={'apiLogin': api_key})
+    token_data = token_response.json()
+
+    # Если токен успешно получен, делаем запрос на получение меню
+    if token_response.status_code == 200:
+        headers = {'Authorization': f'Bearer {token_data["token"]}'}
+        menu_response = requests.post('https://api-ru.iiko.services/api/2/menu',
+                                      headers=headers)
+
+        try:
+            menu_data = menu_response.json()
+        except json.decoder.JSONDecodeError:
+            # Если JSON не удалось разобрать, можно вывести информацию о полученном тексте
+            print(menu_response.text)
+            return HttpResponse('Ошибка при получении данных: JSON не удалось разобрать', status=500)
+
+        # Сохраняем полученное меню и категории в базе данных
+        if menu_response.status_code == 200:
+            for menu in menu_data['externalMenus']:
+                ExternalMenu.objects.get_or_create(menu_id=menu['id'], name=menu['name'])
+
+            return HttpResponse('Меню успешно получено и сохранено в базе данных.')
+        else:
+            return HttpResponse('Ошибка при получении меню.')
+    else:
+        return HttpResponse('Ошибка при получении токена. Проверьте корректность сохраненного API ключа и внесите изменения.')
+
+
+@admin.action(description="Сохранить организации из Iikoweb в модель")
+def get_organizations(modeladmin, request, queryset):
+    obj = queryset.first()
+    api_key = obj.key
+
+    token_response = requests.post('https://api-ru.iiko.services/api/1/access_token',
+                                   json={'apiLogin': api_key})
+    token_data = token_response.json()
+
+    if token_response.status_code == 200:
+        headers = {'Authorization': f'Bearer {token_data["token"]}'}
+        organizations_response = requests.post('https://api-ru.iiko.services/api/1/organizations',
+                                               headers=headers, json={})
+        organizations_data = organizations_response.json()
+
+        if organizations_response.status_code == 200:
+            for org in organizations_data['organizations']:
+                Organization.objects.get_or_create(organization_id=org['id'], name=org['name'])
+
+            return HttpResponse('Организации успешно получены и сохранены в базе данных.')
+        else:
+            return HttpResponse('Ошибка при получении организаций.')
+    else:
+        return HttpResponse('Ошибка при получении токена. Проверьте корректность сохраненного API ключа и внесите изменения.')
+
+
 @admin.register(IikoAPIKey)
 class IikoAPIKeyAdmin(admin.ModelAdmin):
     list_display = ('key',)
-
-    def get_token_and_fetch_menu(self, request):
-        api_key = IikoAPIKey.objects.last()
-
-        token_response = requests.post('https://api-ru.iiko.services/api/1/access_token',
-                                       json={'apiLogin': api_key.key})
-        token_data = token_response.json()
-
-        # Если токен успешно получен, делаем запрос на получение меню
-        if token_response.status_code == 200:
-            headers = {'Authorization': f'Bearer {token_data["token"]}'}
-            menu_response = requests.post('https://api-ru.iiko.services/api/2/menu',
-                                          headers=headers)
-
-            try:
-                menu_data = menu_response.json()
-            except json.decoder.JSONDecodeError:
-                # Если JSON не удалось разобрать, можно вывести информацию о полученном тексте
-                print(menu_response.text)
-                return HttpResponse('Ошибка при получении данных: JSON не удалось разобрать', status=500)
-
-            # Сохраняем полученное меню и категории в базе данных
-            if menu_response.status_code == 200:
-                for menu in menu_data['externalMenus']:
-                    ExternalMenu.objects.get_or_create(menu_id=menu['id'], name=menu['name'])
-
-                return HttpResponse('Меню успешно получено и сохранено в базе данных.')
-            else:
-                return HttpResponse('Ошибка при получении меню.')
-        else:
-            return HttpResponse('Ошибка при получении токена. Проверьте корректность сохраненного API ключа и внесите изменения.')
-
-    def get_organizations(self, request):
-        api_key = IikoAPIKey.objects.last()
-
-        token_response = requests.post('https://api-ru.iiko.services/api/1/access_token',
-                                       json={'apiLogin': api_key.key})
-        token_data = token_response.json()
-
-        if token_response.status_code == 200:
-            headers = {'Authorization': f'Bearer {token_data["token"]}'}
-            organizations_response = requests.post('https://api-ru.iiko.services/api/1/organizations',
-                                                   headers=headers, json={})
-            organizations_data = organizations_response.json()
-
-            if organizations_response.status_code == 200:
-                for org in organizations_data['organizations']:
-                    Organization.objects.get_or_create(organization_id=org['id'], name=org['name'])
-
-                return HttpResponse('Организации успешно получены и сохранены в базе данных.')
-            else:
-                return HttpResponse('Ошибка при получении организаций.')
-        else:
-            return HttpResponse('Ошибка при получении токена. Проверьте корректность сохраненного API ключа и внесите изменения.')
+    actions = [get_token_and_fetch_menu, get_organizations]
 
     def save_menu(self, request):
         if request.method == 'POST':
@@ -276,8 +283,8 @@ class IikoAPIKeyAdmin(admin.ModelAdmin):
     def get_urls(self):
         urls = super().get_urls()
         custom_urls = [
-            path('get-token-and-fetch-menu/', self.get_token_and_fetch_menu),
-            path('get-organizations/', self.get_organizations),
+            path('get-token-and-fetch-menu/', get_token_and_fetch_menu),
+            path('get-organizations/', get_organizations),
             path('save-menu/', self.save_menu, name='save-menu'),
         ]
         return custom_urls + urls
