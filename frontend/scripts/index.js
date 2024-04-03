@@ -4,7 +4,7 @@ const template = document.getElementById('menu__card-template');
 const menuOrder = document.querySelector('.menu__order')
 let menuAvaliableItems;
 let menuItems=[]
-/*fetch('http://localhost:8000/products/') //запрос на получение всех блюд из бд
+fetch('http://localhost:8000/products/') //запрос на получение всех блюд из бд
   .then(response => {
     if (!response.ok) {
       throw new Error('Ошибка HTTP, код ' + response.status);
@@ -19,7 +19,7 @@ let menuItems=[]
   .catch(error => {
     console.error('Ошибка при выполнении запроса:', error);
   });
-*/ 
+
 
 /*let menuItems = [
     { name: "Шашлык", photo: './images/testImages/test1.jpg',  weight: "200", price: "350", type: "шашлык", compose: "курица, соль" },
