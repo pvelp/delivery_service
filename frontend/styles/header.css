@@ -9,7 +9,19 @@
 .button__nav-mobile {
     display: none;
 }
-
+.galochka {
+    width: 10px;
+    height: 4px;
+    border-bottom: 2px solid transparent;
+    border-left: 2px solid transparent;
+    background-color: transparent;
+    display: inline-block;
+    position: absolute;
+    z-index: 10;
+    transform: rotate(-45deg);
+    bottom: 20px;
+    left: 60px;
+}
 .header__menu a {
     text-decoration: none;
     color: #FADAAB;
@@ -119,6 +131,7 @@
 }
 
 .nav__enter {
+    position: relative;
     background-color: transparent;
     border: 2px solid #FADAAB;
     border-radius: 100px;
@@ -574,6 +587,7 @@
       .line:last-child {
         margin-top: 4px;    
       }
+
     .nav__telephone-container {
         display: none;
     }
@@ -591,11 +605,13 @@
         left: -100px;
         transform: translate(72deg);
     }
+    
     .right__ellipse {
         right: -100px;
         display: block;
         transform: translate(108deg);
     }
+
     .header__menu {
         width: 329px;
         padding-left: 0px;

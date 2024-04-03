@@ -3,7 +3,25 @@ const menu__list = document.querySelector('.menu__list')
 const template = document.getElementById('menu__card-template');
 const menuOrder = document.querySelector('.menu__order')
 let menuAvaliableItems;
-let menuItems = [
+let menuItems=[]
+/*fetch('http://localhost:8000/products/') //запрос на получение всех блюд из бд
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Ошибка HTTP, код ' + response.status);
+    }
+    return response.json();
+  })
+  .then(data => {
+     menuItems = data.results;
+    console.log(menuItems); //для отладки
+
+  })
+  .catch(error => {
+    console.error('Ошибка при выполнении запроса:', error);
+  });
+*/ 
+
+/*let menuItems = [
     { name: "Шашлык", photo: './images/testImages/test1.jpg',  weight: "200", price: "350", type: "шашлык", compose: "курица, соль" },
     { name: "Шашлык",photo: './images/testImages/test1.jpg', weight: "200", price: "350", type: "шашлык", compose: "баранина, соль" },
     { name: "Шашлык", photo: './images/testImages/test1.jpg',weight: "200", price: "350", type: "шашлык", compose: "свинина, соль" },
@@ -20,8 +38,7 @@ let menuItems = [
     { name: "Кетчуп", photo: './images/testImages/test1.jpg', weight: "150", price: "500", type: "соусы", compose: "томаты, соль"},
     // Дополнительные объекты блюд могут быть добавлены
   ];
-
-
+*/
 addOnlyMenuTypeExamples('шашлык');
 
 function clickButtonByText(buttonText) {
@@ -65,7 +82,7 @@ function handleClick() {
     const orderOption = document.getElementById('menu__order');
     const orderOptionName = orderOption.querySelector('.menu__order-name');
     const orderOptionPhoto = orderOption.querySelector('.menu__order-photo');
-    const orderOptionCompose = orderOption.querySelector('.menu__order-compose-list');
+    const orderOptionCompose = orderOption.querySelector('.menu__order-composчe-list');
     const orderOptionWeight = orderOption.querySelector('.menu__order-weight');
     const orderOptionPrice = orderOption.querySelector('.menu__order-price');
     product = menuItems.find(product => product.name === name);
@@ -115,6 +132,7 @@ function toggleInputContainer() {
         inputContainer.style.display = 'flex';
     }
 }
+
 toggleInputContainer();
 selfCheckbox.addEventListener('change', toggleInputContainer);
 courierCheckbox.addEventListener('change', toggleInputContainer);
@@ -163,7 +181,7 @@ function makeOrder(products) {
         plusMinusButtonContainer.className = 'product__buttons-container';
 
         let buttonMinus = document.createElement('button');
-        buttonMinus.className = 'product__button-minus';
+        buttonMinus.className = 'product__button-minus'; 
         buttonMinus.textContent = '-';
         buttonMinus.addEventListener('click', function() {
             let count = parseInt(counter.textContent);
@@ -213,18 +231,20 @@ function makeOrder(products) {
         orderInfoContaier.appendChild(nameAndWeight)
         orderInfoContaier.appendChild(plusMinusButtonContainer);
         orderInfoContaier.appendChild(price);
-        card.appendChild(orderImageContainer);
+        card.appendChild(orderImageContainer);  
         card.appendChild(orderInfoContaier);
         orderContainer.appendChild(card);
         totalOrderPrice += parseInt(product.price);
         totalOrderQuantity++;
     }); 
+    
     totalPrice.textContent = totalOrderPrice;
     totalCount.textContent = totalOrderQuantity;
 }
 
 
 const orderButton = document.querySelector('.menu__order-button');
+
 let products = [];
 
 orderButton.addEventListener('click', () => {
@@ -268,3 +288,124 @@ function checkResolution() {
 
 window.onload = checkResolution;
 window.onresize = checkResolution;
+document.querySelector(".enter__button").addEventListener("click", sendEnterRequest);
+document.querySelector(".enter__registration-button").addEventListener("click", sendRegRequest);
+
+
+function sendEnterRequest() { //пост на вход
+    const email = document.querySelector(".email__enter").value;
+    const password = document.querySelector(".password__enter").value;
+  
+    let data = {
+      email: email,
+      password: password
+    };
+  
+    fetch('http://localhost:8000/jwt/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      })
+      .then(response => {
+        if (response.ok) {
+          window.window__enter.close();
+          console.log("Вход выполнен успешно");
+          document.querySelector('.galochka').style.borderLeftColor = "black";
+          document.querySelector('.galochka').style.borderBottomColor = "black";
+          document.querySelector('.enter__text').style.color = "transparent";
+        } else {
+          document.querySelector(".email__enter").style.borderColor = "red";
+          document.querySelector(".password__enter").style.borderColor = "red";
+          console.error("Не удалось выполнить вход");
+        }
+      })
+      .catch(error => {
+        console.error('Ошибка:', error);
+      });
+}
+
+function sendRegRequest() { //пост на регистрацию
+    let email = document.querySelector(".reg_email").value;
+    let password = document.querySelector(".reg_password").value;
+    let firstName = document.querySelector(".reg_name").value;
+    let lastName = document.querySelector(".reg_surname").value;
+    let phone = document.querySelector(".reg_phone").value;
+    let dob = document.querySelector(".reg_data").value;
+  
+    let data = {
+      email: email,
+      password: password,
+      first_name: firstName,
+      last_name: lastName,
+      phone: phone,
+      date_of_birth: dob
+    };
+  
+    fetch('http://localhost:8000/users', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    })
+    .then(response => {
+      if (response.ok) {
+        console.log("Регистрация выполнена успешно");
+
+      } else {
+        document.getElementById("emailField").style.borderColor = "red";
+        document.getElementById("passwordField").style.borderColor = "red";
+        console.error("Не удалось выполнить вход");
+      }
+    })
+    .catch(error => {
+      console.error('Ошибка:', error);
+    });
+  }
+
+  function sendOrderData() {
+    let totalPrice = document.querySelector('.final__cost');
+    var selectedRadio = document.querySelector('input[name="payopt"]:checked');
+    var label = document.querySelector('label[for="' + selectedRadio.id + '"]');
+    var PayMethod = label.textContent.trim();
+    var selectedRadioDel = document.querySelector('input[name="delopt"]:checked');
+    var label = document.querySelector('label[for="' + selectedRadioDel.id + '"]');
+    let DeliveryMethod = label.textContent.trim();
+    let buyerPhone = document.querySelector(".ord_phone").textContent
+    let buyerAddress = document.querySelector(".ord_addr").textContent
+    let buyerName = document.querySelector(".ord_name").textContent
+    let Promo = document.querySelector(".promo").textContent
+
+    var orderData = {
+      buyer_phone_number: buyerPhone,
+      delivery_address: buyerAddress,
+      buyer_name: buyerName,
+      payment_method: PayMethod,
+      delivery_method: DeliveryMethod,
+      order_amount: totalPrice.textContent,
+      promo: Promo
+    };
+  
+    // Отправляем POST-запрос
+    fetch('http://localhost:8000/order', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(orderData)
+    })
+    .then(response => {
+      if (response.ok) {
+        console.log('Данные успешно отправлены');
+      } else {
+        console.error('Ошибка отправки данных:', response.statusText);
+      }
+    })
+    .catch(error => {
+      console.error('Ошибка:', error);
+    });
+  }
+
+document.querySelector('.enter__window-button-order').addEventListener('click', sendOrderData);

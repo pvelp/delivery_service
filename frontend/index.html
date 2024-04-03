@@ -40,6 +40,7 @@
           <button class="nav__enter" onclick="window.window__enter.showModal();" aria-controls="window__enter">
             <img class="enter__icon" src="./images/svg/enter.svg">
             <p class="enter__text">вход</p>
+            <div class="galochka"></div>
           </button>
           <button onclick="window.window__order.showModal();document.querySelector('.page').style.position='fixed';" class="nav__basket">
             <img class="basket__icon" src="./images/svg/busket.svg">
@@ -357,9 +358,9 @@
       <div class="enter__window-container">
         <h2 class="enter__window-tilte">программа лояльности</h2>
         <button type="button" onclick="window.window__enter.close();document.querySelector('.page').style.position='relative';" class="enter__window-close"></button>
-        <input type="text" class="phone input_field" pattern="^\+7\(d{3}\)d{3}-d{2}-d{2}$"> 
-        <input type="text" class="password input_field" placeholder="Пароль">
-        <button type="button" onclick="window.window__enter.close()" class="enter__window-button">войти</button>
+        <input type="text" class="phone input_field email__enter" placeholder="Email"> 
+        <input type="text" class="password input_field password__enter" placeholder="Пароль">
+        <button type="button" class="enter__window-button enter__button">войти</button>
         <p class="enter__window-text">Хотите стать участником нашей Программы лояльности?</p>
         <button onclick="window.window__registration.showModal();window.window__enter.close()" class="enter__window-registration">Регистрация</button>
       </div>
@@ -370,11 +371,12 @@
       <div class="enter__window-container">
         <h2 class="enter__window-tilte">Регистрация</h2>
         <button type="button" onclick="window.window__registration.close();document.querySelector('.page').style.position='relative';" class="enter__window-close"></button>
-        <input type="text" class="name_surname input_field" placeholder="Имя и фамилия">
-        <input type="text" class="phone input_field" pattern="^\+7\(d{3}\)d{3}-d{2}-d{2}$">
-        <input type="text" class="email input_field" placeholder="Email">
-        <input type="text" class="data input_field" placeholder="Дата рождения (дд.мм.гггг)">
-        <input type="text" class="password input_field" placeholder="Пароль">
+        <input type="text" class="name input_field reg_name" placeholder="Имя">
+        <input type="text" class="surname input_field reg_surname" placeholder="Фамилия">
+        <input type="text" class="phone input_field reg_phone" placeholder="+7 (___) ___ __ __">
+        <input type="text" class="email input_field reg_email" placeholder="Email">
+        <input type="text" class="data input_field reg_data" placeholder="Дата рождения (дд.мм.гггг)">
+        <input type="text" class="password input_field reg_password" placeholder="Пароль">
         <button type="button" class="enter__window-button enter__registration-button">зарегистрироваться</button>
         <p class="enter__window-text">Нажимая кнопку Зарегестрироваться, Вы соглашаетесь <br>с <button class="enter__window-registration">Политикой конфиденциальности</button>
         </p>
@@ -421,9 +423,9 @@
                   <label for="courier">Курьер</label>
                 </div>
                 <div class="input_container">
-                  <input type="text" class="name input_field" placeholder="Имя">
-                  <input type="text" class="phone input_field" pattern="^\+7\(d{3}\)d{3}-d{2}-d{2}$">
-                  <input type="text" class="address input_field" placeholder="Адрес">
+                  <input type="text" class="name ord_name input_field" placeholder="Имя">
+                  <input type="text" class="phone ord_phone input_field" pattern="^\+7\(d{3}\)d{3}-d{2}-d{2}$">
+                  <input type="text" class="address ord_addr input_field" placeholder="Адрес">
                   <p class="input_decription">Город, улица, дом, квартира</p>
                 </div>
                 <div class="promo__container">
