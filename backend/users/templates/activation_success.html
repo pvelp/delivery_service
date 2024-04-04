@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Шашлычное настроение</title>
+    <style>
+        /* Дополнительные стили для сообщений об активации */
+        .activation-message-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        .activation-success p,
+        .activation-error p {
+            margin: 10px 0;
+        }
+
+        .activation-success a,
+        .activation-error a {
+            color: #007bff;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body class="page">
+<header class="header">
+    <!-- Ваш текущий HTML-код для заголовка -->
+</header>
+<main class="main">
+    <!-- Ваш текущий HTML-код для основного контента -->
+
+    <!-- Контейнер для сообщения об успешной активации или ошибке -->
+    <div class="activation-message-container">
+        <!-- Сообщение об успешной активации -->
+        {% if activation_success %}
+            <div class="activation-success">
+                <p>Ваш аккаунт успешно активирован!</p>
+                <p><a href="/">Вернуться на главную страницу</a></p>
+            </div>
+        {% endif %}
+
+        <!-- Сообщение об ошибке активации -->
+        {% if activation_error %}
+            <div class="activation-error">
+                <p>Произошла ошибка при активации аккаунта. Пожалуйста, попробуйте еще раз или обратитесь в службу поддержки.</p>
+                <p><a href="/">Вернуться на главную страницу</a></p>
+            </div>
+        {% endif %}
+    </div>
+</main>
+<footer class="footer">
+    <!-- Ваш текущий HTML-код для подвала -->
+</footer>
+</body>
+</html>

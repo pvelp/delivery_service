@@ -1,5 +1,6 @@
 import requests
 from django.contrib.auth.tokens import default_token_generator
+from django.shortcuts import render
 from djoser import signals
 from djoser.compat import get_user_email
 from djoser.conf import settings
@@ -19,6 +20,8 @@ class ActivateUserByGet(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request, uid, token):
+        activation_success = False
+        activation_error = False
         payload = {'uid': uid, 'token': token}
 
         protocol = 'https://' if request.is_secure() else 'http://'
@@ -28,9 +31,12 @@ class ActivateUserByGet(APIView):
         response = requests.post(post_url, data=payload)
 
         if response.status_code == 204:
-            return Response({'detail': 'User was successful activated'}, response.status_code)
+            activation_success = True
         else:
-            return Response(response.json())
+            activation_error = True
+
+        return render(request, 'activation_success.html',
+                      {'activation_success': activation_success, 'activation_error': activation_error})
 
 
 class CustomUserViewSet(UserViewSet):
