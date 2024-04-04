@@ -21,6 +21,7 @@ fetch('http://localhost:8000/products/') //запрос на получение 
   });
 
 
+
 /*let menuItems = [
     { name: "Шашлык", photo: './images/testImages/test1.jpg',  weight: "200", price: "350", type: "шашлык", compose: "курица, соль" },
     { name: "Шашлык",photo: './images/testImages/test1.jpg', weight: "200", price: "350", type: "шашлык", compose: "баранина, соль" },
@@ -39,116 +40,149 @@ fetch('http://localhost:8000/products/') //запрос на получение 
     // Дополнительные объекты блюд могут быть добавлены
   ];
 */
-addOnlyMenuTypeExamples('шашлык');
+  let cartItems = localStorage.getItem('cartItems');
+  let products = cartItems ? JSON.parse(cartItems) : [];
+  
+  addOnlyMenuTypeExamples('шашлык');
+  
+  function clickButtonByText(buttonText) {
+      const buttons = document.querySelectorAll('.menu__button'); 
+      buttons.forEach(button => {
+          if (button.textContent === buttonText) {
+              button.click(); 
+          }
+      });
+  }
+  
+  function activeButton(buttons) {
+      buttons.forEach(button => {
+          button.addEventListener('click', () => {
+              document.querySelector('.active').classList.remove('active');
+              button.classList.add('active');
+              addOnlyMenuTypeExamples(button.textContent);
+              removeAllEventListeners();
+              const overlayElements = document.querySelectorAll('.menu__card-overlay');
+              overlayElements.forEach(element => {
+                  element.addEventListener('click', handleClick);
+              });
+          });
+      });
+  }
+  
+  function removeAllEventListeners() {
+      const overlayElements = document.querySelectorAll('.menu__card-overlay');
+      overlayElements.forEach(element => {
+          const newElement = element.cloneNode(true);
+          element.parentNode.replaceChild(newElement, element);
+      });
+  }
+  
+  function handleClick() {
+      const menuItem = this.closest('.menu__item');
+      const name = menuItem.querySelector('.product__name').textContent;
+      const photo = menuItem.querySelector('.menu__card-image').src;
+      const weight = menuItem.querySelector('.product__weight').textContent;
+      const price = menuItem.querySelector('.product__price').textContent;
+      const orderOption = document.getElementById('menu__order');
+      const orderOptionName = orderOption.querySelector('.menu__order-name');
+      const orderOptionPhoto = orderOption.querySelector('.menu__order-photo');
+      const orderOptionCompose = orderOption.querySelector('.menu__order-compose-list');
+      const orderOptionWeight = orderOption.querySelector('.menu__order-weight');
+      const orderOptionPrice = orderOption.querySelector('.menu__order-price');
+      const product = menuItems.find(item => item.name === name);
+      orderOptionName.textContent = name;
+      orderOptionPhoto.src = photo;
+      orderOptionCompose.textContent = product.compose;
+      orderOptionWeight.textContent = weight + ' гр';
+      orderOptionPrice.textContent = price + ' ₽';
+  }
+  
+  // Добавляем обработчики событий для кнопок меню
+  activeButton(menuButtons);
+  
+  activeButton(menuButtons);
+  clickButtonByText('шашлык');
+  
+  
+  function addOnlyMenuTypeExamples(menuType) {
+    while (menu__list.firstChild) {
+        menu__list.removeChild(menu__list.firstChild);
+    }
 
-function clickButtonByText(buttonText) {
-    const buttons = document.querySelectorAll('.menu__button'); 
-    buttons.forEach(button => {
-        if (button.textContent === buttonText) {
-            button.click(); 
+    menuItems.forEach(function(item) {
+        if (item.type === menuType) {
+            var clone = document.importNode(template.content, true);
+            clone.querySelector('.product__name').textContent = item.name;
+            clone.querySelector('.menu__card-image').src = item.photo;
+            clone.querySelector('.product__weight').textContent = item.weight;
+            clone.querySelector('.product__price').textContent = item.price;
+            
+            menu__list.appendChild(clone);
         }
     });
-}
 
-function activeButton(buttons) {
-    buttons.forEach(button => {
-        button.addEventListener('click', () => {
-            document.querySelector('.active').classList.remove('active');
-            button.classList.add('active');
-            addOnlyMenuTypeExamples(button.textContent);
-            removeAllEventListeners();
-            const overlayElements = document.querySelectorAll('.menu__card-overlay');
-            overlayElements.forEach(element => {
-                element.addEventListener('click', handleClick);
-            });
+    // При добавлении товара в корзину, устанавливаем его количество в 1
+    menuAvailableItems = document.querySelectorAll('.menu__item');
+    menuAvailableItems = document.querySelectorAll('.menu__item');
+    menuAvailableItems.forEach(function(item) {
+        item.addEventListener('click', function() {
+            const name = item.querySelector('.product__name').textContent;
+            const photo = item.querySelector('.menu__card-image').src;
+            const weight = item.querySelector('.product__weight').textContent;
+            const price = item.querySelector('.product__price').textContent;
+            const compose = item.querySelector('.product__compose').textContent;
+
+            const existingProductIndex = products.findIndex(product => product.name === name);
+            if (existingProductIndex !== -1) {
+                // Если товар уже есть в корзине, увеличиваем его количество
+                products[existingProductIndex].quantity++;
+            } else {
+                // Иначе добавляем новый товар в корзину с количеством 1
+                products.push({
+                    name: name,
+                    photo: photo,
+                    weight: weight,
+                    price: price,
+                    compose: compose,
+                    quantity: 1
+                });
+            }
+
+            updateLocalStorage(); // Обновляем данные в localStorage
+            makeOrder(products); // Обновляем отображение корзины
         });
     });
 }
+  
+  
+  const selfCheckbox = document.getElementById('self');
+  const courierCheckbox = document.getElementById('courier');
+  const inputContainer = document.querySelector('.input_container');
+  function toggleInputContainer() {
+      if (selfCheckbox.checked) {
+          inputContainer.style.display = 'none';
+      } else {
+          inputContainer.style.display = 'flex';
+      }
+  }
+  
+  toggleInputContainer();
+  selfCheckbox.addEventListener('change', toggleInputContainer);
+  courierCheckbox.addEventListener('change', toggleInputContainer);
+  //Сокрытие инпутов при выборе "самовывоз"
+  
+  
+  let orderContainer = document.querySelector('.window__order-container-order');
+  let totalPrice = document.querySelector('.final__cost');
+  let totalCount = document.querySelector('.quantity'); 
+  
+  function makeOrder(products) {
 
-function removeAllEventListeners() {
-    const overlayElements = document.querySelectorAll('.menu__card-overlay');
-    overlayElements.forEach(element => {
-        const newElement = element.cloneNode(true);
-        element.parentNode.replaceChild(newElement, element);
-    });
-}
-
-function handleClick() {
-    const menuItem = this.closest('.menu__item');
-    const name = menuItem.querySelector('.product__name').textContent;
-    const photo = menuItem.querySelector('.menu__card-image').src;
-    const weight = menuItem.querySelector('.product__weight').textContent;
-    const price = menuItem.querySelector('.product__price').textContent;
-    const orderOption = document.getElementById('menu__order');
-    const orderOptionName = orderOption.querySelector('.menu__order-name');
-    const orderOptionPhoto = orderOption.querySelector('.menu__order-photo');
-    const orderOptionCompose = orderOption.querySelector('.menu__order-composчe-list');
-    const orderOptionWeight = orderOption.querySelector('.menu__order-weight');
-    const orderOptionPrice = orderOption.querySelector('.menu__order-price');
-    product = menuItems.find(product => product.name === name);
-    orderOptionName.textContent = name;
-    orderOptionPhoto.src = photo;
-    orderOptionCompose.textContent = product.compose;
-    orderOptionWeight.textContent = weight + ' гр';
-    orderOptionPrice.textContent = price + ' ₽';
-}
-
-// Добавляем обработчики событий для кнопок меню
-activeButton(menuButtons);
-
-activeButton(menuButtons);
-clickButtonByText('шашлык');
-
-
-function addOnlyMenuTypeExamples(menuType) {
-while (menu__list.firstChild) {
-       menu__list.removeChild(menu__list.firstChild);
-}
-
-menuItems.forEach(function(item) {
-    if (item.type === menuType){
-
-    var clone = document.importNode(template.content, true);
-
-    clone.querySelector('.product__name').textContent = item.name;
-    clone.querySelector('.menu__card-image').src = item.photo;
-    clone.querySelector('.product__weight').textContent = item.weight;
-    clone.querySelector('.product__price').textContent = item.price;
-    
-    menu__list.appendChild(clone);
-    }
-});
-}
-
-
-
-const selfCheckbox = document.getElementById('self');
-const courierCheckbox = document.getElementById('courier');
-const inputContainer = document.querySelector('.input_container');
-function toggleInputContainer() {
-    if (selfCheckbox.checked) {
-        inputContainer.style.display = 'none';
-    } else {
-        inputContainer.style.display = 'flex';
-    }
-}
-
-toggleInputContainer();
-selfCheckbox.addEventListener('change', toggleInputContainer);
-courierCheckbox.addEventListener('change', toggleInputContainer);
-//Сокрытие инпутов при выборе "самовывоз"
-
-
-let orderContainer = document.querySelector('.window__order-container-order');
-let totalPrice = document.querySelector('.final__cost');
-let totalCount = document.querySelector('.quantity'); 
-
-function makeOrder(products) {
     orderContainer.innerHTML = '';
     let totalOrderPrice = 0;
     let totalOrderQuantity = 0;
+    updateLocalStorage();
     products.forEach(function(product) {
-
         let card = document.createElement('li'); // Карточка
         card.className = 'product__card';
 
@@ -158,20 +192,20 @@ function makeOrder(products) {
         image.className = 'product__image';
         image.src = product.photo;
         image.alt = product.name;
-
-        let orderInfoContaier = document.createElement('div'); 
-        orderInfoContaier.className = 'product__info-container'; // Контейнер для информации
+        
+        let orderInfoContainer = document.createElement('div');
+        orderInfoContainer.className = 'product__info-container'; // Контейнер для информации
 
         let name = document.createElement('h2'); // Название
         name.textContent = product.name;
         name.className = 'product__name';
 
         let weight = document.createElement('p'); // Вес
-        weight.textContent = product.weight + ' гр';
+        weight.textContent = product.weight;
         weight.className = 'product__weight';
 
         let price = document.createElement('p'); //
-        price.textContent = product.price + ' ₽';
+        price.textContent = product.price;
         price.className = 'product__price';
 
         let nameAndWeight = document.createElement('div');
@@ -181,7 +215,7 @@ function makeOrder(products) {
         plusMinusButtonContainer.className = 'product__buttons-container';
 
         let buttonMinus = document.createElement('button');
-        buttonMinus.className = 'product__button-minus'; 
+        buttonMinus.className = 'product__button-minus';
         buttonMinus.textContent = '-';
         buttonMinus.addEventListener('click', function() {
             let count = parseInt(counter.textContent);
@@ -194,13 +228,20 @@ function makeOrder(products) {
                 totalPrice.textContent = totalOrderPrice + ' ₽';
                 totalOrderQuantity--;
                 totalCount.textContent = totalOrderQuantity;
+                product.quantity = count; // Обновляем количество товара в объекте товара
+                updateLocalStorage(); // Обновляем localStorage при изменении количества товаров
             } else {
                 card.remove();
                 totalOrderPrice -= parseInt(product.price);
                 totalPrice.textContent = totalOrderPrice + ' ₽';
                 totalOrderQuantity--;
                 totalCount.textContent = totalOrderQuantity;
-            }    
+                const index = products.indexOf(product);
+                if (index > -1) {
+                    products.splice(index, 1); // Удаляем товар из массива, если его количество стало 0
+                }
+                updateLocalStorage(); // Обновляем localStorage при удалении товара из корзины
+            }
         });
 
         let buttonPlus = document.createElement('button');
@@ -215,37 +256,40 @@ function makeOrder(products) {
             totalOrderPrice += parseInt(product.price);
             totalPrice.textContent = totalOrderPrice + ' ₽';
             totalOrderQuantity++;
-            totalCount.textContent = totalOrderQuantity;
+            product.quantity = count; // Обновляем количество товара в объекте товара
+            updateLocalStorage(); // Обновляем localStorage при изменении количества товаров
         });
 
         let counter = document.createElement('p');
         counter.className = 'product__counter';
-        counter.textContent = '1';
+        counter.textContent = product.quantity || 1; // Устанавливаем количество товара из объекта товара, если оно есть
 
         plusMinusButtonContainer.appendChild(buttonMinus);
         plusMinusButtonContainer.appendChild(counter);
-        plusMinusButtonContainer.appendChild(buttonPlus);   
+        plusMinusButtonContainer.appendChild(buttonPlus);
         orderImageContainer.appendChild(image);
         nameAndWeight.appendChild(name);
         nameAndWeight.appendChild(weight);
-        orderInfoContaier.appendChild(nameAndWeight)
-        orderInfoContaier.appendChild(plusMinusButtonContainer);
-        orderInfoContaier.appendChild(price);
-        card.appendChild(orderImageContainer);  
-        card.appendChild(orderInfoContaier);
+        orderInfoContainer.appendChild(nameAndWeight)
+        orderInfoContainer.appendChild(plusMinusButtonContainer);
+        orderInfoContainer.appendChild(price);
+        card.appendChild(orderImageContainer);
+        card.appendChild(orderInfoContainer);
         orderContainer.appendChild(card);
-        totalOrderPrice += parseInt(product.price);
-        totalOrderQuantity++;
-    }); 
-    
+        totalOrderPrice += parseInt(product.price) * (product.quantity || 1); // Учитываем количество товара
+        totalOrderQuantity += product.quantity || 1; // Учитываем количество товара
+    });
+
     totalPrice.textContent = totalOrderPrice;
     totalCount.textContent = totalOrderQuantity;
 }
+function updateLocalStorage() {
+  localStorage.setItem('cartItems', JSON.stringify(products));
+}
+  
 
-
+makeOrder(products);
 const orderButton = document.querySelector('.menu__order-button');
-
-let products = [];
 
 orderButton.addEventListener('click', () => {
     const name = document.querySelector('.menu__order-name').textContent;
@@ -322,8 +366,8 @@ function sendEnterRequest() { //пост на вход
         }
       })
       .catch(error => {
-        console.error('Ошибка:', error);
-      });
+      console.error('Ошибка:', error);
+    });
 }
 
 function sendRegRequest() { //пост на регистрацию
@@ -343,7 +387,7 @@ function sendRegRequest() { //пост на регистрацию
       date_of_birth: dob
     };
   
-    fetch('http://localhost:8000/users', {
+    fetch('http://localhost:8000/users/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -389,7 +433,7 @@ function sendRegRequest() { //пост на регистрацию
     };
   
     // Отправляем POST-запрос
-    fetch('http://localhost:8000/order', {
+    fetch('http://localhost:8000/order/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -402,8 +446,9 @@ function sendRegRequest() { //пост на регистрацию
       } else {
         console.error('Ошибка отправки данных:', response.statusText);
       }
+      
     })
-    .catch(error => {
+      .catch(error => {
       console.error('Ошибка:', error);
     });
   }
