@@ -23,6 +23,9 @@ django-filter = "^23.5"
 redis = "^5.0.1"
 eventlet = "^0.35.2"
 celery = "^5.3.6"
+shapely = "^2.0.3"
+gunicorn = "^21.2.0"
+poetry-plugin-export = "^1.7.1"
 
 
 [build-system]

@@ -33,8 +33,12 @@ SECRET_KEY = os.getenv("DJANGO_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+# 'DJANGO_ALLOWED_HOSTS' should be a single string of hosts with a space between each.
+# For example: 'DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]'
+# ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
 ALLOWED_HOSTS = ["*"]
 
+CSRF_TRUSTED_ORIGINS = ["http://localhost:1337"]
 
 # Application definition
 
@@ -90,7 +94,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-# здесь мы настраиваем аутентификацию и пагинацию
+# здесь мы настраиваем аутентификацию
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
@@ -135,10 +139,10 @@ DJOSER = {
 DATABASES = {
     'default': {
         'ENGINE': os.getenv('DB_ENGINE'),
-        'NAME': os.getenv('DB_NAME'),
+        'NAME': 'postgres',
         'USER': os.getenv('DB_USER'),
         'PASSWORD': os.getenv('DB_PASSWORD'),
-        'HOST': os.getenv('DB_HOST'),
+        'HOST': 'db',
         'PORT': 5432,
     }
 }
@@ -178,11 +182,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = "/django_static/"
-STATIC_ROOT = os.path.join(BASE_DIR, "django_static")
+STATIC_URL = '/static/'
+STATIC_ROOT = '/home/app/web/staticfiles/'
 
-MEDIA_URL = "/django_media/"
-MEDIA_ROOT = os.path.join(BASE_DIR, "django_media")
+MEDIA_URL = '/media/'
+MEDIA_ROOT = '/home/app/web/mediafiles'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
