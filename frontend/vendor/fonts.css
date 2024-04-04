@@ -1,0 +1,45 @@
+@font-face {
+  font-family: 'BebasNeue';
+  font-style:  normal;
+  font-weight: 400;
+  src: local("BebasNeueBold"),
+      url("./fonts/BebasNeueBold.woff2") format("woff2"),
+      url("./fonts/BebasNeueBold.woff") format("woff");
+}
+
+@font-face {
+  font-family: 'Cinematografica';
+  font-style:  normal;
+  font-weight: 400;
+  src: url("./fonts/Cinematografica-Regular-trial.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: 'Gilroy';
+  font-style:  normal;
+  font-weight: 400;
+  src: local("Gilroy"),
+      url("./fonts/Gilroy-Regular.woff2") format("woff2"),
+      url("./fonts/Gilroy-Regular.woff") format("woff");
+}
+
+@font-face {
+  font-family: 'Gotham';
+  font-style:  normal;
+  font-weight: 700;
+  src: url("./fonts/Gotham-Bold.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: 'Gotham';
+  font-style:  normal;
+  font-weight: 400;
+  src: url("./fonts/Gotham-Book.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: 'GothamPro';
+  font-style:  normal;
+  font-weight: 400;
+  src: url("./fonts/GothamPro-Medium.woff2") format("woff2");
+}

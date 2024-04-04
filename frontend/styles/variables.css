@@ -1,0 +1,10 @@
+/* значения переменных */
+
+:root {
+    --bg-color: #161616;
+    --die-bg-color: linear-gradient(92.6deg, #FADAAB 4.03%, #F4CF98 82.35%);
+    --die-border-color: linear-gradient(151.17deg, #F7D39E 0%, #FADAAB 50.83%, rgba(250, 218, 171, 0.2) 100%);
+    --blackout-color: linear-gradient(91.19deg, #FFD597 0.6%, #6E5D44 70.29%);
+    --bg-footer-color: #FFFFFF;
+    --highlight-text-color: #FF3D00;
+}
