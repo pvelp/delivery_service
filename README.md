@@ -1,6 +1,7 @@
 # delivery_service
 
 ## Поднятие докерфайла:
+- docker-compose -f docker-compose.prod.yaml up --build
 - docker-compose -f docker-compose.prod.yaml exec web python backend/manage.py migrate
 - docker-compose -f docker-compose.prod.yaml exec web python backend/manage.py collectstatic
 - docker-compose -f docker-compose.prod.yaml exec web python backend/manage.py csu
