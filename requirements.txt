@@ -1075,3 +1075,5 @@ xattr==1.1.0 ; python_version >= "3.11" and python_version < "4.0" and sys_platf
 zipp==3.18.1 ; python_version >= "3.11" and python_version < "3.12" \
     --hash=sha256:206f5a15f2af3dbaee80769fb7dc6f249695e940acca08dfb2a4769fe61e538b \
     --hash=sha256:2884ed22e7d8961de1c9a05142eb69a247f120291bc0206a00a7642f09b5b715
+django-cors-headers==4.3.1 ; python_version >= "3.11" and python_version < "3.12" \
+    --hash=sha256:0b1fd19297e37417fc9f835d39e45c8c642938ddba1acce0c1753d3edef04f36
