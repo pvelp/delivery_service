@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     'drf_yasg',
     'djoser',
     'django_filters',
+    'corsheaders',
 
     'users',
     'main',
@@ -65,6 +66,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -233,3 +235,12 @@ LOGGING = {
         },
     },
 }
+
+#  Cors-Headers settings
+
+CORS_ORIGIN_ALLOW_ALL = True
+
+CORS_ALLOW_METHODS = (
+    "GET",
+    "POST",
+)
