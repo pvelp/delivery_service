@@ -5,7 +5,7 @@ services:
     image: "delivery_service:dep_back"
     build: .
     tty: true
-    command: sh -c "cd ./backend && gunicorn config.wsgi --bind 0.0.0.0:8000 --timeout 120"
+    command: sh -c "cd ./backend && gunicorn config.wsgi --bind 0.0.0.0:8000 --timeout 180"
     volumes:
       - static_volume:/home/app/web/staticfiles
       - media_volume:/home/app/web/mediafiles
