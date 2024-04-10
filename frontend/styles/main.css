@@ -966,47 +966,13 @@
     .menu__button {
         border-width: 1px;
         height: 40px;
+        width: 100%;
         padding: 0;
         position: relative;
         padding-left: 10px;
         padding-right: 10px;
     }
-    .button__shashlik {
-        width: auto;
-        order: 1;
-    }
-    .button__mangal {
-        width: auto;
-        order: 2;
-    }
-    .button__shaverma {
-        width: auto;;
-        order: 3;
-    }
-    .button__zakus {
-        width: auto;
-        order: 4;
-    }
-    .button__soups {
-        width: auto;
-        order: 5;
-    }
-    .button__salad {
-        width: auto;
-        order: 6;
-    }
-    .button__vipechka {
-        width: auto;
-        order: 7;
-    }
-    .button__drinks {
-        width: auto;
-        order: 8;
-    }
-    .button__souses {
-        width: auto;
-        order: 9;
-    }
+
     .menu__item .product__info-container {
         margin-top: 28px;
         width: 100%;

@@ -577,7 +577,7 @@ dialog::backdrop {
     background: linear-gradient(91.21deg, #FFECCF 10.08%, #F4CF98 97.63%);
     -webkit-background-clip: text;
     color: transparent;
-    font-family: Cinematografica;
+    font-family: BebasNeue;
     font-size: 64px;
     font-weight: 400;
     line-height: 60px;
@@ -849,8 +849,9 @@ dialog::backdrop {
     .menu__order-top {
         flex-direction: column;
         align-items: center;
-        margin-top: 166px;
+        margin-top: 40px;
         gap: 16px;
+
     }
     .menu__order-photo-container {
         width: 277px;
@@ -883,8 +884,6 @@ dialog::backdrop {
         font-size: 64px;
         line-height: 60px;
         letter-spacing: 0.02em;
-        position: absolute;
-        top: 90px;
     }
     .menu__order-compose {
         font-size: 16px;
@@ -912,8 +911,8 @@ dialog::backdrop {
         margin-left: 25px;
     }
     .menu__order-overlay {
-        padding-bottom: 179px;
-        margin-bottom: -179px;
+        padding-bottom: 232px;
+        margin-bottom: -232px;
     }
     .enter__window-order {
         border-radius: 20px;
@@ -1108,7 +1107,7 @@ dialog::backdrop {
     .menu__order-top {
         flex-direction: column;
         align-items: center;
-        margin-top: 166px;
+        margin-top: 40px;
         gap: 16px;
     }
     .menu__order-photo-container {
@@ -1142,8 +1141,6 @@ dialog::backdrop {
         font-size: 64px;
         line-height: 60px;
         letter-spacing: 0.02em;
-        position: absolute;
-        top: 90px;
     }
     .menu__order-compose {
         font-size: 16px;
@@ -1291,6 +1288,7 @@ dialog::backdrop {
     .input_field::placeholder {
         text-align: center;
     }
+    
 }
 
 @media (769px < width < 1025px) {

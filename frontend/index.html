@@ -137,15 +137,23 @@
         <section class="menu" id="menu-id">
           <h2 class="menu__title title">меню</h2>
           <div class="menu__categories">
-              <button class="menu__button button__shashlik active">шашлык</button>
-              <button class="menu__button button__mangal">овощи и рыба на мангале</button>
-              <button class="menu__button button__shaverma">шаурма</button>
-              <button class="menu__button button__zakus">закуски</button>
-              <button class="menu__button button__soups">супы</button>
-              <button class="menu__button button__salad">салаты</button>
-              <button class="menu__button button__vipechka">выпечка</button>
-              <button class="menu__button button__drinks">напитки</button>
-              <button class="menu__button button__souses">соусы</button>
+              <button class="menu__button button__shashlik active">шашлык</button> 
+              <button class="menu__button button__mangal">мангал</button> 
+              <button class="menu__button button__shaverma">шаурма</button> 
+              <button class="menu__button button__basturma">бастурма и суджук</button> 
+              <button class="menu__button button__salad">салаты</button> 
+              <button class="menu__button button__vipechka">выпечка</button> 
+              <button class="menu__button button__drinks">напитки</button> 
+              <button class="menu__button button__compot">компот</button> 
+              <button class="menu__button button__deserts">десерты</button> 
+              <button class="menu__button button__water">вода</button> 
+              <button class="menu__button button__milk">молочка</button> 
+              <button class="menu__button button__tandir">тандыр</button> 
+              <button class="menu__button button__varene">варенье</button> 
+              <button class="menu__button button__garnirs">гарниры</button> 
+              <button class="menu__button button__coffee">кофе</button> 
+              <button class="menu__button button__vegetabl-conserv">овощные консервы</button> 
+              <button class="menu__button button__souses">соусы</button> 
           </div>
           <ul class="menu__list">
             <li class="menu__item">
@@ -424,7 +432,7 @@
                 </div>
                 <div class="input_container">
                   <input type="text" class="name ord_name input_field" placeholder="Имя">
-                  <input type="text" class="phone ord_phone input_field" pattern="^\+7\(d{3}\)d{3}-d{2}-d{2}$">
+                  <input type="text" class="phone ord_phone input_field" placeholder="+7 (___) ___ __ __">
                   <input type="text" class="address ord_addr input_field" placeholder="Адрес">
                   <p class="input_decription">Город, улица, дом, квартира</p>
                 </div>
@@ -450,7 +458,6 @@
           <div class="menu__order-info">
             <h3 class="menu__order-name">шашлык</h3>
             <p class="menu__order-weight">100 грамм</p>
-            <p class="menu__order-compose"><span class="menu__order-lighter">Состав: </span><span class="menu__order-compose-list">мясо свинины, лук, специи</span></p>
             <p class="menu__order-price">300 ₽</p>
             <button type="button" onclick="window.menu__order.close();document.querySelector('.page').style.position='relative';" class="menu__order-button">в корзину</button>
           </div>

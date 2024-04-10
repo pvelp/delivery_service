@@ -4,25 +4,51 @@ const template = document.getElementById('menu__card-template');
 const menuOrder = document.querySelector('.menu__order')
 let menuAvaliableItems;
 let menuItems=[]
-fetch('http://localhost:8000/products/') //запрос на получение всех блюд из бд
-  .then(response => {
-    if (!response.ok) {
-      throw new Error('Ошибка HTTP, код ' + response.status);
+function fetchProducts(page) {
+  return fetch(`http://localhost:1337/products?page=${page}`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Ошибка HTTP, код ' + response.status);
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log(`Страница ${page} загружена. Всего элементов: ${data.results.length}`);
+      return data.results;
+    })
+    .catch(error => {
+      console.error('Ошибка при выполнении запроса:', error);
+      throw error;
+    });
+}
+
+async function fetchAllProducts() {
+  let menuItems = [];
+
+  try {
+    for (let page = 1; page <= 10; page++) {
+      const results = await fetchProducts(page);
+      menuItems = menuItems.concat(results);
     }
-    return response.json();
-  })
-  .then(data => {
-     menuItems = data.results;
-    console.log(menuItems); //для отладки
-
-  })
-  .catch(error => {
+    console.log('Все страницы загружены. Всего элементов:', menuItems.length);
+    console.log(menuItems);
+    return menuItems;
+  } catch (error) {
     console.error('Ошибка при выполнении запроса:', error);
-  });
+    return [];
+  }
+}
+
+async function processMenuItems() {
+  menuItems = await fetchAllProducts();
+}
+
+processMenuItems().then(() => {
+  
 
 
-
-/*let menuItems = [
+  
+/*let gavnoItems = [
     { name: "Шашлык", photo: './images/testImages/test1.jpg',  weight: "200", price: "350", type: "шашлык", compose: "курица, соль" },
     { name: "Шашлык",photo: './images/testImages/test1.jpg', weight: "200", price: "350", type: "шашлык", compose: "баранина, соль" },
     { name: "Шашлык", photo: './images/testImages/test1.jpg',weight: "200", price: "350", type: "шашлык", compose: "свинина, соль" },
@@ -40,9 +66,40 @@ fetch('http://localhost:8000/products/') //запрос на получение 
     // Дополнительные объекты блюд могут быть добавлены
   ];
 */
+
+const categoryToType = {
+  1: "cоусы",
+  2: "варенье",
+  3: "выпечка",
+  4: "тандыр",
+  5: "молочка",
+  6: "кофе",
+  7: "бастурма и суджук",
+  8: "компот",
+  9: "салаты",
+  10: "напитки",
+  11: "овощные консервы",
+  12: "десерты",
+  13: "гарниры",
+  14: "мангал",
+  16: "вода",
+  17: "Шаурма"
+};
+
+function addTypeToProducts(products) {
+  return products.map(product => {
+    const type = categoryToType[product.category];
+    return { ...product, type }; // Создаем новый объект с добавленным свойством type
+  });
+}
+
+menuItems = addTypeToProducts(menuItems);
+console.log(menuItems)
+
+
   let cartItems = localStorage.getItem('cartItems');
   let products = cartItems ? JSON.parse(cartItems) : [];
-  
+
   addOnlyMenuTypeExamples('шашлык');
   
   function clickButtonByText(buttonText) {
@@ -89,11 +146,11 @@ fetch('http://localhost:8000/products/') //запрос на получение 
       const orderOptionCompose = orderOption.querySelector('.menu__order-compose-list');
       const orderOptionWeight = orderOption.querySelector('.menu__order-weight');
       const orderOptionPrice = orderOption.querySelector('.menu__order-price');
-      const product = menuItems.find(item => item.name === name);
+      const product = menuItems.find(item => item.title === name);
+      console.log(product)
       orderOptionName.textContent = name;
       orderOptionPhoto.src = photo;
-      orderOptionCompose.textContent = product.compose;
-      orderOptionWeight.textContent = weight + ' гр';
+      orderOptionWeight.textContent = product.weight + ' гр';
       orderOptionPrice.textContent = price + ' ₽';
   }
   
@@ -110,10 +167,11 @@ fetch('http://localhost:8000/products/') //запрос на получение 
     }
 
     menuItems.forEach(function(item) {
+  
         if (item.type === menuType) {
             var clone = document.importNode(template.content, true);
-            clone.querySelector('.product__name').textContent = item.name;
-            clone.querySelector('.menu__card-image').src = item.photo;
+            clone.querySelector('.product__name').textContent = item.title;
+            clone.querySelector('.menu__card-image').src = item.image;
             clone.querySelector('.product__weight').textContent = item.weight;
             clone.querySelector('.product__price').textContent = item.price;
             
@@ -130,25 +188,49 @@ fetch('http://localhost:8000/products/') //запрос на получение 
             const photo = item.querySelector('.menu__card-image').src;
             const weight = item.querySelector('.product__weight').textContent;
             const price = item.querySelector('.product__price').textContent;
-            const compose = item.querySelector('.product__compose').textContent;
 
             const existingProductIndex = products.findIndex(product => product.name === name);
+            const product = menuItems.find(item => item.title === name);
+            const data = {
+              product_id: product.id,
+              quantity: 1
+            };
+            fetch('http://localhost:1337/add-to-cart/', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(data)
+            })
+            .then(response => {
+              if (!response.ok) {
+                if (response.status === 404) {
+                  throw new Error('Product not found');
+                } else {
+                  throw new Error('Failed to add product to cart');
+                }
+              }
+              return response.json();
+            })
+            .then(responseData => {
+              return responseData;
+            })
+            .catch(error => {
+              console.error('Error:', error.message);
+              return null;
+            });
             if (existingProductIndex !== -1) {
-                // Если товар уже есть в корзине, увеличиваем его количество
-                products[existingProductIndex].quantity++;
-            } else {
-                // Иначе добавляем новый товар в корзину с количеством 1
-                products.push({
-                    name: name,
-                    photo: photo,
-                    weight: weight,
-                    price: price,
-                    compose: compose,
-                    quantity: 1
-                });
-            }
+              // Если товар уже есть в корзине, уменьшаем его количество
+              products[existingProductIndex].quantity--;
+              if (products[existingProductIndex].quantity === 0) {
+                  // Если количество товара стало равным нулю, удаляем его из массива
+                  products.splice(existingProductIndex, 1);
+                  // Удаляем товар из localStorage
+                  updateLocalStorage();
+              }
+          }
 
-            updateLocalStorage(); // Обновляем данные в localStorage
+
             makeOrder(products); // Обновляем отображение корзины
         });
     });
@@ -230,6 +312,33 @@ fetch('http://localhost:8000/products/') //запрос на получение 
                 totalCount.textContent = totalOrderQuantity;
                 product.quantity = count; // Обновляем количество товара в объекте товара
                 updateLocalStorage(); // Обновляем localStorage при изменении количества товаров
+                const removable = menuItems.find(item => item.title === product.name);
+                const data = {
+                  product_id: removable.id,
+                };
+                fetch('http://localhost:1337/remove-from-cart/', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify(data)
+                })
+                .then(response => {
+                  if (response.status === 404) {
+                    throw new Error('Product not found');
+                  } else if (response.status === 200) {
+                    return response.json();
+                  } else {
+                    throw new Error('Failed to remove product from cart');
+                  }
+                })
+                .then(responseData => {
+                  return responseData;
+                })
+                .catch(error => {
+                  console.error('Error:', error.message);
+                  return null;
+                });
             } else {
                 card.remove();
                 totalOrderPrice -= parseInt(product.price);
@@ -237,10 +346,37 @@ fetch('http://localhost:8000/products/') //запрос на получение 
                 totalOrderQuantity--;
                 totalCount.textContent = totalOrderQuantity;
                 const index = products.indexOf(product);
+                const removable = menuItems.find(item => item.title === product.name);
+                const data = {
+                  product_id: removable.id,
+                };
+                fetch('http://localhost:1337/remove-from-cart/', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify(data)
+                })
+                .then(response => {
+                  if (response.status === 404) {
+                    throw new Error('Product not found');
+                  } else if (response.status === 200) {
+                    return response.json();
+                  } else {
+                    throw new Error('Failed to remove product from cart');
+                  }
+                })
+                .then(responseData => {
+                  return responseData;
+                })
+                .catch(error => {
+                  console.error('Error:', error.message);
+                  return null;
+                });
                 if (index > -1) {
                     products.splice(index, 1); // Удаляем товар из массива, если его количество стало 0
-                }
-                updateLocalStorage(); // Обновляем localStorage при удалении товара из корзины
+                    updateLocalStorage();
+                } // Обновляем localStorage при удалении товара из корзины
             }
         });
 
@@ -258,6 +394,35 @@ fetch('http://localhost:8000/products/') //запрос на получение 
             totalOrderQuantity++;
             product.quantity = count; // Обновляем количество товара в объекте товара
             updateLocalStorage(); // Обновляем localStorage при изменении количества товаров
+                     const addable = menuItems.find(item => item.title === product.name);
+                const data = {
+                  product_id: addable.id,
+                  quantity: 1
+                };
+                fetch('http://localhost:1337/add-to-cart/', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify(data)
+                })
+                .then(response => {
+                  if (!response.ok) {
+                    if (response.status === 404) {
+                      throw new Error('Product not found');
+                    } else {
+                      throw new Error('Failed to add product to cart');
+                    }
+                  }
+                  return response.json();
+                })
+                .then(responseData => {
+                  return responseData;
+                })
+                .catch(error => {
+                  console.error('Error:', error.message);
+                  return null;
+                });    
         });
 
         let counter = document.createElement('p');
@@ -303,7 +468,7 @@ orderButton.addEventListener('click', () => {
         weight: weight,
         price: price
     };
-
+    
     const existingProductIndex = products.findIndex(product => product.name === selectedProduct.name);
     if (existingProductIndex !== -1) {
         products[existingProductIndex].quantity++;
@@ -311,6 +476,7 @@ orderButton.addEventListener('click', () => {
         selectedProduct.quantity = 1;
         products.push(selectedProduct);
     }
+
     makeOrder(products);
 });
 
@@ -345,7 +511,7 @@ function sendEnterRequest() { //пост на вход
       password: password
     };
   
-    fetch('http://localhost:8000/jwt/create', {
+    fetch('http://localhost:1337/jwt/create', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -387,9 +553,9 @@ function sendRegRequest() { //пост на регистрацию
       date_of_birth: dob
     };
   
-    fetch('http://localhost:8000/users/', {
+    fetch('http://localhost:1337/users/', {
       method: 'POST',
-      headers: {
+      headers: {  
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(data),
@@ -399,14 +565,9 @@ function sendRegRequest() { //пост на регистрацию
         console.log("Регистрация выполнена успешно");
 
       } else {
-        document.getElementById("emailField").style.borderColor = "red";
-        document.getElementById("passwordField").style.borderColor = "red";
         console.error("Не удалось выполнить вход");
       }
     })
-    .catch(error => {
-      console.error('Ошибка:', error);
-    });
   }
 
   function sendOrderData() {
@@ -414,13 +575,25 @@ function sendRegRequest() { //пост на регистрацию
     var selectedRadio = document.querySelector('input[name="payopt"]:checked');
     var label = document.querySelector('label[for="' + selectedRadio.id + '"]');
     var PayMethod = label.textContent.trim();
+    if (PayMethod  === 'Картой  (Visa, Mastercard, МИР)') {
+      PayMethod = 'online'
+    }
+    else {
+      PayMethod = 'to_courier'
+    }
     var selectedRadioDel = document.querySelector('input[name="delopt"]:checked');
     var label = document.querySelector('label[for="' + selectedRadioDel.id + '"]');
     let DeliveryMethod = label.textContent.trim();
-    let buyerPhone = document.querySelector(".ord_phone").textContent
-    let buyerAddress = document.querySelector(".ord_addr").textContent
-    let buyerName = document.querySelector(".ord_name").textContent
-    let Promo = document.querySelector(".promo").textContent
+    if (DeliveryMethod  === 'Курьер') {
+      DeliveryMethod  = 'courier'
+    }
+    else {
+      DeliveryMethod  = 'pickup'
+    }
+    let buyerPhone = document.querySelector(".ord_phone").value;
+    let buyerAddress = document.querySelector(".ord_addr").value;
+    let buyerName = document.querySelector(".ord_name").value;
+    let Promo = document.querySelector(".promo").value;
 
     var orderData = {
       buyer_phone_number: buyerPhone,
@@ -432,8 +605,8 @@ function sendRegRequest() { //пост на регистрацию
       promo: Promo
     };
   
-    // Отправляем POST-запрос
-    fetch('http://localhost:8000/order/', {
+
+    fetch('http://localhost:1337/order/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -454,3 +627,31 @@ function sendRegRequest() { //пост на регистрацию
   }
 
 document.querySelector('.enter__window-button-order').addEventListener('click', sendOrderData);
+function handleScreenWidthChange() {
+  // Получаем ширину экрана
+  const screenWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+
+  // Получаем элементы, которые мы хотим изменить порядок
+  const photoContainer = document.querySelector('.menu__order-photo-container');
+  const orderName = document.querySelector('.menu__order-name');
+  const orderWeight = document.querySelector('.menu__order-weight');
+
+  // Если ширина экрана меньше или равна 768px
+  if (screenWidth <= 768) {
+    // Вставляем блок с фото между заголовком и весом заказа
+    const orderInfo = orderName.parentElement;
+    orderInfo.insertBefore(photoContainer, orderWeight);
+  } else {
+    // Если ширина экрана больше 768px, возвращаем блок с фото в его исходное положение
+    const orderInfo = document.querySelector('.menu__order-info');
+    orderInfo.insertBefore(photoContainer, orderInfo.firstChild);
+  }
+}
+
+// Вызываем функцию при загрузке страницы и при изменении размеров окна
+window.addEventListener('load', handleScreenWidthChange);
+window.addEventListener('resize', handleScreenWidthChange);
+// Вызываем функцию при загрузке страницы и при изменении размеров окна
+window.addEventListener('load', handleScreenWidthChange);
+window.addEventListener('resize', handleScreenWidthChange);
+});

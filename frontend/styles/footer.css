@@ -246,7 +246,7 @@
     }
 }   
 
-@media (376 < width < 769px) {
+@media (376px < width < 769px) {
     .footer__logo {
         width: 91px;
         height: 91px;
