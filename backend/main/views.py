@@ -402,7 +402,7 @@ class OrderCreateAPIView(CreateAPIView):
         #  TODO: добавить последний адрес заказа, увеличить сумму заказов пользователя в поля User (тоже самое после ответа платежки)
         if user:
             user.address = order.delivery_address
-            user.total_amount += float(order.order_amount)
+            user.total_amount += order.order_amount
 
         if cart.promo:
             #  TODO: добавить использование промо в PromoUsage (тоже самое после ответа платежки)
