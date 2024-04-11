@@ -6,6 +6,11 @@
 - docker-compose -f docker-compose.prod.yaml exec web python backend/manage.py collectstatic
 - docker-compose -f docker-compose.prod.yaml exec web python backend/manage.py csu
 
+## Поднятие фронта:
+- cd .\frontend\
+- docker build -t frontend-image .
+- docker run -d -p 80:80 frontend-image
+
 ## Ручки для обновления БД товарами:
 Реализовано следующим образом (самих ссылок в админке нет, только через строку переход):
 1) Админ добавляет в модель Ключи компании из iikoWeb API key из лк iiko
