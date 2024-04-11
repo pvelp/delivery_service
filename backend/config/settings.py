@@ -31,7 +31,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("DJANGO_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 # 'DJANGO_ALLOWED_HOSTS' should be a single string of hosts with a space between each.
 # For example: 'DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]'
@@ -127,7 +127,7 @@ DJOSER = {
     "ACTIVATION_URL": "users/activate/{uid}/{token}",
     "PASSWORD_RESET_SHOW_EMAIL_NOT_FOUND": True,
     "PASSWORD_RESET_CONFIRM_RETYPE": True,
-    "SEND_ACTIVATION_EMAIL": True,
+    "SEND_ACTIVATION_EMAIL": False,
     "TOKEN_MODEL": None,
     "SERIALIZERS": {
         "user_create": "users.serializers.UserRegistrationSerializer",  # custom serializer
@@ -135,6 +135,9 @@ DJOSER = {
         "current_user": "users.serializers.CurrentUserSerializer",  # custom serializer
         "user_delete": "djoser.serializers.UserSerializer",
         "activation": "djoser.serializers.ActivationSerializer",
+    },
+    'EMAIL': {
+        'confirmation': 'users.email.ConfirmationEmail',
     },
 }
 

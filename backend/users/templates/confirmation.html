@@ -1,0 +1,21 @@
+{% load i18n %}
+
+{% block subject %}
+{% blocktrans %}{{ site_name }} Ваш аккаунт был успешно активирован!{% endblocktrans %}
+{% endblock %}
+
+{% block text_body %}
+{% trans "Вы создали аккаунт и теперь можете им пользоваться!" %}
+
+{% trans "Благодарим вас за использование нашего сайта!" %}
+
+{% blocktrans %}Команда сайта - {{ site_name }} {% endblocktrans %}
+{% endblock text_body %}
+
+{% block html_body %}
+<p>{% trans "Вы создали аккаунт и теперь можете им пользоваться!" %}</p>
+
+<p>{% trans "Благодарим вас за использование нашего сайта!" %}</p>
+
+<p>{% blocktrans %}Команда сайта - Шашлычное настроение {% endblocktrans %}</p>
+{% endblock html_body %}
