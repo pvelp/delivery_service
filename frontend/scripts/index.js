@@ -26,7 +26,7 @@ async function fetchAllProducts() {
   let menuItems = [];
 
   try {
-    for (let page = 1; page <= 12; page++) {
+    for (let page = 1; page <= 11; page++) {
       const results = await fetchProducts(page);
       menuItems = menuItems.concat(results);
     }
