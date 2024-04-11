@@ -26,7 +26,7 @@ async function fetchAllProducts() {
   let menuItems = [];
 
   try {
-    for (let page = 1; page <= 10; page++) {
+    for (let page = 1; page <= 12; page++) {
       const results = await fetchProducts(page);
       menuItems = menuItems.concat(results);
     }
@@ -85,6 +85,14 @@ const categoryToType = {
   16: "вода",
   17: "Шаурма"
 };
+const acceptToken = localStorage.getItem('accept_token');
+const refreshToken = localStorage.getItem('refresh_token');
+
+if(acceptToken) {
+  document.querySelector('.galochka').style.borderLeftColor = "black";
+  document.querySelector('.galochka').style.borderBottomColor = "black";
+  document.querySelector('.enter__text').style.color = "transparent";
+}
 
 function addTypeToProducts(products) {
   return products.map(product => {
@@ -237,7 +245,7 @@ console.log(menuItems)
 }
   
   
-  const selfCheckbox = document.getElementById('self');
+ /* const selfCheckbox = document.getElementById('self');
   const courierCheckbox = document.getElementById('courier');
   const inputContainer = document.querySelector('.input_container');
   function toggleInputContainer() {
@@ -251,7 +259,7 @@ console.log(menuItems)
   toggleInputContainer();
   selfCheckbox.addEventListener('change', toggleInputContainer);
   courierCheckbox.addEventListener('change', toggleInputContainer);
-  //Сокрытие инпутов при выборе "самовывоз"
+  *///Сокрытие инпутов при выборе "самовывоз"
   
   
   let orderContainer = document.querySelector('.window__order-container-order');
@@ -445,7 +453,7 @@ console.log(menuItems)
         totalOrderQuantity += product.quantity || 1; // Учитываем количество товара
     });
 
-    totalPrice.textContent = totalOrderPrice;
+    totalPrice.textContent = totalOrderPrice + '  ₽';
     totalCount.textContent = totalOrderQuantity;
 }
 function updateLocalStorage() {
@@ -512,26 +520,42 @@ function sendEnterRequest() { //пост на вход
     };
   
     fetch('http://localhost:1337/jwt/create', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      })
-      .then(response => {
-        if (response.ok) {
-          window.window__enter.close();
-          console.log("Вход выполнен успешно");
-          document.querySelector('.galochka').style.borderLeftColor = "black";
-          document.querySelector('.galochka').style.borderBottomColor = "black";
-          document.querySelector('.enter__text').style.color = "transparent";
-        } else {
-          document.querySelector(".email__enter").style.borderColor = "red";
-          document.querySelector(".password__enter").style.borderColor = "red";
-          console.error("Не удалось выполнить вход");
-        }
-      })
-      .catch(error => {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    })
+    .then(response => {
+      if (response.ok) {
+        return response.json(); // Преобразуем ответ в JSON
+      } else {
+        document.querySelector(".email__enter").style.borderColor = "red";
+        document.querySelector(".password__enter").style.borderColor = "red";
+        console.error("Не удалось выполнить вход");
+        throw new Error('Не удалось выполнить вход');
+      }
+    })
+    .then(data => {
+      // Извлекаем токены из JSON-объекта
+      console.log(data);
+      const acceptToken = data.access;
+      const refreshToken = data.refresh;
+    
+      // Сохраняем токены accept и refresh в localStorage
+      localStorage.setItem('accept_token', acceptToken);
+      localStorage.setItem('refresh_token', refreshToken);
+    
+      // Закрываем окно или что у вас там
+      window.window__enter.close();
+    
+      // Ваша дальнейшая логика обработки успешного входа
+      console.log("Вход выполнен успешно");
+      document.querySelector('.galochka').style.borderLeftColor = "black";
+      document.querySelector('.galochka').style.borderBottomColor = "black";
+      document.querySelector('.enter__text').style.color = "transparent";
+    })
+    .catch(error => {
       console.error('Ошибка:', error);
     });
 }
@@ -563,6 +587,7 @@ function sendRegRequest() { //пост на регистрацию
     .then(response => {
       if (response.ok) {
         console.log("Регистрация выполнена успешно");
+        window.window__registration.close();
 
       } else {
         console.error("Не удалось выполнить вход");
@@ -594,14 +619,14 @@ function sendRegRequest() { //пост на регистрацию
     let buyerAddress = document.querySelector(".ord_addr").value;
     let buyerName = document.querySelector(".ord_name").value;
     let Promo = document.querySelector(".promo").value;
-
+    let orderPrice = parseFloat(totalPrice.textContent.slice(0, -2));
     var orderData = {
       buyer_phone_number: buyerPhone,
       delivery_address: buyerAddress,
       buyer_name: buyerName,
       payment_method: PayMethod,
       delivery_method: DeliveryMethod,
-      order_amount: totalPrice.textContent,
+      order_amount: orderPrice,
       promo: Promo
     };
   
@@ -616,6 +641,7 @@ function sendRegRequest() { //пост на регистрацию
     .then(response => {
       if (response.ok) {
         console.log('Данные успешно отправлены');
+        window.window__order.close
       } else {
         console.error('Ошибка отправки данных:', response.statusText);
       }
