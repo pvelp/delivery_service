@@ -136,6 +136,9 @@ DJOSER = {
         "user_delete": "djoser.serializers.UserSerializer",
         "activation": "djoser.serializers.ActivationSerializer",
     },
+    'EMAIL': {
+        'confirmation': 'users.email.ConfirmationEmail',
+    },
 }
 
 # Database
