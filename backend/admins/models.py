@@ -25,3 +25,12 @@ class Organization(models.Model):
     class Meta:
         verbose_name = 'Организация из iikoWeb'
         verbose_name_plural = 'Организации из iikoWeb'
+
+
+class FetchMenu(models.Model):
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE, verbose_name='ID организации')
+    menu = models.ForeignKey(ExternalMenu, on_delete=models.CASCADE, verbose_name='ID Меню')
+
+    class Meta:
+        verbose_name = 'Сохранить меню'
+        verbose_name_plural = 'Сохранить меню'
