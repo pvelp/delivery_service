@@ -31,14 +31,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("DJANGO_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 # 'DJANGO_ALLOWED_HOSTS' should be a single string of hosts with a space between each.
 # For example: 'DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]'
 # ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
+#ALLOWED_HOSTS = ["http://188.225.9.172", "http://shashlikns.ru"]
 ALLOWED_HOSTS = ["*"]
-
-CSRF_TRUSTED_ORIGINS = ["http://localhost:8000", "http://localhost:1337"]
+CSRF_TRUSTED_ORIGINS = ["http://188.225.9.172", "http://188.225.9.172:8000", "http://shashlikns.ru", "http://localhost:1337"]
 
 # Application definition
 

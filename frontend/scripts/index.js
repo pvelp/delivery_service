@@ -5,7 +5,7 @@ const menuOrder = document.querySelector('.menu__order')
 let menuAvaliableItems;
 let menuItems=[]
 function fetchProducts(page) {
-  return fetch(`http://localhost:1337/products?page=${page}`)
+  return fetch(`http://188.225.9.172:1337/products?page=${page}`)
     .then(response => {
       if (!response.ok) {
         throw new Error('Ошибка HTTP, код ' + response.status);
@@ -203,7 +203,7 @@ console.log(menuItems)
               product_id: product.id,
               quantity: 1
             };
-            fetch('http://localhost:1337/add-to-cart/', {
+            fetch('http://http://188.225.9.172:1337/add-to-cart/', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json'
@@ -324,7 +324,7 @@ console.log(menuItems)
                 const data = {
                   product_id: removable.id,
                 };
-                fetch('http://localhost:1337/remove-from-cart/', {
+                fetch('http://http://188.225.9.172:1337/remove-from-cart/', {
                   method: 'POST',
                   headers: {
                     'Content-Type': 'application/json'
@@ -358,7 +358,7 @@ console.log(menuItems)
                 const data = {
                   product_id: removable.id,
                 };
-                fetch('http://localhost:1337/remove-from-cart/', {
+                fetch('http://http://188.225.9.172:1337/remove-from-cart/', {
                   method: 'POST',
                   headers: {
                     'Content-Type': 'application/json'
@@ -407,7 +407,7 @@ console.log(menuItems)
                   product_id: addable.id,
                   quantity: 1
                 };
-                fetch('http://localhost:1337/add-to-cart/', {
+                fetch('http://http://188.225.9.172:1337/add-to-cart/', {
                   method: 'POST',
                   headers: {
                     'Content-Type': 'application/json'
@@ -519,7 +519,7 @@ function sendEnterRequest() { //пост на вход
       password: password
     };
   
-    fetch('http://localhost:1337/jwt/create', {
+    fetch('http://188.225.9.172:1337/jwt/create', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -577,7 +577,7 @@ function sendRegRequest() { //пост на регистрацию
       date_of_birth: dob
     };
   
-    fetch('http://localhost:1337/users/', {
+    fetch('http://188.225.9.172:1337/users/', {
       method: 'POST',
       headers: {  
         'Content-Type': 'application/json',
@@ -631,7 +631,7 @@ function sendRegRequest() { //пост на регистрацию
     };
   
 
-    fetch('http://localhost:1337/order/', {
+    fetch('http://188.225.9.172:1337/order/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
