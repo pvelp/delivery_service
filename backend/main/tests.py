@@ -1,6 +1,6 @@
 #  TODO: Добавить тесты на все реальзованные эндпоинты (остался 1 - создание заказа)
-
-from decimal import Decimal
+from django.contrib.sessions.middleware import SessionMiddleware
+from django.test.client import RequestFactory, Client
 from rest_framework import status
 from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
@@ -505,6 +505,10 @@ class CartTestCase(APITestCase):
         #  категорию "Напитки" игнорирует, всё как и ожидалось для этой акции
 
     def test_cart_not_found(self):
+        session = self.client.session
+        session['somekey'] = 'test'
+        session.save()
+
         self.client.force_authenticate(user=self.user_4)
 
         response = self.client.get(reverse('main:cart'))
@@ -521,6 +525,10 @@ class CartTestCase(APITestCase):
 
     def test_pure_cart_200(self):
         self.client.force_authenticate(user=self.user_3)
+
+        session_key = self.client.session.session_key
+        self.cart_3.session_id = session_key
+        self.cart_3.save()
 
         response = self.client.get(reverse('main:cart'))
 
@@ -550,6 +558,10 @@ class CartTestCase(APITestCase):
 
     def test_cart_discount_promo_200(self):
         self.client.force_authenticate(user=self.user_1)
+
+        session_key = self.client.session.session_key
+        self.cart_1.session_id = session_key
+        self.cart_1.save()
 
         response = self.client.get(reverse('main:cart'))
 
@@ -593,6 +605,10 @@ class CartTestCase(APITestCase):
 
     def test_cart_promo_product_200(self):
         self.client.force_authenticate(user=self.user_2)
+
+        session_key = self.client.session.session_key
+        self.cart_2.session_id = session_key
+        self.cart_2.save()
 
         response = self.client.get(reverse('main:cart'))
 
@@ -717,6 +733,10 @@ class PromoTestCase(APITestCase):
     def test_apply_discount_promo(self):
         self.client.force_authenticate(user=self.user_1)
 
+        session_key = self.client.session.session_key
+        self.cart_1.session_id = session_key
+        self.cart_1.save()
+
         response = self.client.post(
             self.promo_url,
             self.promo_1_response
@@ -729,6 +749,10 @@ class PromoTestCase(APITestCase):
 
     def test_apply_product_promo(self):
         self.client.force_authenticate(user=self.user_1)
+
+        session_key = self.client.session.session_key
+        self.cart_1.session_id = session_key
+        self.cart_1.save()
 
         response = self.client.post(
             self.promo_url,
@@ -743,6 +767,10 @@ class PromoTestCase(APITestCase):
     def test_apply_another_promo(self):
         self.client.force_authenticate(user=self.user_2)
 
+        session_key = self.client.session.session_key
+        self.cart_2.session_id = session_key
+        self.cart_2.save()
+
         response = self.client.post(
             self.promo_url,
             self.promo_1_response
@@ -755,6 +783,10 @@ class PromoTestCase(APITestCase):
 
     def test_max_of_usage(self):
         self.client.force_authenticate(user=self.user_3)
+
+        session_key = self.client.session.session_key
+        self.cart_3.session_id = session_key
+        self.cart_3.save()
 
         response = self.client.post(
             self.promo_url,
@@ -773,6 +805,10 @@ class PromoTestCase(APITestCase):
 
     def test_promo_not_found(self):
         self.client.force_authenticate(user=self.user_3)
+
+        session_key = self.client.session.session_key
+        self.cart_3.session_id = session_key
+        self.cart_3.save()
 
         response = self.client.post(
             self.promo_url,
@@ -896,6 +932,10 @@ class OrderCreateTestCase(APITestCase):
     def test_order_200(self):
         self.client.force_authenticate(user=self.user_3)
 
+        session_key = self.client.session.session_key
+        self.cart_3.session_id = session_key
+        self.cart_3.save()
+
         response = self.client.post(
             self.order_url,
             self.parameters_1
@@ -908,6 +948,10 @@ class OrderCreateTestCase(APITestCase):
 
     def test_order_400(self):
         self.client.force_authenticate(user=self.user_3)
+
+        session_key = self.client.session.session_key
+        self.cart_3.session_id = session_key
+        self.cart_3.save()
 
         response = self.client.post(
             self.order_url,
@@ -932,6 +976,10 @@ class OrderCreateTestCase(APITestCase):
     def test_order_400_wrong_choice(self):
         self.client.force_authenticate(user=self.user_3)
 
+        session_key = self.client.session.session_key
+        self.cart_3.session_id = session_key
+        self.cart_3.save()
+
         response = self.client.post(
             self.order_url,
             self.parameters_2
@@ -952,6 +1000,10 @@ class OrderCreateTestCase(APITestCase):
         )
 
     def test_cart_not_found(self):
+        session = self.client.session
+        session['somekey'] = 'test'
+        session.save()
+
         self.client.force_authenticate(user=self.user_4)
 
         response = self.client.post(
@@ -966,6 +1018,10 @@ class OrderCreateTestCase(APITestCase):
 
     def test_online_not_available(self):
         self.client.force_authenticate(user=self.user_3)
+
+        session_key = self.client.session.session_key
+        self.cart_3.session_id = session_key
+        self.cart_3.save()
 
         response = self.client.post(
             self.order_url,

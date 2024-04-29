@@ -1,4 +1,6 @@
 from django.http import HttpResponseRedirect
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 
@@ -13,19 +15,23 @@ from main.filters import ProductFilter
 from main.models import Product, RecommendedProducts, Cart, CartItem, Promo, PromoUsage, Order, OrderItem, HappyHours, Category
 from main.tasks import send_telegram_message, send_email_message
 from main.pagination import ProductPagination
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework.views import APIView
 
 
 class ProductListAPIView(ListAPIView):
-    #  TODO: список категорий
     serializer_class = ProductSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = ProductFilter
     filterset_fields = ['category']
     pagination_class = ProductPagination
+    permission_classes = [AllowAny]
+
+    @method_decorator(cache_page(60 * 30))
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
 
     def get_queryset(self):
         category_ids_str = self.request.query_params.get('categories', '')
@@ -48,7 +54,9 @@ class ProductListAPIView(ListAPIView):
 class ProductRetrieveAPIView(RetrieveAPIView):
     serializer_class = ProductRetrieveSerializer
     queryset = Product.objects.all()
+    permission_classes = [AllowAny]
 
+    @method_decorator(cache_page(60 * 30))
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         if instance.is_hidden:
@@ -61,6 +69,7 @@ class AddToCart(APIView):
     """
     Контроллер отвечает за добавление товара в корзину
     """
+    permission_classes = [AllowAny]
 
     @swagger_auto_schema(
         operation_description="Добавляет товар в корзину",
@@ -105,16 +114,14 @@ class AddToCart(APIView):
         product_id = request.data.get('product_id')
         quantity = request.data.get('quantity', 1)
 
+        session_id = request.session.session_key
+        cart, created = Cart.objects.get_or_create(session_id=session_id)
+
         if request.user.is_authenticated:
             user = request.user
-        else:
-            user = None
-
-        if user:
-            cart, created = Cart.objects.get_or_create(user=user)
-        else:
-            session_id = request.session.session_key
-            cart, created = Cart.objects.get_or_create(session_id=session_id)
+            if cart.user is None:
+                cart.user = user
+                cart.save()
 
         try:
             product = Product.objects.get(pk=product_id)
@@ -141,6 +148,7 @@ class RemoveFromCart(APIView):
     """
         Контроллер отвечает за удаление товара из корзины.
         """
+    permission_classes = [AllowAny]
 
     @swagger_auto_schema(
         operation_description="Удаляет товар из корзины",
@@ -193,11 +201,11 @@ class RemoveFromCart(APIView):
             user = None
 
         try:
-            if user:
-                cart = Cart.objects.get(user=user)
-            else:
-                session_id = request.session.session_key
-                cart = Cart.objects.get(session_id=session_id)
+            session_id = request.session.session_key
+            cart = Cart.objects.get(session_id=session_id)
+            if user and not cart.user:
+                cart.user = user
+                cart.save()
         except Cart.DoesNotExist:
             return Response({'error': 'Cart not found'}, status=status.HTTP_404_NOT_FOUND)
 
@@ -236,6 +244,7 @@ class CartView(APIView):
         Контроллер для просмотра содержимого корзины.
         Считается корзина - обязательный контроллерр
         """
+    permission_classes = [AllowAny]
 
     @swagger_auto_schema(
         operation_description="Получение содержимого корзины",
@@ -282,11 +291,11 @@ class CartView(APIView):
             user = None
 
         try:
-            if user:
-                cart = Cart.objects.get(user=user)
-            else:
-                session_id = request.session.session_key
-                cart = Cart.objects.get(session_id=session_id)
+            session_id = request.session.session_key
+            cart = Cart.objects.get(session_id=session_id)
+            if user and not cart.user:
+                cart.user = user
+                cart.save()
         except Cart.DoesNotExist:
             return Response({'error': 'Cart not found'}, status=status.HTTP_404_NOT_FOUND)
 
@@ -332,19 +341,27 @@ class ApplyPromoCode(APIView):
     def post(self, request):
         promo_code = request.data.get('promo_code')
 
+        if request.user.is_authenticated:
+            user = request.user
+        else:
+            user = None
+
+        try:
+            session_id = request.session.session_key
+            cart = Cart.objects.get(session_id=session_id)
+            if user and not cart.user:
+                cart.user = user
+                cart.save()
+        except Cart.DoesNotExist:
+            return Response({'error': 'Cart not found'}, status=status.HTTP_404_NOT_FOUND)
+
         try:
             promo = Promo.objects.get(title=promo_code)
         except Promo.DoesNotExist:
             return Response({'error': 'Promo code not found'}, status=status.HTTP_404_NOT_FOUND)
 
         # Проверка максимального количества использований промокода для текущего пользователя
-        user = request.user
-        try:
-            cart = Cart.objects.get(user=user)
-        except Cart.DoesNotExist:
-            return Response({'error': 'Cart not found'}, status=status.HTTP_404_NOT_FOUND)
-
-        if PromoUsage.objects.filter(user=user, promo=promo).count() >= promo.max_usage_count:
+        if PromoUsage.objects.filter(user=cart.user, promo=promo).count() >= promo.max_usage_count:
             return Response({'error': 'Maximum usage limit reached for this promo code'},
                             status=status.HTTP_403_FORBIDDEN)
 
@@ -356,6 +373,7 @@ class ApplyPromoCode(APIView):
 
 class OrderCreateAPIView(CreateAPIView):
     serializer_class = OrderSerializer
+    permission_classes = [AllowAny]
     #  TODO: Добавить пересчет страницы как на гет к корзине
 
     def create(self, request, *args, **kwargs):
@@ -365,11 +383,11 @@ class OrderCreateAPIView(CreateAPIView):
             user = None
 
         try:
-            if user:
-                cart = Cart.objects.get(user=user)
-            else:
-                session_id = request.session.session_key
-                cart = Cart.objects.get(session_id=session_id)
+            session_id = request.session.session_key
+            cart = Cart.objects.get(session_id=session_id)
+            if user and not cart.user:
+                cart.user = user
+                cart.save()
         except Cart.DoesNotExist:
             return Response({'error': 'Cart not found'}, status=status.HTTP_404_NOT_FOUND)
 
@@ -382,7 +400,7 @@ class OrderCreateAPIView(CreateAPIView):
                 status=status.HTTP_400_BAD_REQUEST)
 
         serializer = self.get_serializer(data=request.data,
-                                         context={'user': user, 'session_key': request.session.session_key})
+                                         context={'user': cart.user, 'session_key': request.session.session_key})
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
 
@@ -400,13 +418,13 @@ class OrderCreateAPIView(CreateAPIView):
         #      return redirect()
 
         #  TODO: добавить последний адрес заказа, увеличить сумму заказов пользователя в поля User (тоже самое после ответа платежки)
-        if user:
-            user.address = order.delivery_address
-            user.total_amount += order.order_amount
+        if cart.user:
+            cart.user.address = order.delivery_address
+            cart.user.total_amount += order.order_amount
 
         if cart.promo:
             #  TODO: добавить использование промо в PromoUsage (тоже самое после ответа платежки)
-            promo_usage, created = PromoUsage.objects.get_or_create(user=user, promo=cart.promo)
+            promo_usage, created = PromoUsage.objects.get_or_create(user=cart.user, promo=cart.promo)
             promo_usage.usage_count += 1
             promo_usage.save()
 

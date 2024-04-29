@@ -5,10 +5,11 @@ services:
     image: "delivery_service:dep_back"
     build: .
     tty: true
-    command: sh -c "cd ./backend && gunicorn config.wsgi --bind 0.0.0.0:8000 --timeout 180"
+    command: sh -c "cd ./backend && gunicorn --config gunicorn_config.py config.wsgi && gunicorn config.wsgi --bind 0.0.0.0:8000 --timeout 180"
     volumes:
       - static_volume:/home/app/web/staticfiles
       - media_volume:/home/app/web/mediafiles
+#      - /var/certbot/conf:/etc/letsencrypt/:ro
     expose:
       - 8000
     restart: on-failure
@@ -42,7 +43,8 @@ services:
       - static_volume:/home/app/web/staticfiles
       - media_volume:/home/app/web/mediafiles
     ports:
-      - 1337:80
+      - "80:80"
+      - "443:443"
     depends_on:
       - web
 
@@ -60,6 +62,14 @@ services:
     depends_on:
       - redis
       - web
+
+#  certbot:
+#    image: certbot/certbot:latest
+#    volumes:
+#      - /var/certbot/conf:/etc/letsencrypt/:rw
+#      - /var/certbot/www/:/var/www/certbot/:rw
+#    depends_on:
+#      - nginx
 
 volumes:
   pg_data:
