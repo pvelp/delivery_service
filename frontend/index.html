@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Шашлычное настроение</title>
+    <link rel="icon" href="./svg/favicon.svg" type="image/svg">
+    <link rel="stylesheet" href="./vendor/fonts.css" />
+    <link rel="stylesheet" href="./styles/variables.css" />
+    <link rel="stylesheet" href="./vendor/normalize.css" />
+    <link rel="stylesheet" href="./styles/modal_windows.css" />
+    <link rel="stylesheet" href="./styles/style.css" />
+    <link rel="stylesheet" href="./styles/menu-list.css" />
+    <link rel="stylesheet" href="./styles/header.css" />
+    <link rel="stylesheet" href="./styles/main.css" />
+    <link rel="stylesheet" href="./styles/footer.css" />
+    <script src="https://code.jquery.com/jquery-2.2.4.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.min.js"></script>
+    
+  </head>
+  <body class="page">
+    <header class="header">
+        <div class="ellipse-container">
+          <img class="left__ellipse" src="./images/big_bright_ellipse.png">
+          <img class="right__ellipse" src="./images/right_ellipse.png">
+        </div>
+        <nav class="nav">
+          <img class="header__icon" src="./images/header_icon.png">
+          <button class="button__nav-mobile" onclick="window.nav__mobile.showModal();document.querySelector('.page').style.position='fixed';">
+            <span class="line"></span>
+            <span class="line"></span>
+          </button>
+          <div class="nav__menu">
+            <p><a href="#about__us-id" class="nav__menu-link">о нас</a></p>
+            <p><a href="#menu-id" class="nav__menu-link">меню</a></p>
+            <p><a href="#stocks_id" class="nav__menu-link">акции</a></p>
+            <p><a href="#delivery__and__payment-id" class="nav__menu-link">доставка и оплата</a></p>
+            <p><a href="#contacts-id" class="nav__menu-link">контакты</a></p>
+          </div>
+          <button class="nav__enter" onclick="window.window__enter.showModal();" aria-controls="window__enter">
+            <img class="enter__icon" src="./images/svg/enter.svg">
+            <p class="enter__text">вход</p>
+            <div class="galochka"></div>
+          </button>
+          <button onclick="window.window__order.showModal();document.querySelector('.page').style.position='fixed';" class="nav__basket">
+            <img class="basket__icon" src="./images/svg/busket.svg">
+            <div class="mini__ellipse">
+              <p class="quantity">0</p>
+            </div>
+          </button>
+          <div class="nav__telephone-container">
+            <a class="telephone__number" href="tel:+79776075555">+7 (977) 607-55-55</a>
+          </div>
+        </nav>
+        <h1 class="header__title title">шашлычное настроение</h1>
+        <p class="header__text">мы готовим для вас <span class="highlight">сочный шашлык<br> на мангале, </span>который станет<br> настоящим кулинарным открытием.<br> Мы 
+            <span class="highlight">гарантируем свежесть<br> и качество</span> каждого блюда, которое<br> Вы закажете у нас!
+        </p>
+        <button class="header__menu"><a href="#menu-id">меню</a></button>
+        <div class="header__image-container">
+          <div class="image-container"></div>
+          <div class="overlay"></div>
+        </div>
+    </header>
+    <main class="main">
+        <section class="about__us" id="about__us-id">
+          <img class="redis vegetabl" src="./images/svg/redis.svg">;
+          <img class="leaf vegetabl" src="./images/svg/leaf.svg">;
+          <img class="tomatoes vegetabl" src="./images/svg/tomatoes.svg">;
+          <img class="luchock vegetabl" src="./images/svg/luchock.svg">;
+          <img class="perchick vegetabl" src="./images/svg/perchick.svg">;
+          <img class="onion vegetabl" src="./images/svg/onion.svg">;
+          <img class="chesnochock vegetabl" src="./images/svg/chesnochock.svg">;
+          <img class="tomatoes_mobile" src="./images/svg/tomatoes__mobile.svg">;
+          <img class="perchick_mobile" src="./images/svg/perchik__mobile.svg">;
+          <img class="luchock_mobile" src="./images/svg/luchock__mobile.svg">;
+          <p class="about__us-heading">МЫ - Свежие продукты, профессиональные повара, качественные ингредиенты,<br> быстрая доставка
+            и<br>   традиционные кавказские<br> рецепты. 
+          </p>
+          <p class="about__us-text">В нашем кафе Вы найдете <span class="highlight">широкий выбор блюд,</span> удовлетворяющих любой вкус и предпочтения. Меню включает 
+            разнообразные салаты, закуски, выпечку, горячие блюда и десерты. Кроме того, мы предлагаем большой выбор прохладительных напитков.
+          </p>
+        </section>
+        <section class="stocks" id="stocks_id">
+          <h2 class="stocks__title title">акции</h2>
+          <img class="stocks__ellipse" src="./images/big_ellipse.png">
+          <ul class="stocks__list">
+            <li class="stocks__item stocks__card-time">
+              <div class="stocks__overlay">
+                <img class="stocks__time" src="./images/stocks_time.png">
+              </div>
+              <div class="stocks__overlay-lvl2"></div>
+              <div class="stocks__card-container">
+                <h3 class="stocks__card-tilte">счастливые часы</h3>
+                <p class="stocks__description">При заказе шашлыков<br>
+                  с 11:00 до 16:00 вы получите <span class="stocks__higlight">скидку 15%</span>  
+                  по промокоду <span class="stocks__higlight">«HAPPY HOUR»</span></p> <span class="stocks__higlight"></span>
+              </div>
+            </li>
+            <li class="stocks__item stocks__card-dish">
+              <div class="stocks__overlay">
+                <img class="stocks__time" src="./images/stocks_dish.png">
+              </div>
+              <div class="stocks__overlay-lvl2"></div>
+              <div class="stocks__card-container"></div>
+              <h3 class="stocks__card-tilte">акция на блюдо</h3>
+              <p class="stocks__description">При заказе шашлыков на сумму<span class="stocks__higlight">от 2.000₽</span> Вы получите<br> подарок в виде 
+                куриного шашлыка по промокоду <span class="stocks__higlight">«CHICKEN2000»</span></p>
+            </li>
+            <li class="stocks__item stocks__card-discount">
+              <div class="stocks__overlay">
+                <img class="stocks__time" src="./images/stocks_discount.png">
+              </div>
+              <div class="stocks__overlay-lvl2"></div>
+              <div class="stocks__card-container">
+                <h3 class="stocks__card-tilte">акция <span class="numbers">3+1</span></h3>
+                <p class="stocks__description">При заказе трёх шашлыков, 
+                  четвёртый вы получите <span class="stocks__higlight">в подарок</span> по промокоду 
+                  <span class="stocks__higlight">"BBQ4FREE"</span></p>
+              </div>
+            </li>
+            <li class="stocks__item stocks__card-gift">
+              <div class="stocks__overlay">
+                <img class="stocks__time" src="./images/stocks_gift.png">
+              </div>
+              <div class="stocks__overlay-lvl2"></div>
+              <div class="stocks__card-container">
+                <h3 class="stocks__card-tilte">подарок</h3>
+                <p class="stocks__description">При заказе на сумму<br> 
+                  <span class="stocks__higlight">от 1.500₽</span>  Вы получите сладкую газировку в подарок по промокоду 
+                  <span class="stocks__higlight">«SWEET1500»</span></p>
+              </div>
+            </li>
+          </ul>
+          <p class="stocks__explanation">*Скидки и акции не суммируются</p>
+        </section>
+        <section class="menu" id="menu-id">
+          <h2 class="menu__title title">меню</h2>
+          <div class="menu__categories">
+              <button class="menu__button button__shashlik active">шашлык</button> 
+              <button class="menu__button button__mangal">мангал</button> 
+              <button class="menu__button button__shaverma">шаурма</button> 
+              <button class="menu__button button__basturma">бастурма и суджук</button> 
+              <button class="menu__button button__salad">салаты</button> 
+              <button class="menu__button button__vipechka">выпечка</button> 
+              <button class="menu__button button__drinks">напитки</button> 
+              <button class="menu__button button__compot">компот</button> 
+              <button class="menu__button button__deserts">десерты</button> 
+              <button class="menu__button button__water">вода</button> 
+              <button class="menu__button button__milk">молочка</button> 
+              <button class="menu__button button__tandir">тандыр</button> 
+              <button class="menu__button button__varene">варенье</button> 
+              <button class="menu__button button__garnirs">гарниры</button> 
+              <button class="menu__button button__coffee">кофе</button> 
+              <button class="menu__button button__vegetabl-conserv">овощные консервы</button> 
+              <button class="menu__button button__souses">соусы</button> 
+          </div>
+          <ul class="menu__list">
+            <li class="menu__item">
+              <div class="menu__item-card">
+                <button class="menu__card-overlay">
+                  <div class="menu__button-click">
+                    <div class="menu__ellipse">
+                      <img class="menu__arm" src="./images/svg/arm.svg">
+                    </div>
+                  </div>
+                </button>
+              </div>
+              <div class="product__info-container">
+                <div class="product__name-and-weight">
+                  <h2 class="product__name">Шашлык</h2>
+                  <p class="product__weight">300 гр</p>
+                </div>
+                <p class="product__price">900 ₽</p>
+            </li>     
+          </ul>
+        </section>
+        <div class="costil2">
+        <section class="loyalty" id="loyalty">
+          <h2 class="loyalty__title title">программа лояльности</h2>
+          <img class="loyalty__ellipse-right" src="./images/loyalty_ellipse_right.png">
+          <img class="loyalty__ellipse-left" src="./images/loyalty__ellipse_left.png">
+          <img class="loyalty__ellipse-mobile" src="./images/loyalty__ellipse-mobile.png">
+          <img class="loyalty__leaf leaf-l1" src="./images/svg/loyalty_left_leaf.svg">
+          <img class="loyalty__leaf leaf-l2" src="./images/svg/leaf.svg">
+          <img class="loyalty__leaf leaf-r1" src="./images/svg/loyalty_right_leaf.svg">
+          <img class="loyalty__leaf leaf-r2" src="./images/svg/leaf.svg">
+          <img class="loyalty__leaf leaf-l1-mob" src="./images/svg/leaf.svg">
+          <img class="loyalty__leaf leaf-l2-mob" src="./images/svg/leaf.svg">
+          <img class="loyalty__leaf leaf-r1-mob" src="./images/svg/leaf.svg">
+          <img class="loyalty__leaf leaf-r2-mob" src="./images/svg/leaf.svg">
+          <div class="loyalty__cards-container">
+            <div class="loyalty__card loyalty__card-back">
+              <img class="loyalty__card-logo" src="./images/svg/loyalty_logo.svg">
+              <h3 class="loaylty__card-title">карта<br> постоянного клиента</h3>
+              <div class="loyalty__card-effect-container">
+                <img class="loyalty__card-decoration" src="./images/svg/loyalty_decoration.svg">
+              </div>
+            </div>
+            <div class="dark">
+              <img class="dark__ellipse" src="./images/dark_ellipse.png">
+            </div>
+            <div class="loyalty__card loyalty__card-front">
+              <img class="loyalty__card-logo" src="./images/svg/loyalty_logo.svg">
+              <h3 class="loaylty__card-title">карта<br> постоянного клиента</h3>
+              <div class="loyalty__card-effect-container">
+                <img class="loyalty__card-decoration" src="./images/svg/loyalty_decoration.svg">
+              </div>
+            </div>
+          </div>
+          <p class="loyalty__description">Присоединяйтесь к нашей программе лояльности и заказывайте<br>
+            <span class="highlight__gold">любимые блюда по приятной цене.</span><br>
+            Мы рады предложить Вам следующие <span class="highlight__gold">уровни скидок:</span>
+            </p>
+          <div class="kostil__container">
+            <ul class="loyalty__program">
+              <li class="loyalty__program-item">
+                <div class="loyalty__program-overlay">
+                  <img class="loyalty__discount" src="./images/percent.png">
+                </div>
+                <div class="loyalty__program-overlay-lvl2"></div>
+                <div class="loyalty__text-container">
+                  <h3 class="loyalty__container-title"><span class="numbers">5%</span><br>"шашлычный любитель"</h3>
+                  <p class="loyalty__container-description">Сумма заказов<br> от 15.000 ₽</p>
+                </div>
+              </li>
+              <li class="loyalty__program-item">
+                <div class="loyalty__program-overlay">
+                  <img class="loyalty__discount" src="./images/percent.png">
+                </div>
+                <div class="loyalty__program-overlay-lvl2"></div>
+                <div class="loyalty__text-container">
+                  <h3 class="loyalty__container-title"><span class="numbers">10%</span><br>"мастер шашлыка"</h3>
+                  <p class="loyalty__container-description">Сумма заказов<br> от 25.000 ₽</p>
+                </div>
+              </li>
+              <li class="loyalty__program-item">
+                <div class="loyalty__program-overlay">
+                  <img class="loyalty__discount" src="./images/percent.png">
+                </div>
+                <div class="loyalty__program-overlay-lvl2"></div>
+                <div class="loyalty__text-container">
+                  <h3 class="loyalty__container-title"><span class="numbers">15%</span><br>"шашлычный гурман"</h3>
+                  <p class="loyalty__container-description">Сумма заказов<br> от 35.000 ₽</p>
+                </div>
+              </li>
+              <li class="loyalty__program-item">
+                <div class="loyalty__program-overlay">
+                  <img class="loyalty__discount" src="./images/percent.png">
+                </div>
+                <div class="loyalty__program-overlay-lvl2"></div>
+                <div class="loyalty__text-container">
+                  <h3 class="loyalty__container-title"><span class="numbers">20%</span><br>"шашлычный магистр"</h3>
+                  <p class="loyalty__container-description">Сумма заказов<br> от 50.000 ₽</p>
+                </div>
+              </li>
+            </ul>
+            <button onclick="window.window__registration.showModal();" class="loyalty__register">зарегистрироваться</button>
+            <p class="loyalty__register-text">Вы уже зарегистрированы?<button onclick="window.window__enter.showModal();" class="loyalty__enter">Войти</button></p>
+          </div>
+        </section>
+        </div>
+        <section class="delivery__and__payment" id="delivery__and__payment-id">
+          <h3 class="title delivery__title">доставка и оплата</h3>
+          <div class="delivery__container">
+            <div class="delivery__step-1 delivery__step">
+              <div class="delivery__decoration">
+                <img class="delivery__gradient" src="./images/svg/delivery_line.svg">
+              </div>
+              <p class="delivery__number">01</p>
+              <p class="delivery__step-text">выбери блюда<br> и добавь их<br> в корзину</p>
+            </div>
+            <div class="delivery__step-2 delivery__step">
+              <div class="delivery__decoration">
+                <img class="delivery__gradient" src="./images/svg/delivery_line.svg">
+              </div>
+              <p class="delivery__number">02</p>
+              <p class="delivery__step-text">Уточни способ доставки<br> (курьером или самовывозом)<br> и способ оплаты<br>
+                (наличными или картой)</p>
+            </div>
+            <div class="delivery__step-3 delivery__step">
+              <div class="delivery__decoration">
+                <img class="delivery__gradient" src="./images/svg/delivery_line.svg">
+              </div>
+              <p class="delivery__number">03</p>
+              <p class="delivery__step-text">Подтверди заказ и<br> мы уточним детали (время ожидания доставки)</p>
+            </div>
+            <div class="delivery__step-4 delivery__step">
+              <div class="delivery__decoration">
+                <img class="delivery__gradient" src="./images/svg/delivery_line.svg">
+              </div>
+              <p class="delivery__number">04</p>
+              <p class="delivery__step-text">Получи заказ<br> 
+                и наслаждайся вкуснейшими шашлыками</p>
+            </div>
+          </div>
+        </section>
+        <section class="contacts" id="contacts-id">
+          <h2 class="contacts__title title">контакты</h2>
+          <img class="ellipse_contacts" src="./images/contacts_ellipse.png">
+          <img class="ellipse_contacts-mobile" src="./images/contacts__ellipse-mobile.png">
+          <div class="contacts__container">
+            <div class="map-container">
+              <iframe class="map" src="https://yandex.ru/map-widget/v1/?um=constructor%3Ad456207ce6144a4f6f956d2ef05dca766f07d91b93639b2080a29ce608ec5ace&amp;source=constructor" width="500" height="400" frameborder="0"></iframe>
+            </div>
+            <div class="contacts__address-container">
+              <div class="address__time-container">
+                <div class="address__overlay"></div>
+                <h3 class="contacts__address-title contacts__title-gold">адрес</h3>
+                <p class="contacts__address-text contacts__adress-white">Московская обл., г. Люберцы,<br> посёлок Калинина 88А</p>
+                <h3 class="contacts__time-title contacts__title-gold">время работы</h3>
+                <p class="contacts__time-text contacts__adress-white">с 10.00 до 22.00<br>Без выходных</p>
+              </div>
+              <button class="contact__button">связаться</button>
+            </div>
+          </div>
+        </section>
+    </main>
+    <footer class="footer">
+      <img class="footer__tomates" src="./images/svg/footer_tomates.svg">
+      <img class="footer__onion" src="./images/svg/footer__onion.svg">
+      <img class="footer__luchock" src="./images/svg/footer_luchock.svg">
+      <img class="footer__perchick" src="./images/svg/footer_perchick.svg">
+      <img class="footer__logo" src="./images/footer_icon.png">
+      <nav class="footer__nav">
+        <p><a href="#about__us-id" class="footer__nav__menu-link">о нас</a></p>
+        <p><a href="#menu-id" class="footer__nav__menu-link">меню</a></p>
+        <p><a href="#stocks_id" class="footer__nav__menu-link">акции</a></p>
+        <p><a href="#delivery__and__payment-id" class="footer__nav__menu-link">доставка и оплата</a></p>
+        <p><a href="#contacts-id" class="footer__nav__menu-link">контакты</a></p>
+      </nav>
+      <p class="footer__address">Московская обл., г. Люберцы, посёлок Калинина 88А</p>
+      <p class="footer__time">с 10.00 до 22.00, Без выходных</p>
+      <div class="footer__nav__telephone-container">
+        <a class="footer__telephone__number" href="tel:+79776075555">+7 (977) 607-55-55</a>
+      </div>
+      <p class="public__ofert">публичная оферта</p>
+      <p class="conf_polit">политика конфиденциальности</p>
+      <p class="footer__dev">Разработчик дизайна: LNDRN.Design<br>
+        Разработчик сайта: </p>
+    </footer>
+
+    <template id="menu__card-template">
+      <li class="menu__item">
+        <div class="menu__item-card">
+          <button onclick="window.menu__order.showModal();document.querySelector('.page').style.position='fixed';" class="menu__card-overlay">
+            <img class="menu__card-image">
+            <div class="menu__button-click">
+              <div class="menu__ellipse">
+                <img class="menu__arm" src="./images/svg/arm.svg">
+              </div>
+            </div>
+          </button>
+        </div>
+        <div class="product__info-container">
+          <div class="product__name-and-weight">
+            <h2 class="product__name"></h2>
+            <p class="product__weight"></p>
+          </div>
+          <p class="product__price"></p>
+      </li>   
+    </template>
+
+    <dialog class="enter__window" id="window__enter">
+      <div class="enter__window-overlay"></div>
+      <div class="enter__window-container">
+        <h2 class="enter__window-tilte">программа лояльности</h2>
+        <button type="button" onclick="window.window__enter.close();document.querySelector('.page').style.position='relative';" class="enter__window-close"></button>
+        <input type="text" class="phone input_field email__enter" placeholder="Email"> 
+        <input type="text" class="password input_field password__enter" placeholder="Пароль">
+        <button type="button" class="enter__window-button enter__button">войти</button>
+        <p class="enter__window-text">Хотите стать участником нашей Программы лояльности?</p>
+        <button onclick="window.window__registration.showModal();window.window__enter.close()" class="enter__window-registration">Регистрация</button>
+      </div>
+    </dialog>
+
+    <dialog class="enter__window" id="window__registration">
+      <div class="enter__window-overlay"></div>
+      <div class="enter__window-container">
+        <h2 class="enter__window-tilte">Регистрация</h2>
+        <button type="button" onclick="window.window__registration.close();document.querySelector('.page').style.position='relative';" class="enter__window-close"></button>
+        <input type="text" class="name input_field reg_name" placeholder="Имя">
+        <input type="text" class="surname input_field reg_surname" placeholder="Фамилия">
+        <input type="text" class="phone input_field reg_phone" placeholder="+7 (___) ___ __ __">
+        <input type="text" class="email input_field reg_email" placeholder="Email">
+        <input type="text" class="data input_field reg_data" placeholder="Дата рождения (дд.мм.гггг)">
+        <input type="text" class="password input_field reg_password" placeholder="Пароль">
+        <button type="button" class="enter__window-button enter__registration-button">зарегистрироваться</button>
+        <p class="enter__window-text">Нажимая кнопку Зарегестрироваться, Вы соглашаетесь <br>с <button class="enter__window-registration">Политикой конфиденциальности</button>
+        </p>
+      </div>
+    </dialog>
+
+    <dialog class="enter__window-order" id="window__order">
+      <div class="enter__window-overlay-container">
+        <div class="enter__window-overlay"></div>
+      </div>
+      <div class="enter__window-container">
+        <h2 class="enter__window-tilte enter__window-tilte-order">Ваш заказ:</h2>
+        <button type="button" onclick="window.window__order.close();document.querySelector('.page').style.position='relative';" class="enter__window-close"></button>
+        <div class="window__order-container">
+          <img class="order__line" src="./images/order_line.png">
+          <div class="window__order-pay-container">
+            <ul class="window__order-container-order">
+
+            </ul>
+            <div class="final__cost-container">
+              <p class="final__cost-text">к оплате:</p>
+              <p class="final__cost">0</p>
+            </div>
+          </div>
+          <div class="window__order-container-options">
+            <h3 class="order-option pay-option">способ оплаты:</h3>
+            <div class="radio__container-pay">
+              <div class="radios">
+                <input type="radio" id="paycard" name="payopt" value="paycard" checked />
+                <label for="paycard">Картой <span class="paycard_stylize"> (Visa, Mastercard, МИР)</span></label>
+              </div>
+              <div class="radios">
+                <input type="radio" id="paycash" name="payopt" value="paycash"/>
+                <label for="paycash">Наличными</label>
+              </div>
+              <h3 class="order-option delivery-option">доставка:</h3>
+              <div class="radio__container-delivery">
+                <div class="radios">
+                  <input type="radio" id="self" name="delopt" value="self"/>
+                  <label for="self">Самовывоз</label>
+                </div>
+                <div class="radios">
+                  <input type="radio" id="courier" name="delopt" value="courier" checked  />
+                  <label for="courier">Курьер</label>
+                </div>
+                <div class="input_container">
+                  <input type="text" class="name ord_name input_field" placeholder="Имя">
+                  <input type="text" class="phone ord_phone input_field" placeholder="+7 (___) ___ __ __">
+                  <input type="text" class="address ord_addr input_field" placeholder="Адрес">
+                  <p class="input_decription">Город, улица, дом, квартира</p>
+                </div>
+                <div class="promo__container">
+                  <h3 class="order-option promo-option">промокод:</h3>
+                  <input type="text" class="promo input_field" placeholder="Введите промокод">
+                </div>
+          </div>
+          </div>
+        </div>
+      </div>
+      <button type="button" onclick="window.window__enter.close()" class="enter__window-button enter__window-button-order">оплатить</button>
+    </dialog>
+
+    <dialog class="menu__order" id="menu__order">
+      <div class="menu__order-overlay"></div>
+      <div class="menu__order-container">
+        <button type="button" onclick="window.menu__order.close();document.querySelector('.page').style.position='relative';" class="enter__window-close"></button>
+        <div class="menu__order-top">
+          <div class="menu__order-photo-container">
+            <img class="menu__order-photo">
+          </div>
+          <div class="menu__order-info">
+            <h3 class="menu__order-name">шашлык</h3>
+            <p class="menu__order-weight">100 грамм</p>
+            <p class="menu__order-price">300 ₽</p>
+            <button type="button" onclick="window.menu__order.close();document.querySelector('.page').style.position='relative';" class="menu__order-button">в корзину</button>
+          </div>
+        </div>
+        <p class="menu__order-recommend">также рекомендуем:</p>
+        <ul class="menu__order-recommend-container">
+
+        </ul>
+      </div>
+    </dialog>
+
+    <dialog class="nav__mobile" id="nav__mobile">
+      <div class="nav__mobile-overlay"></div>
+      <div class="nav__mobile-container">
+        <button type="button" onclick="window.nav__mobile.close();document.querySelector('.page').style.position='relative';" class="enter__window-close nav__mobile-close"></button>
+        <img class="header__icon" src="./images/header_icon.png">
+        <p class="haha"><a onclick="window.nav__mobile.close();document.querySelector('.page').style.position='relative';"  href="#about__us-id" class="nav__menu-link">о нас</a></p>
+        <p class="haha"><a onclick="window.nav__mobile.close();document.querySelector('.page').style.position='relative';"  href="#menu-id" class="nav__menu-link">меню</a></p>
+        <p class="haha"><a onclick="window.nav__mobile.close();document.querySelector('.page').style.position='relative';"  href="#stocks_id" class="nav__menu-link">акции</a></p>
+        <p class="haha"><a onclick="window.nav__mobile.close();document.querySelector('.page').style.position='relative';"  href="#delivery__and__payment-id" class="nav__menu-link">доставка и оплата</a></p>
+        <p class="haha haha_last"><a onclick="window.nav__mobile.close();document.querySelector('.page').style.position='relative';" href="#contacts-id" class="nav__menu-link">контакты</a></p>
+        <button class="nav__enter" onclick="window.window__enter.showModal();window.nav__mobile.close();" aria-controls="window__enter">
+          <img class="enter__icon" src="./images/svg/enter.svg">
+          <p class="enter__text">вход</p>
+        </button>
+        <div class="nav__telephone-container">
+          <a class="telephone__number" href="tel:+79776075555">+7 (977) 607-55-55</a>
+        </div>
+      </div>
+    </dialog>
+    <script src="./scripts/index.js"></script> 
+  </body>
+</html>
+ 

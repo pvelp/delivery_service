@@ -62,6 +62,13 @@ services:
     depends_on:
       - redis
       - web
+  frontend:
+    build: ./frontend
+    ports:
+      - 5500:1337
+    depends_on:
+      - web
+
 
 #  certbot:
 #    image: certbot/certbot:latest

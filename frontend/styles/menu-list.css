@@ -1,0 +1,103 @@
+.menu__list {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.menu__item-card  {
+    border: 1px solid transparent;
+    position: relative;
+    border-radius: 20px;
+    background: linear-gradient(151.17deg, #F7D39E 0%, #FADAAB 50.83%, rgba(250, 218, 171, 0.2) 100%);
+    background-clip: padding-box;
+    width: 490px;
+    height: 376px;
+    z-index: 1;
+    overflow: hidden;
+    padding: 0px;
+}
+
+.menu__card-overlay {
+    position: absolute;
+    background-color: #161616;
+    width: 99.2%;
+    height: 99%;
+    z-index: 2;
+    border: 1px solid #161616;
+    border-radius: 20px;
+    bottom: 0.9px;
+    left: 1px;
+    overflow: hidden;
+    object-fit: cover;
+    cursor: pointer;
+}
+
+.menu__ellipse {
+    right: 24px;
+    top: 24px;
+    position: absolute;
+    width: 48px;
+    height: 48px;
+    border: 1.5px solid #FADAAB80;
+    border-radius: 50%;
+    z-index: 3;
+}
+
+.menu__arm {
+    margin-left: 0px;
+    margin-top: 10px;
+    width: 25px;
+    height: 29px; 
+}
+
+.menu__card-image {
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+}
+
+.menu__list {
+    width: 90%;
+    justify-content: center;
+}
+
+.menu__item .product__info-container {
+    margin-top: 32px;
+    width: 493px;
+}
+
+.menu__item .product__name {
+    font-family: Gotham;
+    font-size: 36px;
+    font-weight: 400;
+    line-height: 65px;
+    letter-spacing: 0em;
+    text-align: left;
+    margin-bottom: 0px;
+
+}
+
+.menu__item .product__name-and-weight {
+    margin-bottom: 0px;
+    gap: 32px;
+}
+
+.menu__item .product__weight {
+    font-family: Gotham;
+    font-size: 26px;
+    font-weight: 400;
+    line-height: 47px;
+    letter-spacing: 0em;
+    text-align: left;
+}
+
+.menu__item .product__price {
+    margin-top: 28px;
+    font-family: Gotham;
+    font-size: 40px;
+    font-weight: 400;
+    line-height: 72px;
+    letter-spacing: 0em;
+    text-align: left;
+}
