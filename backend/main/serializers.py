@@ -71,12 +71,9 @@ class OrderSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user = self.context.get('user')
+        session_key = self.context.get('session_key')
 
-        if user:
-            cart = Cart.objects.get(user=user)
-        else:
-            session_id = self.context.get('session_key')
-            cart = Cart.objects.get(session_id=session_id)
+        cart = Cart.objects.get(session_id=session_key)
 
         order = Order.objects.create(
             buyer=user,

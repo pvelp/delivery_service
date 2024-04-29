@@ -28,21 +28,23 @@ def send_telegram_message(bot_token, order):
     for item in order.items.all():
         product_info += f"{item.product.title}: {item.quantity} шт., Цена за 1 ед.: {item.product.price} руб.\n"
 
+    promo_title = order.promo.title if order.promo else "нет промокода"
+
     for manager in managers:
         chat_id = manager.tg_id
         message_text = f'''Заказ {order.id}
-        Покупатель (если зарегистрирован): {order.buyer}
-        Имя покупателя: {order.buyer_name}
-        Номер телефона: {order.buyer_phone_number}
-        Дата и время заказа: {order.order_datetime}
-        Адрес доставки: {order.delivery_address}
-        Состав заказа (Товар/количество): \n{product_info}
-        Способ оплаты: {order.payment_method}
-        Способ доставки: {order.delivery_method}
-        Промокод: {order.promo}
-        Скидка по акции "Счасливые часы": {order.is_happy_hours}
-        
-        Сумма заказа: {order.order_amount}'''
+Покупатель (если зарегистрирован): {order.buyer}
+Имя покупателя: {order.buyer_name}
+Номер телефона: {order.buyer_phone_number}
+Дата и время заказа: {order.order_datetime}
+Адрес доставки: {order.delivery_address}
+Состав заказа (Товар/количество): \n{product_info}
+Способ оплаты: {order.payment_method}
+Способ доставки: {order.delivery_method}
+Промокод: {promo_title}
+Скидка по акции "Счасливые часы": {order.is_happy_hours}
+
+Сумма заказа: {order.order_amount}'''
 
         url = f'{base_url}/sendMessage?chat_id={chat_id}&text={message_text}'
 
@@ -68,18 +70,20 @@ def send_email_message(order):
     for item in order.items.all():
         product_info += f"{item.product.title}: {item.quantity} шт., Цена за 1 ед.: {item.product.price} руб.\n"
 
+    promo_title = order.promo.title if order.promo else "нет промокода"
+
     message = f'''Заказ {order.id}
-        Покупатель (если зарегистрирован): {order.buyer}
-        Имя: {order.buyer_name}
-        Номер телефона: {order.buyer_phone_number}
-        Дата и время заказа: {order.order_datetime}
-        Адрес доставки: {order.delivery_address}
-        Состав заказа (Товар/количество): \n{product_info}
-        Метод оплаты: {order.payment_method}
-        Доставка: {order.delivery_method}
-        Промокод: {order.promo}
-        
-        Общая сумма заказа: {order.order_amount}'''
+Покупатель (если зарегистрирован): {order.buyer}
+Имя: {order.buyer_name}
+Номер телефона: {order.buyer_phone_number}
+Дата и время заказа: {order.order_datetime}
+Адрес доставки: {order.delivery_address}
+Состав заказа (Товар/количество): \n{product_info}
+Метод оплаты: {order.payment_method}
+Доставка: {order.delivery_method}
+Промокод: {promo_title}
+
+Общая сумма заказа: {order.order_amount}'''
 
     email_message = EmailMultiAlternatives(
         subject=f'Новый заказ {order.id}',
