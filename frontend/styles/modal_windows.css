@@ -357,6 +357,29 @@ dialog::backdrop {
     display: flex;
     flex-direction: row;
     align-items: center;
+    position: relative;
+}
+
+.promo__accept {
+    position: absolute;
+    border-radius: 100px;
+    width: 50px;
+    height: 50px;
+    background-color: #FADAAB;
+    right: -60px;
+    top: 6px;
+    cursor: pointer;
+    z-index: 1;
+}
+
+.promo__accept::before {
+    content: "\2713"; 
+    font-size: 40px; 
+    color: black; 
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); 
 }
 
 .promo-option {
@@ -366,7 +389,7 @@ dialog::backdrop {
 }
 
 .promo__container .input_field {
-    width: 458px;
+    width: 430px;
     border-radius: 109px;
     padding-top: 12px;
     padding-bottom: 12px;
@@ -649,6 +672,12 @@ dialog::backdrop {
     cursor: pointer;
 }
 
+.menu__order-button:hover {
+    background-color: #FADAAB;
+    color: #161616;
+    border-color: #FADAAB;
+}
+
 .menu__order-recommend {
     margin-top: 64px;
     align-self: flex-start;
@@ -775,6 +804,10 @@ dialog::backdrop {
     right: 20px;
 }
 
+.input_error {
+    border: 1px solid red;
+  }
+  
 @media (max-width: 376px) {
     #window__enter {
         width: 325px;
@@ -1291,7 +1324,10 @@ dialog::backdrop {
     
 }
 
-@media (769px < width < 1025px) {
+@media (769px < width < 1500px) {
+    .enter__window {
+        overflow: scroll;
+    }
     #window__enter {
         width: 325px;
     }
@@ -1365,7 +1401,6 @@ dialog::backdrop {
     .menu__order-top {
         flex-direction: column;
         align-items: center;
-        margin-top: 166px;
         gap: 16px;
     }
     .menu__order-photo-container {
@@ -1399,8 +1434,7 @@ dialog::backdrop {
         font-size: 64px;
         line-height: 60px;
         letter-spacing: 0.02em;
-        position: absolute;
-        top: 90px;
+  
     }
     .menu__order-compose {
         font-size: 16px;
@@ -1549,3 +1583,4 @@ dialog::backdrop {
         text-align: center;
     }
 }
+

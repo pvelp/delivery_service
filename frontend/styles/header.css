@@ -260,9 +260,7 @@
     color: #FADAAB;
     text-transform: uppercase;
     padding-top: 31px;
-    padding-bottom: 31px;
-    padding-left: 203px;
-    padding-right: 203px;
+    padding-bottom: 31px;   
     border-width: 3px;
     border-style: solid;
     webkit-border-image: linear-gradient(93.95deg, #FADAAB -9.67%, #F7D4A1 52.45%, #F4CF98 112.68%);
@@ -531,7 +529,7 @@
     }
   }
 
-  @media (769px < width < 1025px) {
+  @media (769px < width < 1500px) {
     .header {
     }
     .nav {

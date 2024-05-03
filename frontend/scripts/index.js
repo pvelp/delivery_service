@@ -4,33 +4,33 @@ const template = document.getElementById('menu__card-template');
 const menuOrder = document.querySelector('.menu__order')
 let menuAvaliableItems;
 let menuItems=[]
-function fetchProducts(page) {
-  return fetch(`http://188.225.9.172:1337/products?page=${page}`)
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Ошибка HTTP, код ' + response.status);
-      }
-      return response.json();
-    })
-    .then(data => {
-      console.log(`Страница ${page} загружена. Всего элементов: ${data.results.length}`);
-      return data.results;
-    })
-    .catch(error => {
-      console.error('Ошибка при выполнении запроса:', error);
-      throw error;
-    });
+const main_url = 'http://localhost:1337'
+async function fetchProducts(url) {
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error('Ошибка HTTP, код ' + response.status);
+    }
+    const data = await response.json();
+    console.log(`Страница ${data.page} загружена. Всего элементов: ${data.results.length}`);
+    const menuItems = data.results;
+    if (data.next) {
+      const nextResults = await fetchProducts(data.next);
+      return menuItems.concat(nextResults);
+    } else {
+      console.log('Все страницы загружены. Всего элементов:', menuItems.length);
+      return menuItems;
+    }
+  } catch (error) {
+    console.error('Ошибка при выполнении запроса:', error);
+    throw error;
+  }
 }
 
 async function fetchAllProducts() {
-  let menuItems = [];
-
   try {
-    for (let page = 1; page <= 11; page++) {
-      const results = await fetchProducts(page);
-      menuItems = menuItems.concat(results);
-    }
-    console.log('Все страницы загружены. Всего элементов:', menuItems.length);
+    const initialUrl = main_url + '/products';
+    const menuItems = await fetchProducts(initialUrl);
     console.log(menuItems);
     return menuItems;
   } catch (error) {
@@ -38,6 +38,7 @@ async function fetchAllProducts() {
     return [];
   }
 }
+
 
 async function processMenuItems() {
   menuItems = await fetchAllProducts();
@@ -159,7 +160,7 @@ console.log(menuItems)
       orderOptionName.textContent = name;
       orderOptionPhoto.src = photo;
       orderOptionWeight.textContent = product.weight + ' гр';
-      orderOptionPrice.textContent = price + ' ₽';
+      orderOptionPrice.textContent = price;
   }
   
   // Добавляем обработчики событий для кнопок меню
@@ -180,8 +181,8 @@ console.log(menuItems)
             var clone = document.importNode(template.content, true);
             clone.querySelector('.product__name').textContent = item.title;
             clone.querySelector('.menu__card-image').src = item.image;
-            clone.querySelector('.product__weight').textContent = item.weight;
-            clone.querySelector('.product__price').textContent = item.price;
+            clone.querySelector('.product__weight').textContent = item.weight + ' гр';
+            clone.querySelector('.product__price').textContent = item.price + ' ₽';
             
             menu__list.appendChild(clone);
         }
@@ -203,10 +204,11 @@ console.log(menuItems)
               product_id: product.id,
               quantity: 1
             };
-            fetch('http://http://188.225.9.172:1337/add-to-cart/', {
+            fetch(main_url + '/add-to-cart/', {
               method: 'POST',
               headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization':  'Bearer ' + acceptToken
               },
               body: JSON.stringify(data)
             })
@@ -288,8 +290,8 @@ console.log(menuItems)
 
         let name = document.createElement('h2'); // Название
         name.textContent = product.name;
-        name.className = 'product__name';
-
+        name.className = 'product__name'; 
+        
         let weight = document.createElement('p'); // Вес
         weight.textContent = product.weight;
         weight.className = 'product__weight';
@@ -299,7 +301,7 @@ console.log(menuItems)
         price.className = 'product__price';
 
         let nameAndWeight = document.createElement('div');
-        nameAndWeight.className = 'product__name-and-weight';
+        nameAndWeight.className = 'product__name-and-weight'; 
 
         let plusMinusButtonContainer = document.createElement('div');
         plusMinusButtonContainer.className = 'product__buttons-container';
@@ -324,14 +326,16 @@ console.log(menuItems)
                 const data = {
                   product_id: removable.id,
                 };
-                fetch('http://http://188.225.9.172:1337/remove-from-cart/', {
+                fetch(main_url + '/remove-from-cart/', {
                   method: 'POST',
                   headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization':  'Bearer ' + acceptToken  
                   },
                   body: JSON.stringify(data)
                 })
                 .then(response => {
+                  
                   if (response.status === 404) {
                     throw new Error('Product not found');
                   } else if (response.status === 200) {
@@ -347,6 +351,7 @@ console.log(menuItems)
                   console.error('Error:', error.message);
                   return null;
                 });
+                
             } else {
                 card.remove();
                 totalOrderPrice -= parseInt(product.price);
@@ -358,10 +363,11 @@ console.log(menuItems)
                 const data = {
                   product_id: removable.id,
                 };
-                fetch('http://http://188.225.9.172:1337/remove-from-cart/', {
+                fetch(main_url + '/remove-from-cart/', {
                   method: 'POST',
                   headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization':  'Bearer ' + acceptToken
                   },
                   body: JSON.stringify(data)
                 })
@@ -388,6 +394,7 @@ console.log(menuItems)
             }
         });
 
+
         let buttonPlus = document.createElement('button');
         buttonPlus.className = 'product__button-plus';
         buttonPlus.textContent = '+';
@@ -407,10 +414,11 @@ console.log(menuItems)
                   product_id: addable.id,
                   quantity: 1
                 };
-                fetch('http://http://188.225.9.172:1337/add-to-cart/', {
+                fetch(main_url + '/add-to-cart/', {
                   method: 'POST',
                   headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization':  'Bearer ' + acceptToken
                   },
                   body: JSON.stringify(data)
                 })
@@ -432,6 +440,7 @@ console.log(menuItems)
                   return null;
                 });    
         });
+
 
         let counter = document.createElement('p');
         counter.className = 'product__counter';
@@ -519,7 +528,7 @@ function sendEnterRequest() { //пост на вход
       password: password
     };
   
-    fetch('http://188.225.9.172:1337/jwt/create', {
+    fetch(main_url + '/jwt/create', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -538,7 +547,6 @@ function sendEnterRequest() { //пост на вход
     })
     .then(data => {
       // Извлекаем токены из JSON-объекта
-      console.log(data);
       const acceptToken = data.access;
       const refreshToken = data.refresh;
     
@@ -561,39 +569,69 @@ function sendEnterRequest() { //пост на вход
 }
 
 function sendRegRequest() { //пост на регистрацию
-    let email = document.querySelector(".reg_email").value;
-    let password = document.querySelector(".reg_password").value;
-    let firstName = document.querySelector(".reg_name").value;
-    let lastName = document.querySelector(".reg_surname").value;
-    let phone = document.querySelector(".reg_phone").value;
-    let dob = document.querySelector(".reg_data").value;
-  
-    let data = {
-      email: email,
-      password: password,
-      first_name: firstName,
-      last_name: lastName,
-      phone: phone,
-      date_of_birth: dob
-    };
-  
-    fetch('http://188.225.9.172:1337/users/', {
-      method: 'POST',
-      headers: {  
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    })
-    .then(response => {
-      if (response.ok) {
-        console.log("Регистрация выполнена успешно");
-        window.window__registration.close();
+  let email = document.querySelector(".reg_email");
+  let password = document.querySelector(".reg_password");
+  let firstName = document.querySelector(".reg_name");
+  let lastName = document.querySelector(".reg_surname");
+  let phone = document.querySelector(".reg_phone");
+  let dob = document.querySelector(".reg_data");
 
-      } else {
-        console.error("Не удалось выполнить вход");
-      }
-    })
-  }
+  let data = {
+    email: email.value,
+    password: password.value,
+    first_name: firstName.value,
+    last_name: lastName.value,
+    phone: phone.value,
+    date_of_birth: dob.value
+  };
+
+  fetch(main_url + '/users/', {
+    method: 'POST',
+    headers: {  
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  })
+  .then(response => {
+    if (response.ok) {
+      console.log("Регистрация выполнена успешно");
+      window.window__registration.close();
+    } else {
+      response.json().then(errors => {
+        console.error("Не удалось выполнить вход", errors);
+        // Подсветить input поля в случае ошибок
+        if (errors.email) email.classList.add('input_error');
+        if (errors.password) password.classList.add('input_error');
+        if (errors.first_name) firstName.classList.add('input_error');
+        if (errors.last_name) lastName.classList.add('input_error');
+        if (errors.phone) phone.classList.add('input_error');
+        if (errors.date_of_birth) dob.classList.add('input_error');
+      });
+    }
+  });
+}
+
+function clearFields() { // функция для очистки значений полей ввода
+  let inputs = document.querySelectorAll('.input_field');
+  inputs.forEach(input => {
+      input.value = ''; // Очистить значение поля ввода
+  });
+}
+
+function clearErrors() { // функция для очистки подсветки ошибок при закрытии окна
+  let inputs = document.querySelectorAll('.input_field');
+  inputs.forEach(input => {
+      input.classList.remove('input_error');
+  });
+}
+
+// Добавляем обработчик события beforeunload для очистки полей перед закрытием окна
+window.addEventListener('beforeunload', () => {
+  clearFields(); // очистить значения полей ввода перед закрытием окна
+});
+
+// Добавляем обработчик события закрытия окна
+window.window__registration.addEventListener('close', clearErrors);
 
   function sendOrderData() {
     let totalPrice = document.querySelector('.final__cost');
@@ -631,10 +669,11 @@ function sendRegRequest() { //пост на регистрацию
     };
   
 
-    fetch('http://188.225.9.172:1337/order/', {
+    fetch(main_url + '/order/', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization':  'Bearer ' + acceptToken
       },
       body: JSON.stringify(orderData)
     })
@@ -652,9 +691,73 @@ function sendRegRequest() { //пост на регистрацию
     });
   }
 
+  document.querySelector('.promo__accept').addEventListener('click', function() {
+    const promoCode = document.querySelector('.promo').value;
+
+    fetch(main_url + '/apply-promo-code/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization':  'Bearer ' + acceptToken
+        },
+        body: JSON.stringify({ promo_code: promoCode })
+    })
+    .then(response => {
+        if (!response.ok) {
+            if (response.status === 403) {
+                console.error('Forbidden:', response.statusText);
+            } else if (response.status === 404) {
+                console.error('Not Found:', response.statusText);
+            } else {
+                console.error('Server Error:', response.statusText);
+            }
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Success:', data);
+        console.log(data.total_amount)
+        totalPrice.textContent = data.total_amount_with_discount + '  ₽'
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+});
+function getCart(){
+
+  fetch(main_url + '/cart',  {
+    method: 'GET',
+    headers: {
+        'Content-Type': 'application/json',
+        'Authorization':  'Bearer ' + acceptToken
+    },
+  })
+      .then(response => {
+          if (!response.ok) {
+              throw new Error('Network response was not ok');
+          }
+          return response.json();
+      })
+      .then(data => {
+          console.log(data);
+          if(data.total_amount_with_discount) {
+            totalPrice.textContent = data.total_amount_with_discount + '  ₽'
+          }
+          else {
+            totalPrice.textContent = data.total_amount + '  ₽'
+          }
+      })
+      .catch(error => {
+          console.error('Error:', error);
+      });
+};
+
+document.querySelector('.nav__basket').addEventListener('click', function() {
+  getCart();
+})
 document.querySelector('.enter__window-button-order').addEventListener('click', sendOrderData);
 function handleScreenWidthChange() {
-  // Получаем ширину экрана
   const screenWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
 
   // Получаем элементы, которые мы хотим изменить порядок
@@ -663,7 +766,7 @@ function handleScreenWidthChange() {
   const orderWeight = document.querySelector('.menu__order-weight');
 
   // Если ширина экрана меньше или равна 768px
-  if (screenWidth <= 768) {
+  if (screenWidth <= 1500) {
     // Вставляем блок с фото между заголовком и весом заказа
     const orderInfo = orderName.parentElement;
     orderInfo.insertBefore(photoContainer, orderWeight);
@@ -681,3 +784,4 @@ window.addEventListener('resize', handleScreenWidthChange);
 window.addEventListener('load', handleScreenWidthChange);
 window.addEventListener('resize', handleScreenWidthChange);
 });
+

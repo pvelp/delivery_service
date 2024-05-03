@@ -56,7 +56,7 @@
         <p class="header__text">мы готовим для вас <span class="highlight">сочный шашлык<br> на мангале, </span>который станет<br> настоящим кулинарным открытием.<br> Мы 
             <span class="highlight">гарантируем свежесть<br> и качество</span> каждого блюда, которое<br> Вы закажете у нас!
         </p>
-        <button class="header__menu"><a href="#menu-id">меню</a></button>
+        <a class="header__menu" href="#menu-id">меню</a>
         <div class="header__image-container">
           <div class="image-container"></div>
           <div class="overlay"></div>
@@ -367,7 +367,7 @@
         <h2 class="enter__window-tilte">программа лояльности</h2>
         <button type="button" onclick="window.window__enter.close();document.querySelector('.page').style.position='relative';" class="enter__window-close"></button>
         <input type="text" class="phone input_field email__enter" placeholder="Email"> 
-        <input type="text" class="password input_field password__enter" placeholder="Пароль">
+        <input type="password" class="password input_field password__enter" placeholder="Пароль">
         <button type="button" class="enter__window-button enter__button">войти</button>
         <p class="enter__window-text">Хотите стать участником нашей Программы лояльности?</p>
         <button onclick="window.window__registration.showModal();window.window__enter.close()" class="enter__window-registration">Регистрация</button>
@@ -381,10 +381,10 @@
         <button type="button" onclick="window.window__registration.close();document.querySelector('.page').style.position='relative';" class="enter__window-close"></button>
         <input type="text" class="name input_field reg_name" placeholder="Имя">
         <input type="text" class="surname input_field reg_surname" placeholder="Фамилия">
-        <input type="text" class="phone input_field reg_phone" placeholder="+7 (___) ___ __ __">
+        <input type="tel" class="phone input_field reg_phone" placeholder="+7" pattern="^\+7\d{10}$" maxlength="12">
         <input type="text" class="email input_field reg_email" placeholder="Email">
-        <input type="text" class="data input_field reg_data" placeholder="Дата рождения (дд.мм.гггг)">
-        <input type="text" class="password input_field reg_password" placeholder="Пароль">
+        <input type="text" class="data input_field reg_data" placeholder="Дата рождения (гггг-дд-мм)" maxlength="10">
+        <input type="password" class="password input_field reg_password" placeholder="Пароль">
         <button type="button" class="enter__window-button enter__registration-button">зарегистрироваться</button>
         <p class="enter__window-text">Нажимая кнопку Зарегестрироваться, Вы соглашаетесь <br>с <button class="enter__window-registration">Политикой конфиденциальности</button>
         </p>
@@ -432,13 +432,16 @@
                 </div>
                 <div class="input_container">
                   <input type="text" class="name ord_name input_field" placeholder="Имя">
-                  <input type="text" class="phone ord_phone input_field" placeholder="+7 (___) ___ __ __">
+                  <input type="text" class="phone ord_phone input_field" placeholder="+7" maxlength="12">
                   <input type="text" class="address ord_addr input_field" placeholder="Адрес">
                   <p class="input_decription">Город, улица, дом, квартира</p>
                 </div>
                 <div class="promo__container">
                   <h3 class="order-option promo-option">промокод:</h3>
                   <input type="text" class="promo input_field" placeholder="Введите промокод">
+                  <button class="promo__accept">
+                    <div class="galochka"></div>
+                  </button>
                 </div>
           </div>
           </div>

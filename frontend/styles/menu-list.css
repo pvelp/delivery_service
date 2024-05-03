@@ -3,6 +3,7 @@
     flex-direction: row;
     gap: 20px;
     flex-wrap: wrap;
+    list-style-type: none;
 }
 
 .menu__item-card  {
@@ -33,6 +34,16 @@
     cursor: pointer;
 }
 
+.menu__card-overlay:hover .menu__ellipse {
+    border-color: #FADAAB;
+    border-width: 2px;
+    transform: scale(1.1);
+}
+
+.menu__card-overlay:hover .menu__arm {
+    filter: brightness(0) saturate(100%) invert(86%) sepia(20%) saturate(543%) hue-rotate(346deg) brightness(100%) contrast(97%);
+    transform: scale(1.05);
+}
 .menu__ellipse {
     right: 24px;
     top: 24px;

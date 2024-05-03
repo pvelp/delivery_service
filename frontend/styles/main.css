@@ -1525,13 +1525,11 @@
     }
 
     .menu__list {
-        align-self: center;
         margin-top: 30px;
         margin-bottom: 0px;
         width: 100%;
         flex-direction: row;
         flex-wrap: wrap;
-        align-items: center;
         justify-content: center;
         gap: 10px;
     }
@@ -1967,10 +1965,14 @@
         transform: scaleY(0.8);
     }
     .contacts {
-        overflow-y: hidden;
+        overflow: hidden;
     }
-    .ellipse_contacts-mobile {
+    .ellipse_contacts{
         display: block;
+    }
+
+    .ellipse_contacts-mobile {
+        display: none;
         position: absolute;
         width: 100%;
         top: -900px;
@@ -2118,13 +2120,11 @@
     }
 
     .menu__list {
-        align-self: center;
         margin-top: 30px;
         margin-bottom: 0px;
         width: 100%;
         flex-direction: row;
         flex-wrap: wrap;
-        align-items: center;
         justify-content: center;
         gap: 10px;
     }
@@ -2233,7 +2233,7 @@
     }
 
     .ellipse_contacts {
-        display: none;
+        display: block;
     }
     .loyalty__card-logo {
         margin-top: 0px;
@@ -2294,6 +2294,7 @@
         display: none;
     }
     .loyalty__program {
+        width: 768px;
         margin-right: 0px;
         padding: 0px;
         gap: 10px;
@@ -2537,10 +2538,10 @@
         transform: scaleY(0.5);
     }
     .contacts {
-        overflow-y: hidden;
+        overflow: hidden;
     }
     .ellipse_contacts-mobile {
-        display: block;
+        display: none;
         position: absolute;
         width: 100%;
         top: -1300px;
@@ -2595,3 +2596,22 @@
         width: clamp(20.3125rem, 12.4242rem + 33.657vw, 52.8125rem)
     }
   }
+    
+    @media (1026px < width <= 1510px) {
+        .delivery__container {
+            width: 1026px;
+        }
+        .loyalty__program {
+            width: 1026px;
+        }
+        .stocks__list {
+            width: 1026px;
+        }
+    }
+
+    @media (1026px < width <= 1610px) {
+
+        .loyalty__program {
+            width: 1026px;
+    }
+}
