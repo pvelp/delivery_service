@@ -4,7 +4,7 @@ const template = document.getElementById('menu__card-template');
 const menuOrder = document.querySelector('.menu__order')
 let menuAvaliableItems;
 let menuItems=[]
-const main_url = 'http://localhost:1337'
+const main_url = 'http://localhost'
 async function fetchProducts(url) {
   try {
     const response = await fetch(url);
@@ -12,13 +12,11 @@ async function fetchProducts(url) {
       throw new Error('Ошибка HTTP, код ' + response.status);
     }
     const data = await response.json();
-    console.log(`Страница ${data.page} загружена. Всего элементов: ${data.results.length}`);
     const menuItems = data.results;
     if (data.next) {
       const nextResults = await fetchProducts(data.next);
       return menuItems.concat(nextResults);
     } else {
-      console.log('Все страницы загружены. Всего элементов:', menuItems.length);
       return menuItems;
     }
   } catch (error) {
@@ -31,7 +29,6 @@ async function fetchAllProducts() {
   try {
     const initialUrl = main_url + '/products';
     const menuItems = await fetchProducts(initialUrl);
-    console.log(menuItems);
     return menuItems;
   } catch (error) {
     console.error('Ошибка при выполнении запроса:', error);
@@ -103,7 +100,6 @@ function addTypeToProducts(products) {
 }
 
 menuItems = addTypeToProducts(menuItems);
-console.log(menuItems)
 
 
   let cartItems = localStorage.getItem('cartItems');
@@ -156,7 +152,6 @@ console.log(menuItems)
       const orderOptionWeight = orderOption.querySelector('.menu__order-weight');
       const orderOptionPrice = orderOption.querySelector('.menu__order-price');
       const product = menuItems.find(item => item.title === name);
-      console.log(product)
       orderOptionName.textContent = name;
       orderOptionPhoto.src = photo;
       orderOptionWeight.textContent = product.weight + ' гр';
@@ -197,49 +192,7 @@ console.log(menuItems)
             const photo = item.querySelector('.menu__card-image').src;
             const weight = item.querySelector('.product__weight').textContent;
             const price = item.querySelector('.product__price').textContent;
-
-            const existingProductIndex = products.findIndex(product => product.name === name);
             const product = menuItems.find(item => item.title === name);
-            const data = {
-              product_id: product.id,
-              quantity: 1
-            };
-            fetch(main_url + '/add-to-cart/', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization':  'Bearer ' + acceptToken
-              },
-              body: JSON.stringify(data)
-            })
-            .then(response => {
-              if (!response.ok) {
-                if (response.status === 404) {
-                  throw new Error('Product not found');
-                } else {
-                  throw new Error('Failed to add product to cart');
-                }
-              }
-              return response.json();
-            })
-            .then(responseData => {
-              return responseData;
-            })
-            .catch(error => {
-              console.error('Error:', error.message);
-              return null;
-            });
-            if (existingProductIndex !== -1) {
-              // Если товар уже есть в корзине, уменьшаем его количество
-              products[existingProductIndex].quantity--;
-              if (products[existingProductIndex].quantity === 0) {
-                  // Если количество товара стало равным нулю, удаляем его из массива
-                  products.splice(existingProductIndex, 1);
-                  // Удаляем товар из localStorage
-                  updateLocalStorage();
-              }
-          }
-
 
             makeOrder(products); // Обновляем отображение корзины
         });
@@ -330,7 +283,6 @@ console.log(menuItems)
                   method: 'POST',
                   headers: {
                     'Content-Type': 'application/json',
-                    'Authorization':  'Bearer ' + acceptToken  
                   },
                   body: JSON.stringify(data)
                 })
@@ -367,7 +319,7 @@ console.log(menuItems)
                   method: 'POST',
                   headers: {
                     'Content-Type': 'application/json',
-                    'Authorization':  'Bearer ' + acceptToken
+                    
                   },
                   body: JSON.stringify(data)
                 })
@@ -418,7 +370,7 @@ console.log(menuItems)
                   method: 'POST',
                   headers: {
                     'Content-Type': 'application/json',
-                    'Authorization':  'Bearer ' + acceptToken
+                   
                   },
                   body: JSON.stringify(data)
                 })
@@ -485,14 +437,47 @@ orderButton.addEventListener('click', () => {
         weight: weight,
         price: price
     };
-    
-    const existingProductIndex = products.findIndex(product => product.name === selectedProduct.name);
+    const existingProductIndex = products.findIndex(product => product.name === name);
+    const product = menuItems.find(item => item.title === name);
+    const data = {
+      product_id: product.id,
+      quantity: 1
+    };
+    fetch(main_url + '/add-to-cart/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        
+      },
+      body: JSON.stringify(data)
+    })
+    .then(response => {
+      if (!response.ok) {
+        if (response.status === 404) {
+          throw new Error('Product not found');
+        } else {
+          throw new Error('Failed to add product to cart');
+        }
+      }
+      return response.json();
+    })
+    .then(responseData => {
+      return responseData;
+    })
+    .catch(error => {
+      console.error('Error:', error.message);
+      return null;
+    });
     if (existingProductIndex !== -1) {
-        products[existingProductIndex].quantity++;
-    } else {
-        selectedProduct.quantity = 1;
-        products.push(selectedProduct);
-    }
+      // Если товар уже есть в корзине, уменьшаем его количество
+      products[existingProductIndex].quantity--;
+      if (products[existingProductIndex].quantity === 0) {
+          // Если количество товара стало равным нулю, удаляем его из массива
+          products.splice(existingProductIndex, 1);
+          // Удаляем товар из localStorage
+          updateLocalStorage();
+      }
+  }
 
     makeOrder(products);
 });
@@ -673,7 +658,7 @@ window.window__registration.addEventListener('close', clearErrors);
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization':  'Bearer ' + acceptToken
+   
       },
       body: JSON.stringify(orderData)
     })
@@ -730,7 +715,6 @@ function getCart(){
     method: 'GET',
     headers: {
         'Content-Type': 'application/json',
-        'Authorization':  'Bearer ' + acceptToken
     },
   })
       .then(response => {
