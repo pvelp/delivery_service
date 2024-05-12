@@ -4,7 +4,7 @@ const template = document.getElementById('menu__card-template');
 const menuOrder = document.querySelector('.menu__order')
 let menuAvaliableItems;
 let menuItems=[]
-const main_url = 'http://localhost'
+const main_url = 'http://localhost:1337'
 async function fetchProducts(url) {
   try {
     const response = await fetch(url);
@@ -29,6 +29,7 @@ async function fetchAllProducts() {
   try {
     const initialUrl = main_url + '/products';
     const menuItems = await fetchProducts(initialUrl);
+    console.log(menuItems);
     return menuItems;
   } catch (error) {
     console.error('Ошибка при выполнении запроса:', error);
@@ -66,23 +67,18 @@ processMenuItems().then(() => {
 */
 
 const categoryToType = {
-  1: "cоусы",
-  2: "варенье",
-  3: "выпечка",
-  4: "тандыр",
-  5: "молочка",
-  6: "кофе",
-  7: "бастурма и суджук",
-  8: "компот",
-  9: "салаты",
+  1: "сеты Шашлыков",
+  2: "супы",
+  3: "шашлык",
+  4: "овощи и рыба на мангале",
+  5: "шаурма",
+  6: "закуски",
+  7: "выпечка",
+  8: "соусы",
+  9: "бакалея",
   10: "напитки",
-  11: "овощные консервы",
-  12: "десерты",
-  13: "гарниры",
-  14: "мангал",
-  16: "вода",
-  17: "Шаурма"
 };
+
 const acceptToken = localStorage.getItem('accept_token');
 const refreshToken = localStorage.getItem('refresh_token');
 
@@ -194,7 +190,7 @@ menuItems = addTypeToProducts(menuItems);
             const price = item.querySelector('.product__price').textContent;
             const product = menuItems.find(item => item.title === name);
 
-            makeOrder(products); // Обновляем отображение корзины
+
         });
     });
 }
@@ -221,36 +217,37 @@ menuItems = addTypeToProducts(menuItems);
   let totalPrice = document.querySelector('.final__cost');
   let totalCount = document.querySelector('.quantity'); 
   
-  function makeOrder(products) {
+  function makeOrder(cartData) {
 
     orderContainer.innerHTML = '';
     let totalOrderPrice = 0;
     let totalOrderQuantity = 0;
-    updateLocalStorage();
-    products.forEach(function(product) {
+    const cartItems = cartData.cart_items
+
+    cartItems.forEach(function(product) {
         let card = document.createElement('li'); // Карточка
         card.className = 'product__card';
-
+        console.log(product.product_id)
         let orderImageContainer = document.createElement('div'); // Изображение в контейнере
         orderImageContainer.className = 'product__image-container';
         let image = document.createElement('img');
         image.className = 'product__image';
-        image.src = product.photo;
-        image.alt = product.name;
+        image.src = main_url + product.image;
+        image.alt = product.title;
         
         let orderInfoContainer = document.createElement('div');
         orderInfoContainer.className = 'product__info-container'; // Контейнер для информации
 
         let name = document.createElement('h2'); // Название
-        name.textContent = product.name;
+        name.textContent = product.title;
         name.className = 'product__name'; 
         
         let weight = document.createElement('p'); // Вес
-        weight.textContent = product.weight;
+        weight.textContent = product.weight + ' гр';
         weight.className = 'product__weight';
 
         let price = document.createElement('p'); //
-        price.textContent = product.price;
+        price.textContent = product.price + ' ₽';
         price.className = 'product__price';
 
         let nameAndWeight = document.createElement('div');
@@ -277,7 +274,7 @@ menuItems = addTypeToProducts(menuItems);
                 updateLocalStorage(); // Обновляем localStorage при изменении количества товаров
                 const removable = menuItems.find(item => item.title === product.name);
                 const data = {
-                  product_id: removable.id,
+                  product_id: product.product_id,
                 };
                 fetch(main_url + '/remove-from-cart/', {
                   method: 'POST',
@@ -313,7 +310,7 @@ menuItems = addTypeToProducts(menuItems);
                 const index = products.indexOf(product);
                 const removable = menuItems.find(item => item.title === product.name);
                 const data = {
-                  product_id: removable.id,
+                  product_id: product.product_id,
                 };
                 fetch(main_url + '/remove-from-cart/', {
                   method: 'POST',
@@ -361,7 +358,7 @@ menuItems = addTypeToProducts(menuItems);
             totalOrderQuantity++;
             product.quantity = count; // Обновляем количество товара в объекте товара
             updateLocalStorage(); // Обновляем localStorage при изменении количества товаров
-                     const addable = menuItems.find(item => item.title === product.name);
+                     const addable = menuItems.find(item => item.title === product.title);
                 const data = {
                   product_id: addable.id,
                   quantity: 1
@@ -390,7 +387,8 @@ menuItems = addTypeToProducts(menuItems);
                 .catch(error => {
                   console.error('Error:', error.message);
                   return null;
-                });    
+                }); 
+
         });
 
 
@@ -422,7 +420,6 @@ function updateLocalStorage() {
 }
   
 
-makeOrder(products);
 const orderButton = document.querySelector('.menu__order-button');
 
 orderButton.addEventListener('click', () => {
@@ -463,11 +460,13 @@ orderButton.addEventListener('click', () => {
     })
     .then(responseData => {
       return responseData;
+      
     })
     .catch(error => {
       console.error('Error:', error.message);
       return null;
     });
+    getCart()
     if (existingProductIndex !== -1) {
       // Если товар уже есть в корзине, уменьшаем его количество
       products[existingProductIndex].quantity--;
@@ -479,7 +478,7 @@ orderButton.addEventListener('click', () => {
       }
   }
 
-    makeOrder(products);
+
 });
 
 function moveFinalCostContainer() {
@@ -725,6 +724,14 @@ function getCart(){
       })
       .then(data => {
           console.log(data);
+          makeOrder(data);
+          let totalQ = 0;
+          let totalCount = document.querySelector('.quantity'); 
+          cartItems.forEach(function(product) {
+            totalQ = totalQ + product.quantity
+          })
+          console.log(totalQ);
+          totalCount.textContent = totalQ;
           if(data.total_amount_with_discount) {
             totalPrice.textContent = data.total_amount_with_discount + '  ₽'
           }
@@ -768,4 +775,15 @@ window.addEventListener('resize', handleScreenWidthChange);
 window.addEventListener('load', handleScreenWidthChange);
 window.addEventListener('resize', handleScreenWidthChange);
 });
-
+document.addEventListener("DOMContentLoaded", function() {
+let menu__order_window = document.querySelector('.menu__order')
+let menu_close = menu__order_window.querySelector('.enter__window-close');
+let menu_close2 = menu__order_window.querySelector('.menu__order-button');
+let target_element = document.querySelector('.menu');
+menu_close.addEventListener("click", function() {
+    target_element.scrollIntoView();
+});
+menu_close2.addEventListener("click", function() {
+  target_element.scrollIntoView();
+});
+})

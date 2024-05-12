@@ -372,6 +372,10 @@ dialog::backdrop {
     z-index: 1;
 }
 
+.promo__accept:hover {
+    transform: scale(1.3);
+
+}
 .promo__accept::before {
     content: "\2713"; 
     font-size: 40px; 
@@ -1486,7 +1490,6 @@ dialog::backdrop {
     .window__order-container {
         flex-direction: column;
         align-items: center;
-        overflow-y: scroll;
         gap: 0px;
         margin-bottom: 40px;
     }
