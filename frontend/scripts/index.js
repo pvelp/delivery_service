@@ -4,7 +4,7 @@ const template = document.getElementById('menu__card-template');
 const menuOrder = document.querySelector('.menu__order')
 let menuAvaliableItems;
 let menuItems=[]
-const main_url = 'http://localhost:1337'
+const main_url = 'http://188.225.9.172:1337'
 async function fetchProducts(url) {
   try {
     const response = await fetch(url);

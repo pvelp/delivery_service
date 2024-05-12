@@ -9,7 +9,8 @@ services:
     volumes:
       - static_volume:/home/app/web/staticfiles
       - media_volume:/home/app/web/mediafiles
-#      - /var/certbot/conf:/etc/letsencrypt/:ro
+        #     - nginx_volume:/etc/nginx/certs:ro
+ #     - /var/certbot/conf:/etc/letsencrypt/:ro
     expose:
       - 8000
     restart: on-failure
@@ -42,8 +43,9 @@ services:
     volumes:
       - static_volume:/home/app/web/staticfiles
       - media_volume:/home/app/web/mediafiles
+        #      - nginx_volume:/etc/nginx/certs
     ports:
-      - "80:80"
+      - "1337:80"
       - "443:443"
     depends_on:
       - web
@@ -62,13 +64,6 @@ services:
     depends_on:
       - redis
       - web
-  frontend:
-    build: ./frontend
-    ports:
-      - 5500:1337
-    depends_on:
-      - web
-
 
 #  certbot:
 #    image: certbot/certbot:latest
@@ -82,3 +77,4 @@ volumes:
   pg_data:
   static_volume:
   media_volume:
+    #  nginx_volume:
