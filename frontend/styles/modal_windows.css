@@ -79,9 +79,11 @@ dialog::backdrop {
 }
 
 .input_field:focus {
-    outline: none;
+    outline: transparent;
 }
-
+.input_field:focus-visible {
+    border-color: #F4CF98;
+}
 .input_field::placeholder {
     font-family: GothamPro;
     font-size: 16px;
@@ -159,7 +161,9 @@ dialog::backdrop {
     cursor: pointer;
     margin-bottom: 40px;
 }
-
+.enter__window-registration:hover {
+    color: #f7efe5;
+}
 .enter__registration-button {
     margin-bottom: 24px;
 }
@@ -341,6 +345,11 @@ dialog::backdrop {
     margin-right: 0px;
 }
 
+.input_container .input_field:focus-visible {
+    border-color: #F4CF98;
+}
+
+
 .input_decription {
     margin-top: -8px;
     font-family: GothamPro;
@@ -390,6 +399,10 @@ dialog::backdrop {
     margin-top: 0px;
     margin-bottom: 0px;
     margin-right: 21px;
+}
+
+.promo-option .input_field:focus-visible {
+    border-color: #F4CF98;
 }
 
 .promo__container .input_field {
@@ -444,6 +457,7 @@ dialog::backdrop {
     text-transform: uppercase;
     margin-top: 0px;
     margin-bottom: 0px;
+    width: 300px;
 }
 
 .product__price {
@@ -459,10 +473,9 @@ dialog::backdrop {
 }
 
 .product__name-and-weight {
-    margin-top: -14px;
+    margin-top: -10px;
     display: flex;
     flex-direction: row;
-    align-items: center;
     gap: 24px;
     margin-bottom: 10px;
 }
@@ -798,7 +811,9 @@ dialog::backdrop {
     margin-top: 0px;
     margin-bottom: 0px;
 }
-
+.haha:hover {
+    transform: scale(1.2);
+}
 .haha_last {
     margin-bottom: 120px;
 }
@@ -811,7 +826,9 @@ dialog::backdrop {
 .input_error {
     border: 1px solid red;
   }
-  
+  .promo__container .input_field:focus-visible{
+    border-color: #F4CF98;
+}
 @media (max-width: 376px) {
     #window__enter {
         width: 325px;
@@ -1251,6 +1268,7 @@ dialog::backdrop {
     .enter__window-order .product__name {
         font-size: 20px;
         line-height: 36px;
+        width: 100px;
     }
     .enter__window-order .product__price {
         font-size: 20px;;
@@ -1511,6 +1529,7 @@ dialog::backdrop {
     .enter__window-order .product__name {
         font-size: 20px;
         line-height: 36px;
+        width: 100px;
     }
     .enter__window-order .product__price {
         font-size: 20px;;
@@ -1587,3 +1606,15 @@ dialog::backdrop {
     }
 }
 
+@keyframes shake {
+    0% { transform: translate(0); }
+    10%, 90% { transform: translate(-5px, 0); }
+    20%, 80% { transform: translate(5px, 0); }
+    30%, 50%, 70% { transform: translate(-5px, 0); }
+    40%, 60% { transform: translate(5px, 0); }
+    100% { transform: translate(0); }
+  }
+  
+  .shake {
+    animation: shake 0.5s ease-in-out;
+  }

@@ -133,3 +133,6 @@ dmypy.json
 ./django_static
 
 /poetry.lock
+
+nginx/.server.crt 
+nginx/.server.key

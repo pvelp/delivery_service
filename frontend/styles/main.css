@@ -301,7 +301,13 @@
     opacity: 0.4;
     cursor: pointer !important;
 }
-
+.menu__button:hover {
+    opacity: 1;
+}
+.active:hover {
+    background-color: transparent;
+    color: #FADAAB;
+}
 .active {
     opacity: 1;
 }
@@ -611,7 +617,9 @@
     margin-bottom: 0px;
     cursor: pointer;
 }
-
+.loyalty__register:hover {
+    transform: scale(1.1);
+}
 .loyalty__register-text {
     font-family: Gotham;
     font-size: 20px;
@@ -637,7 +645,9 @@
     text-decoration: underline;
     cursor: pointer;
 }
-
+.loyalty__enter:hover {
+    color: #f7efe5; 
+}
 .delivery__and__payment {
     display: flex;
     flex-direction: column;
@@ -809,7 +819,9 @@
     height: clamp(3.5rem, 2.8325rem + 2.8479vw, 6.25rem);
     cursor: pointer;
 }
-
+.contact__button:hover {
+    transform: scale(1.1);
+}
 .ellipse_contacts {
     position: absolute;
     left: 0;
@@ -1501,7 +1513,7 @@
 
     }
     .stocks__card-time {
-        margin-left: 730px;
+        margin-left: clamp(45.625rem, 87.8699rem + -88.0102vw, 67.1875rem);
     }
     .stocks__card-gift {
         margin-right: 25px;
@@ -2096,7 +2108,8 @@
 
     }
     .stocks__card-time {
-        margin-left: 400px;
+        margin-left: clamp(25rem, 107.5rem + -128.9063vw, 45.625rem);
+
     }
     .stocks__card-gift {
         margin-right: 25px;

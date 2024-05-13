@@ -4,7 +4,7 @@ const template = document.getElementById('menu__card-template');
 const menuOrder = document.querySelector('.menu__order')
 let menuAvaliableItems;
 let menuItems=[]
-const main_url = 'http://localhost:1337'
+const main_url = '188.225.9.172:1337' // http://localhost
 async function fetchProducts(url) {
   try {
     const response = await fetch(url);
@@ -29,7 +29,6 @@ async function fetchAllProducts() {
   try {
     const initialUrl = main_url + '/products';
     const menuItems = await fetchProducts(initialUrl);
-    console.log(menuItems);
     return menuItems;
   } catch (error) {
     console.error('Ошибка при выполнении запроса:', error);
@@ -78,7 +77,7 @@ const categoryToType = {
   9: "бакалея",
   10: "напитки",
 };
-
+getCart()
 const acceptToken = localStorage.getItem('accept_token');
 const refreshToken = localStorage.getItem('refresh_token');
 
@@ -88,6 +87,18 @@ if(acceptToken) {
   document.querySelector('.enter__text').style.color = "transparent";
 }
 
+if(!acceptToken) {
+  document.querySelector('.promo').style.borderColor = "red";
+  document.querySelector('.promo').disabled = true;
+  document.querySelector('.promo').placeholder = "Вы не авторизованы";
+  document.querySelector('.promo__accept').disabled = true;
+}
+else {
+  document.querySelector('.promo').style.borderColor = "grey";
+  document.querySelector('.promo').disabled = false;
+  document.querySelector('.promo').placeholder = "Введите промокод";
+  document.querySelector('.promo__accept').disabled = false;
+}
 function addTypeToProducts(products) {
   return products.map(product => {
     const type = categoryToType[product.category];
@@ -217,17 +228,15 @@ menuItems = addTypeToProducts(menuItems);
   let totalPrice = document.querySelector('.final__cost');
   let totalCount = document.querySelector('.quantity'); 
   
-  function makeOrder(cartData) {
+  function makeOrder(cartData, promoSize) {
 
     orderContainer.innerHTML = '';
     let totalOrderPrice = 0;
     let totalOrderQuantity = 0;
     const cartItems = cartData.cart_items
-
     cartItems.forEach(function(product) {
         let card = document.createElement('li'); // Карточка
         card.className = 'product__card';
-        console.log(product.product_id)
         let orderImageContainer = document.createElement('div'); // Изображение в контейнере
         orderImageContainer.className = 'product__image-container';
         let image = document.createElement('img');
@@ -267,7 +276,7 @@ menuItems = addTypeToProducts(menuItems);
                 price.textContent = count * parseInt(product.price) + ' ₽';
                 weight.textContent = count * parseInt(product.weight) + ' гр';
                 totalOrderPrice -= parseInt(product.price);
-                totalPrice.textContent = totalOrderPrice + ' ₽';
+                totalPrice.textContent = totalOrderPrice*promoSize + ' ₽';
                 totalOrderQuantity--;
                 totalCount.textContent = totalOrderQuantity;
                 product.quantity = count; // Обновляем количество товара в объекте товара
@@ -304,7 +313,7 @@ menuItems = addTypeToProducts(menuItems);
             } else {
                 card.remove();
                 totalOrderPrice -= parseInt(product.price);
-                totalPrice.textContent = totalOrderPrice + ' ₽';
+                totalPrice.textContent = totalOrderPrice*promoSize + ' ₽';
                 totalOrderQuantity--;
                 totalCount.textContent = totalOrderQuantity;
                 const index = products.indexOf(product);
@@ -354,7 +363,7 @@ menuItems = addTypeToProducts(menuItems);
             price.textContent = count * parseInt(product.price) + ' ₽';
             weight.textContent = count * parseInt(product.weight) + ' гр';
             totalOrderPrice += parseInt(product.price);
-            totalPrice.textContent = totalOrderPrice + ' ₽';
+            totalPrice.textContent = totalOrderPrice*promoSize + ' ₽';
             totalOrderQuantity++;
             product.quantity = count; // Обновляем количество товара в объекте товара
             updateLocalStorage(); // Обновляем localStorage при изменении количества товаров
@@ -412,7 +421,7 @@ menuItems = addTypeToProducts(menuItems);
         totalOrderQuantity += product.quantity || 1; // Учитываем количество товара
     });
 
-    totalPrice.textContent = totalOrderPrice + '  ₽';
+    totalPrice.textContent = totalOrderPrice*promoSize + '  ₽';
     totalCount.textContent = totalOrderQuantity;
 }
 function updateLocalStorage() {
@@ -466,7 +475,7 @@ orderButton.addEventListener('click', () => {
       console.error('Error:', error.message);
       return null;
     });
-    getCart()
+    aart()
     if (existingProductIndex !== -1) {
       // Если товар уже есть в корзине, уменьшаем его количество
       products[existingProductIndex].quantity--;
@@ -583,13 +592,20 @@ function sendRegRequest() { //пост на регистрацию
     } else {
       response.json().then(errors => {
         console.error("Не удалось выполнить вход", errors);
-        // Подсветить input поля в случае ошибок
+
         if (errors.email) email.classList.add('input_error');
         if (errors.password) password.classList.add('input_error');
         if (errors.first_name) firstName.classList.add('input_error');
         if (errors.last_name) lastName.classList.add('input_error');
         if (errors.phone) phone.classList.add('input_error');
         if (errors.date_of_birth) dob.classList.add('input_error');
+        if (!errors.email) email.classList.remove('input_error');
+        if (!errors.password) password.classList.remove('input_error');
+        if (!errors.first_name) firstName.classList.remove('input_error');
+        if (!errors.last_name) lastName.classList.remove('input_error');
+        if (!errors.phone) phone.classList.remove('input_error');
+        if (!errors.date_of_birth) dob.classList.remove('input_error');
+        document.querySelector('.enter__window').classList.remove('.shake');
       });
     }
   });
@@ -700,6 +716,15 @@ window.window__registration.addEventListener('close', clearErrors);
         return response.json();
     })
     .then(data => {
+      console.log(data.cart_items);
+      data.cart_items.forEach(function(product) {
+        if(data.total_amount_with_discount) {
+            const promoSize = data.total_amount_with_discount / data.total_amount;
+            product.price = product.price * promoSize;
+            console.log(product.price);
+            getCart();
+        }
+    });
         console.log('Success:', data);
         console.log(data.total_amount)
         totalPrice.textContent = data.total_amount_with_discount + '  ₽'
@@ -723,14 +748,16 @@ function getCart(){
           return response.json();
       })
       .then(data => {
-          console.log(data);
-          makeOrder(data);
+          let promoSize = 1;
+          if (data.total_amount_with_discount) {
+          promoSize = data.total_amount_with_discount / data.total_amount;
+          }
+          makeOrder(data, promoSize);
           let totalQ = 0;
           let totalCount = document.querySelector('.quantity'); 
           cartItems.forEach(function(product) {
             totalQ = totalQ + product.quantity
           })
-          console.log(totalQ);
           totalCount.textContent = totalQ;
           if(data.total_amount_with_discount) {
             totalPrice.textContent = data.total_amount_with_discount + '  ₽'
@@ -739,9 +766,6 @@ function getCart(){
             totalPrice.textContent = data.total_amount + '  ₽'
           }
       })
-      .catch(error => {
-          console.error('Error:', error);
-      });
 };
 
 document.querySelector('.nav__basket').addEventListener('click', function() {
