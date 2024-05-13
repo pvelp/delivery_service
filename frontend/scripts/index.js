@@ -716,17 +716,13 @@ window.window__registration.addEventListener('close', clearErrors);
         return response.json();
     })
     .then(data => {
-      console.log(data.cart_items);
       data.cart_items.forEach(function(product) {
         if(data.total_amount_with_discount) {
             const promoSize = data.total_amount_with_discount / data.total_amount;
             product.price = product.price * promoSize;
-            console.log(product.price);
             getCart();
         }
     });
-        console.log('Success:', data);
-        console.log(data.total_amount)
         totalPrice.textContent = data.total_amount_with_discount + '  ₽'
     })
     .catch(error => {
